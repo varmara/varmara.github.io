@@ -4,6 +4,14 @@
     
     <url>
     
+      <loc>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</loc>
+      <lastmod>2019-01-15T00:00:00+00:00</lastmod>
+    </url>
+    
+  
+    
+    <url>
+    
       <xhtml:link rel="alternate" href="https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/" hreflang="ru"/>
       <xhtml:link rel="alternate" href="https://varmara.github.io/post/2019-01-12-hardships-of-self-archiving/" hreflang="en"/>
     
@@ -264,6 +272,33 @@
     
     <url>
     
+      <loc>https://varmara.github.io/ru/tags/git/</loc>
+      <lastmod>2019-01-15T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://varmara.github.io/ru/tags/github-pages/</loc>
+      <lastmod>2019-01-15T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
+      <loc>https://varmara.github.io/ru/tags/hugo/</loc>
+      <lastmod>2019-01-15T00:00:00+00:00</lastmod>
+      <priority>0</priority>
+    </url>
+    
+  
+    
+    <url>
+    
       <loc>https://varmara.github.io/ru/tags/parametrization/</loc>
       <lastmod>2019-01-05T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -310,7 +345,7 @@
       <xhtml:link rel="alternate" href="https://varmara.github.io/categories/website/" hreflang="en"/>
     
       <loc>https://varmara.github.io/ru/categories/website/</loc>
-      <lastmod>2019-01-12T00:00:00+00:00</lastmod>
+      <lastmod>2019-01-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
     </url>
     

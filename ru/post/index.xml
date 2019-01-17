@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Как разместить сайт на Hugo на GitHub user pages</title>
+      <link>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</guid>
+      <description>Чтобы разместить сайт на GitHub user pages, нужно, чтобы его содержимое было в ветке master репозитория username.github.io. В идеале, хотелось бы, организовать репозиторий так, чтобы исходный код хранился где-то рядом. Я нагуглила два решения. Отправная точка для обоих — локально работающий сайт, созданный при помощи blogdown в RStudio с темой Academic.
+1. Решение на основе поддеревьев Решение на основе поддеревьев (subtrees) мне показалось более простым, поскольку я не так хорошо понимаю git.</description>
+    </item>
+    
+    <item>
       <title>Сложности создания собственного архива статей</title>
       <link>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</link>
       <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
