@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Марина Варфоломеева on Марина Варфоломеева</title>
+    <link>https://varmara.github.io/ru/</link>
+    <description>Recent content in Марина Варфоломеева on Марина Варфоломеева</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru</language>
+    <copyright>&lt;a href=&#34;https://varmara.github.io/privacy.ru/&#34;&gt;Политика конфиденциальности&lt;/a&gt; &lt;br/&gt;&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc/4.0/&#34;&gt;&lt;img class=&#34;display-centered&#34; alt=&#34;Creative Commons License&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc/4.0/80x15.png&#34; /&gt;&lt;/a&gt; &amp;copy; Марина Варфоломеева 2018-наст.вр.</copyright>
+    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0300</lastBuildDate>
+    <atom:link href="/ru/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Сложности создания собственного архива статей</title>
+      <link>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</link>
+      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</guid>
+      <description>
+
+&lt;p&gt;Оказалось, что довольно сложно дополнить pdf-версиями статей традиционный для личного сайта список публикаций. Не всякую версию можно выложить на сайт &amp;mdash; нужно соблюдать правила издательств. Большинство издательств позволяют выкладывать только версии без журнального оформления, а я как не очень (совсем не) аккуратный человек, не всегда сохраняла последние варианты рукописи со внесенными исправлениями рецензентов. Поэтому мне придется изрядно покопаться в недрах компьютера прежде чем получится найти подходящие версии.&lt;/p&gt;
+
+&lt;p&gt;Чтобы не запутаться в правилах, я собрала информацию об издательствах и журналах, в которых приходилось публиковаться. Вся информация ниже актуальна на момент публикации поста, ее лучше перепроверить.&lt;/p&gt;
+
+&lt;h2 id=&#34;термины&#34;&gt;Термины&lt;/h2&gt;
+
+&lt;p&gt;В употреблении терминов путаница. Каждый называет препринтом то, что хочет (иногда версию с правками рецензентов, иногда без них), но я думаю, что это будет точнее:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Пре-принт (pre-print) &amp;mdash; исходная версия рукописи при отправке в редакцию журнала. До рецензирования. Без форматирования.&lt;/li&gt;
+&lt;li&gt;Пост-принт (post-print) &amp;mdash; версия рукописи после рецензирования, готовая для пубикации. Скорее всего без финального форматирования и издательского редактирования.&lt;/li&gt;
+&lt;li&gt;Версия издателя (publishers version) &amp;mdash; версия, которая опубликована на сайте журнала. Отформатирована как в журнале. Содержит все выходные данные.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;главный-ресурс&#34;&gt;Главный ресурс&lt;/h2&gt;
+
+&lt;p&gt;Проверить политику самоархивирования для журнала можно на сайте &lt;a href=&#34;http://www.sherpa.ac.uk/romeo/index.php&#34; target=&#34;_blank&#34;&gt;Sherpa/RoMEO&lt;/a&gt;. При этом все равно стоит уточнить подробности на сайте издательства или самого журнала.&lt;/p&gt;
+
+&lt;h2 id=&#34;некоторые-журналы&#34;&gt;Некоторые журналы&lt;/h2&gt;
+
+&lt;h3 id=&#34;издательство-inter-research-https-www-int-res-com-home&#34;&gt;Издательство &lt;a href=&#34;https://www.int-res.com/home/&#34; target=&#34;_blank&#34;&gt;Inter-Research&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;pdf статьи в открытом виде лежит на сайте журнала и можно просто разместить на него ссылку. Но в виде файла издательскую версию можно выкладывать только через 5 лет после публикации.&lt;/p&gt;
+
+&lt;h4 id=&#34;diseases-of-aquatic-organisms-https-www-int-res-com-journals-dao-dao-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/dao/dao-home/&#34; target=&#34;_blank&#34;&gt;Diseases of Aquatic Organisms&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0177-5103/&#34; target=&#34;_blank&#34;&gt;DAO в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+
+&lt;h4 id=&#34;marine-ecology-progress-series-https-www-int-res-com-journals-meps-meps-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/meps/meps-home/&#34; target=&#34;_blank&#34;&gt;Marine Ecology Progress Series&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0171-8630/&#34; target=&#34;_blank&#34;&gt;MEPS в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+
+&lt;h3 id=&#34;издательство-спбгу-st-petersburg-university-press-st-petersburg-university-press&#34;&gt;Издательство СПбГУ &lt;a href=&#34;St. Petersburg University Press&#34; target=&#34;_blank&#34;&gt;St. Petersburg University Press&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;Общей политики для этого издательства я не нашла.&lt;/p&gt;
+
+&lt;h4 id=&#34;biological-communications-https-biocomm-spbu-ru&#34;&gt;&lt;a href=&#34;https://biocomm.spbu.ru/&#34; target=&#34;_blank&#34;&gt;Biological Communications&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;Журнал открытого доступа. pdf лежит на сайте журнала, можно просто разместить на него ссылку.&lt;/p&gt;
+
+&lt;h3 id=&#34;издательство-springer-verlag-http-www-springerlink-com-mud-mp&#34;&gt;Издательство &lt;a href=&#34;http://www.springerlink.com/?MUD=MP&#34; target=&#34;_blank&#34;&gt;Springer Verlag&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;На сайте издательства четкий и ясный &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights/self-archiving-policy/2124&#34; target=&#34;_blank&#34;&gt;раздел о политике само-архивирования&lt;/a&gt;. И есть &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights&#34; target=&#34;_blank&#34;&gt;раздел о правах авторов&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;То, что Sherpa/RoMEO называют post-print, они называют Author&amp;rsquo;s Accepted Manuscript (AAM): &amp;ldquo;&amp;hellip;the version accepted for publication in a journal following peer review but &lt;strong&gt;prior to copyediting and typesetting&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;При размещении пре- и пост-принтов нужна специальная фраза со ссылкой на издателя:&lt;/p&gt;
+
+&lt;p&gt;“This is a [pre-print / post-peer-review, pre-copyedit version] of an article published in [insert journal title]. The final authenticated version is available online at: &lt;code&gt;https://doi.org/[insert DOI]&lt;/code&gt;”&lt;/p&gt;
+
+&lt;h4 id=&#34;hydrobiologia-https-link-springer-com-journal-10750&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/10750&#34; target=&#34;_blank&#34;&gt;Hydrobiologia&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0018-8158/&#34; target=&#34;_blank&#34;&gt;Hydrobiologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+
+&lt;h4 id=&#34;oecologia-https-link-springer-com-journal-442&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/442&#34; target=&#34;_blank&#34;&gt;Oecologia&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0029-8549/&#34; target=&#34;_blank&#34;&gt;Oecologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+
+&lt;h3 id=&#34;издательство-cambridge-university-press-http-www-cambridge-org-uk&#34;&gt;Издательство &lt;a href=&#34;http://www.cambridge.org/uk/&#34; target=&#34;_blank&#34;&gt;Cambridge University Press&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;На сайте сложно найти политику само-архивирования. Мне не удалось.&lt;/p&gt;
+
+&lt;h4 id=&#34;journal-of-the-marine-biological-association-of-the-united-kingdom-http-journals-cambridge-org-action-displayjournal-jid-mbi&#34;&gt;&lt;a href=&#34;http://journals.cambridge.org/action/displayJournal?jid=MBI&#34; target=&#34;_blank&#34;&gt;Journal of the Marine Biological Association of the United Kingdom&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0025-3154/&#34; target=&#34;_blank&#34;&gt;JMBA в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 6 месяцев. Версию издателя использовать нельзя. Abstract &amp;mdash; можно. Нужна ссылка на издателя.&lt;/p&gt;
+
+&lt;h3 id=&#34;elsevier-http-www-elsevier-com&#34;&gt;&lt;a href=&#34;http://www.elsevier.com/&#34; target=&#34;_blank&#34;&gt;Elsevier&lt;/a&gt;&lt;/h3&gt;
+
+&lt;p&gt;На сайте &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34;&gt;информацию о само-архивировании&lt;/a&gt; найти удается не сразу.&lt;/p&gt;
+
+&lt;h4 id=&#34;journal-of-experimental-marine-biology-and-ecology-https-www-journals-elsevier-com-journal-of-experimental-marine-biology-and-ecology&#34;&gt;&lt;a href=&#34;https://www.journals.elsevier.com/journal-of-experimental-marine-biology-and-ecology&#34; target=&#34;_blank&#34;&gt;Journal of Experimental Marine Biology and Ecology&lt;/a&gt;&lt;/h4&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0022-0981/&#34; target=&#34;_blank&#34;&gt;JEMBE в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 24 месяца. Версию издателя использовать нельзя. Нужна ссылка на издателя с DOI. Пост-принт должен быть по лицензии CC BY-NC-ND. Пост-принт &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34;&gt;не должен выглядеть похоже на опубликованную статью&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Третий тип сумм квадратов и параметризация дисперсионного анализа</title>
+      <link>https://varmara.github.io/ru/post/2019-01-05-ss-type-iii-and-anova-parametrization/</link>
+      <pubDate>Sat, 05 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/post/2019-01-05-ss-type-iii-and-anova-parametrization/</guid>
+      <description>
+
+
+&lt;p&gt;Выбор между разными параметризациями в дисперсионном анализе кажется сложной проблемой.&lt;/p&gt;
+&lt;div id=&#34;--&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Типы сумм квадратов&lt;/h3&gt;
+&lt;p&gt;Пусть у нас есть модель &lt;code&gt;Y ~ A + B + AB&lt;/code&gt; с двумя дискретными факторами и взаимодействием. Типы сумм квадратов — это всего лишь последовательность тестирования значимости факторов в этой модели. Самые часто-используемые типы сумм квадратов I, II и III. При использовании любого из них значимость взаимодействия будет проверяться всегда одинаково — по отношению к модели в которой нет взаимодействия, но есть оба фактора, т.е. SS(AB | A, B). Значимость факторов можно проверить в разном порядке.&lt;/p&gt;
+&lt;p&gt;При использовании SS type I значимость факторов проверяется последовательно — в порядке включения в модель. Сначала будет рассчитана SS(A), потом SS(B|A) и, наконец, SS(AB | A, B).&lt;/p&gt;
+&lt;p&gt;При использовании SS type II значимость факторов проверяется по сравнению с моделью, где есть другой фактор, но нет взаимодействия — это SS(A | B) и SS(B | A). При таком способе SS не будет зависеть от порядка включения факторов в модель, но будет зависеть от численности групп. Т.е. лучше, если группы будут одинаковыми.&lt;/p&gt;
+&lt;p&gt;При использовании SS type III значимость фактора проверяется по сравнению с моделью в которой есть другой фактор и взаимодействие SS(A | B, AB) и SS(B|A, AB). Статистики на это ругаются, потому что при таком способе нарушается принцип маргинальности (взаимодействие может входить в модель только если в ней есть все его составляющие). При таком способе расчета SS уже не зависит от численности групп, поэтому его часто рекомендуют использовать для несбалансированных данных.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;-&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Типы параметризации&lt;/h3&gt;
+&lt;p&gt;При классическом регрессионном подходе чаще используется параметризация индикаторных переменных: коэффициенты кодируют отклонения групповых средних от среднего на базовом уровне факторов (в R это используется по умолчанию, contr.treatment).&lt;/p&gt;
+&lt;p&gt;В классическом дисперсионном анализе используется параметризация эффектов коэффициенты кодируют отклонения групповых средних от общего среднего (в R это называется contr.sum).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;-------&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Как параметризация связана с типом расчета сумм квадратов?&lt;/h3&gt;
+&lt;p&gt;В подавляющем большинстве случаев, оба варианта кодирования дадут одинаковый результат дисперсионного анализа. Но как только вы вдруг решите использовать SS type III, вспомнив, что он используется в большинстве статистических программ, вот тогда-то как раз бывает важно выбрать именно contr.sum.&lt;/p&gt;
+&lt;p&gt;Так вот, при contr.treatment коэффициенты не соответствуют классическому определению главных эффектов факторов (main effect, эффект фактора, усредненный по всем другим факторам). Об этом подробно и хорошо написано &lt;a href=&#34;https://methodology.psu.edu/media/techreports/12-120.pdf&#34;&gt;здесь&lt;/a&gt;
+При contr.treatment коэффициенты соответствуют простым эффектам (simple effect, эффект фактора на определенном уровне других факторов, не усредненный). &lt;a href=&#34;https://methodology.psu.edu/media/techreports/12-120.pdf&#34;&gt;На стр. 14&lt;/a&gt; показано, что коэффициент, кодирующий простой эффект, кодирует одновременно еще и часть взаимодействия. У этого есть два важных следствия:&lt;/p&gt;
+&lt;p&gt;Во-первых, при наличии взаимодействия и contr.treatment автоматически возникает коллинеарность (Т.е. при проверке полной модели на коллинеарность, нужно использовать contr.sum, или трюк — проверять на коллинеарность неполную модель без взаимодействия).&lt;/p&gt;
+&lt;p&gt;Во-вторых, и это сейчас для нас главное, из-за того, что при contr.treatment коэффициенты кодируют одновременно часть взаимодействия, то при использовании SS type III получатся неправильные SS. Например, когда мы считаем SS(A| B, AB), эффект фактора A мы оцениваем, сравнивая модели A + B + AB и B + AB. Но выбрасывая фактор A мы удаляем не только главный эффект, но и часть взаимодействия (на самом деле, все даже еще немного сложнее).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;---------&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Как выбрать подходящий тип расчета сумм квадратов и подходящую параметризацию?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Если у вас есть модель без взаимодействия, вам не нужен SS type III, в нем нет смысла.&lt;/li&gt;
+&lt;li&gt;Если у вас есть модель со взаимодействием и сбалансированные данные или дисбаланс не очень велик, вы можете смело использовать SS type II. И тогда не важно, какую параметризацию использовать, главное помнить про трактовку коэффициентов, а для проверки на коллинеарность — использовать модель без взаимодействия.&lt;/li&gt;
+&lt;li&gt;И наконец, если у вас есть модель со взаимодействием, но данные не сбалансированы, можно использовать SS type III, но обязательно в параметризации contr.sum&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Effect of tidal level on abundance of symbionts in the White Sea blue mussel</title>
+      <link>https://varmara.github.io/ru/publication/2018-effect-of-tidal-level-on-abundance-of-symbionts-in-the-white-sea-blue-mussel/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2018-effect-of-tidal-level-on-abundance-of-symbionts-in-the-white-sea-blue-mussel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Mild osmotic stress in intertidal gastropods Littorina saxatilis and Littorina obtusata (Mollusca: Caenogastropoda): a proteomic analysis</title>
+      <link>https://varmara.github.io/ru/publication/2017-mild-osmotic-stress-in-intertidal-gastropods-littorina-saxatilis/</link>
+      <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2017-mild-osmotic-stress-in-intertidal-gastropods-littorina-saxatilis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Measuring physiological similarity of closely related littorinid species: a proteomic insight</title>
+      <link>https://varmara.github.io/ru/publication/2016-measuring-physiological-similarity-of-closely-related-littorinid-species/</link>
+      <pubDate>Fri, 01 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2016-measuring-physiological-similarity-of-closely-related-littorinid-species/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>All&#39;s good in a famine? Hydrobia ulvae as a secondary prey for juveniles of Iceland moonsnails Amauropsis islandica at the White Sea sandflats</title>
+      <link>https://varmara.github.io/ru/publication/2015-hydrobia-ulvae-as-a-secondary-prey-for-juveniles-of-iceland-moonsnails/</link>
+      <pubDate>Thu, 01 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2015-hydrobia-ulvae-as-a-secondary-prey-for-juveniles-of-iceland-moonsnails/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Biotic Interactions, Structure, and Long-term Changes in Marine Benthic Assemblages. Phd Thesis</title>
+      <link>https://varmara.github.io/ru/publication/2013-biotic-interactions-structure-and-long-term-changes-in-marine-benthic-assemblages/</link>
+      <pubDate>Tue, 01 Jan 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2013-biotic-interactions-structure-and-long-term-changes-in-marine-benthic-assemblages/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Long-term temporal and spatial variation of macrobenthos in the intertidal soft-bottom flats of two small bights (Chupa Inlet, Kandalaksha Bay, White Sea)</title>
+      <link>https://varmara.github.io/ru/publication/2013-long-tern-temporal-and-spatial-variation-of-macrobenthos-in-the-intertidal-soft-bottom-flats/</link>
+      <pubDate>Tue, 01 Jan 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2013-long-tern-temporal-and-spatial-variation-of-macrobenthos-in-the-intertidal-soft-bottom-flats/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Synchronous annual recruitment variation in barnacles and ascidians in the White Sea shallow subtidal 1999–2010</title>
+      <link>https://varmara.github.io/ru/publication/2013-synchronous-annual-recruitment-variation-in-barnacles-and-ascidians/</link>
+      <pubDate>Tue, 01 Jan 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2013-synchronous-annual-recruitment-variation-in-barnacles-and-ascidians/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Intraspecific variation in stable isotope signatures indicates no small-scale feeding interference between a horse mussel and an ascidian</title>
+      <link>https://varmara.github.io/ru/publication/2012-intraspecific-variation-in-stable-isotope-signatures-indicates-no-small-scale-feeding-interference/</link>
+      <pubDate>Sun, 01 Jan 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2012-intraspecific-variation-in-stable-isotope-signatures-indicates-no-small-scale-feeding-interference/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Growth and survival of barnacles in presence of co-dominating solitary ascidians: growth ring analysis</title>
+      <link>https://varmara.github.io/ru/publication/2008-growth-and-survival-of-barnacles-in-presence-of-co-dominating-solitary-ascidians/</link>
+      <pubDate>Tue, 01 Jan 2008 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2008-growth-and-survival-of-barnacles-in-presence-of-co-dominating-solitary-ascidians/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Multiple foundation species shape benthic habitat islands</title>
+      <link>https://varmara.github.io/ru/publication/2008-multiple-foundation-species-shape-benthic-habitat-islands/</link>
+      <pubDate>Tue, 01 Jan 2008 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2008-multiple-foundation-species-shape-benthic-habitat-islands/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Effect of habitat architecture on mobile benthic macrofauna associated with patches of barnacles and ascidians</title>
+      <link>https://varmara.github.io/ru/publication/2007-effect-of-habitat-architecture-on-mibile-benthic-macrophauna/</link>
+      <pubDate>Mon, 01 Jan 2007 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/ru/publication/2007-effect-of-habitat-architecture-on-mibile-benthic-macrophauna/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

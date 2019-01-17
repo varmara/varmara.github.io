@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Homes on Marina Varfolomeeva</title>
+    <link>https://varmara.github.io/home/</link>
+    <description>Recent content in Homes on Marina Varfolomeeva</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc/4.0/&#34;&gt;&lt;img class=&#34;display-centered&#34; alt=&#34;Creative Commons License&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc/4.0/80x15.png&#34; /&gt;&lt;/a&gt;&amp;copy; Marina Varfolomeeva 2018-present</copyright>
+    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0300</lastBuildDate>
+    
+	<atom:link href="https://varmara.github.io/home/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://varmara.github.io/home/about/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/about/</guid>
+      <description>I am a Senior lecturer at Department of invertebrate zoology ( Faculty of Biology, St Petersburg State University ).
+My interests range widely in marine ecology: structure and dynamics of marine communities; role of interspecific interactions in communities; assessment of anthropogenic impact on coastal and marine habitats; microevolutionary processes in sympatric populations of closely related species; methods of statistical analysis.</description>
+    </item>
+    
+    <item>
+      <title>Selected Publications</title>
+      <link>https://varmara.github.io/home/publications_selected/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/publications_selected/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Recent Publications</title>
+      <link>https://varmara.github.io/home/publications/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/publications/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Recent Posts</title>
+      <link>https://varmara.github.io/home/posts/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/posts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Teaching</title>
+      <link>https://varmara.github.io/home/teaching/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/teaching/</guid>
+      <description>I teach several courses at Faculty of Biology at St Petersburg State University.
+Graduate-level courses:
+ Linear Models, Analysis of Variance and Regression Using R (co-instructor Dr.Vadim Khaitov) Multivariate Data Analysis and Visualisation Using R (co-instructor Dr.Vadim Khaitov) Proteomics: Applications, Methods, Data Analysis (co-instructor Dr.Arina Maltseva) Marine Biology (co-instructor)  Undergraduate-level courses:
+ Mathematical Methods in Zoology Methods of Zoological Research (co-instructor)  </description>
+    </item>
+    
+    <item>
+      <title>Tags</title>
+      <link>https://varmara.github.io/home/tags/</link>
+      <pubDate>Wed, 20 Sep 2017 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/tags/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Contact</title>
+      <link>https://varmara.github.io/home/contact/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/home/contact/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

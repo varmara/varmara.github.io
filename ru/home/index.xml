@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Homes on Марина Варфоломеева</title>
+    <link>https://varmara.github.io/ru/home/</link>
+    <description>Recent content in Homes on Марина Варфоломеева</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ru</language>
+    <copyright>&lt;a href=&#34;https://varmara.github.io/privacy.ru/&#34;&gt;Политика конфиденциальности&lt;/a&gt; &lt;br/&gt;&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc/4.0/&#34;&gt;&lt;img class=&#34;display-centered&#34; alt=&#34;Creative Commons License&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc/4.0/80x15.png&#34; /&gt;&lt;/a&gt; &amp;copy; Марина Варфоломеева 2018-наст.вр.</copyright>
+    <lastBuildDate>Wed, 20 Apr 2016 00:00:00 +0300</lastBuildDate>
+    
+	<atom:link href="https://varmara.github.io/ru/home/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://varmara.github.io/ru/home/about/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/about/</guid>
+      <description>Я старший преподаватель Кафедры зоологии беспозвоночных Биологического факультета Санкт-Петербургского Государственного Университета.
+Мне интересны разные аспекты, связанные с морской экологией: структура и динамика морских бентосных сообществ, роль межвидовых взаимоотношений в сообществах; оценка антропогенного воздействия на прибрежные и морские сообщества; микроэволюция совместно-обитающих близких видов; методы статистической обработки биологических данных.</description>
+    </item>
+    
+    <item>
+      <title>Избранные публикации</title>
+      <link>https://varmara.github.io/ru/home/publications_selected/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/publications_selected/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Последние публикации</title>
+      <link>https://varmara.github.io/ru/home/publications/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/publications/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Последние посты</title>
+      <link>https://varmara.github.io/ru/home/posts/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/posts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Преподавание</title>
+      <link>https://varmara.github.io/ru/home/teaching/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/teaching/</guid>
+      <description>Я читаю несколько курсов на Биологическом факультете Санкт-Петербургского Государственного Университета.
+Магистратура:
+ Линейные модели, дисперсионный и регрессионный анализ с использованием R (совместно с Вадимом Хайтовым) Анализ и визуализация многомерных данных с использованием R (совместно с Вадимом Хайтовым) Протеомика: возможности, методы, анализ данных (совместно с Ариной Мальцевой) Биология моря (с соавторами)  Бакалавриат:
+ Математические методы в зоологии Методы зоологических исследований (с соавторами)  </description>
+    </item>
+    
+    <item>
+      <title>Контакты</title>
+      <link>https://varmara.github.io/ru/home/contact/</link>
+      <pubDate>Wed, 20 Apr 2016 00:00:00 +0300</pubDate>
+      
+      <guid>https://varmara.github.io/ru/home/contact/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

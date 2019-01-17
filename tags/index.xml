@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Marina Varfolomeeva</title>
+    <link>https://varmara.github.io/tags/</link>
+    <description>Recent content in Tags on Marina Varfolomeeva</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc/4.0/&#34;&gt;&lt;img class=&#34;display-centered&#34; alt=&#34;Creative Commons License&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc/4.0/80x15.png&#34; /&gt;&lt;/a&gt;&amp;copy; Marina Varfolomeeva 2018-present</copyright>
+    
+	<atom:link href="https://varmara.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>publication</title>
+      <link>https://varmara.github.io/tags/publication/</link>
+      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/tags/publication/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>self-archiving</title>
+      <link>https://varmara.github.io/tags/self-archiving/</link>
+      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/tags/self-archiving/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
