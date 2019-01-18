@@ -22,7 +22,7 @@
 &lt;p&gt;Чтобы разместить сайт на GitHub user pages, нужно, чтобы его содержимое было в ветке &lt;code&gt;master&lt;/code&gt; репозитория &lt;code&gt;username.github.io&lt;/code&gt;. В идеале, хотелось бы, организовать репозиторий так, чтобы исходный код хранился где-то рядом. Я нагуглила два решения. Отправная точка для обоих — локально работающий сайт, созданный при помощи &lt;code&gt;blogdown&lt;/code&gt; в RStudio с темой Academic.&lt;/p&gt;
 &lt;div id=&#34;---&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;1. Решение на основе поддеревьев&lt;/h2&gt;
-&lt;p&gt;&lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34;&gt;Решение на основе поддеревьев (subtrees)&lt;/a&gt; мне показалось более простым, поскольку я не так хорошо понимаю git. Но потом пришлось все переделать - неаккуратненько!&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34;&gt;Решение на основе поддеревьев (subtrees)&lt;/a&gt; мне показалось более простым, поскольку я не так хорошо понимаю git. Но потом пришлось все переделать, чтобы было аккуратно.&lt;/p&gt;
 &lt;p&gt;Получится один репозиторий с двумя ветками:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;code&gt;username.github.io&lt;/code&gt;:
