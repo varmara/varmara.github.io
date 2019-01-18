@@ -13,6 +13,16 @@
     
     
     <item>
+      <title>Deploying a hugo-based website on GitHub user pages</title>
+      <link>https://varmara.github.io/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://varmara.github.io/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</guid>
+      <description>To host a site on GitHub user pages, its contents should be located on master branch of the reposotory username.github.io. A convenient solution would be to store the source code and the site together. I’ve googled two schemes. The common starting point is a locally functionining website, created with blogdown in RStudio (Hugo, Academic theme).
+1. Solution with subtrees The first solution with subtrees occurred simple enough for me, with my little knowledge of git.</description>
+    </item>
+    
+    <item>
       <title>Hardships of self-archiving</title>
       <link>https://varmara.github.io/post/2019-01-12-hardships-of-self-archiving/</link>
       <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>

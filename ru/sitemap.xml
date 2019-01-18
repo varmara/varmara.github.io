@@ -4,6 +4,9 @@
     
     <url>
     
+      <xhtml:link rel="alternate" href="https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/" hreflang="ru"/>
+      <xhtml:link rel="alternate" href="https://varmara.github.io/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/" hreflang="en"/>
+    
       <loc>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</loc>
       <lastmod>2019-01-15T00:00:00+00:00</lastmod>
     </url>
@@ -272,6 +275,9 @@
     
     <url>
     
+      <xhtml:link rel="alternate" href="https://varmara.github.io/ru/tags/git/" hreflang="ru"/>
+      <xhtml:link rel="alternate" href="https://varmara.github.io/tags/git/" hreflang="en"/>
+    
       <loc>https://varmara.github.io/ru/tags/git/</loc>
       <lastmod>2019-01-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -281,6 +287,9 @@
     
     <url>
     
+      <xhtml:link rel="alternate" href="https://varmara.github.io/ru/tags/github-pages/" hreflang="ru"/>
+      <xhtml:link rel="alternate" href="https://varmara.github.io/tags/github-pages/" hreflang="en"/>
+    
       <loc>https://varmara.github.io/ru/tags/github-pages/</loc>
       <lastmod>2019-01-15T00:00:00+00:00</lastmod>
       <priority>0</priority>
@@ -289,6 +298,9 @@
   
     
     <url>
+    
+      <xhtml:link rel="alternate" href="https://varmara.github.io/ru/tags/hugo/" hreflang="ru"/>
+      <xhtml:link rel="alternate" href="https://varmara.github.io/tags/hugo/" hreflang="en"/>
     
       <loc>https://varmara.github.io/ru/tags/hugo/</loc>
       <lastmod>2019-01-15T00:00:00+00:00</lastmod>
