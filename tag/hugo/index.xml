@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hugo | Marina Varfolomeeva</title>
+    <link>https://varmara.github.io/tag/hugo/</link>
+      <atom:link href="https://varmara.github.io/tag/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <description>hugo</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-uk</language><copyright>© Marina A. Varfolomeeva 2018-2021</copyright><lastBuildDate>Tue, 15 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://varmara.github.io/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>hugo</title>
+      <link>https://varmara.github.io/tag/hugo/</link>
+    </image>
+    
+    <item>
+      <title>Deploying a hugo-based website on GitHub user pages</title>
+      <link>https://varmara.github.io/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>https://varmara.github.io/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</guid>
+      <description>
+&lt;script src=&#34;https://varmara.github.io/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;To host a site on GitHub user pages, its contents should be located on &lt;code&gt;master&lt;/code&gt; branch of the reposotory &lt;code&gt;username.github.io&lt;/code&gt;. A convenient solution would be to store the source code and the site together. I’ve googled two schemes. The common starting point is a locally functionining website, created with &lt;code&gt;blogdown&lt;/code&gt; in RStudio (Hugo, Academic theme).&lt;/p&gt;
+&lt;div id=&#34;solution-with-subtrees&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;1. Solution with subtrees&lt;/h2&gt;
+&lt;p&gt;The first &lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34;&gt;solution with subtrees&lt;/a&gt; occurred simple enough for me, with my little knowledge of git. But later I’ve followed the second, more organized solution.&lt;/p&gt;
+&lt;p&gt;One repository with two branches:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;username.github.io&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;source&lt;/code&gt; — source code + &lt;code&gt;public&lt;/code&gt; folder contents;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; — web-version (only &lt;code&gt;public&lt;/code&gt; folder contents).&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Web version is pushed to remote repository with &lt;code&gt;git subtree push&lt;/code&gt; command.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Main disadvantage&lt;/strong&gt; of this solution — &lt;code&gt;source&lt;/code&gt; branch contains &lt;code&gt;publiс&lt;/code&gt; folder.&lt;/p&gt;
+&lt;p&gt;In a blog by Anatoliy (&lt;code&gt;@tolikcode&lt;/code&gt;) there is &lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34;&gt;an easy to follow setup description&lt;/a&gt;. A deployment process can be automated with a script, &lt;a href=&#34;https://www.hjdskes.nl/blog/update-deploying-hugo-on-personal-gh-pages/&#34;&gt;suggested by Jente Hidskes&lt;/a&gt;. Here I only outline the steps in case I will have to reproduce them later.&lt;/p&gt;
+&lt;div id=&#34;setup&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Setup&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Initialize an &lt;strong&gt;empty&lt;/strong&gt; git repository and commit something unimportant to &lt;code&gt;master&lt;/code&gt;, e.g. &lt;code&gt;README.md&lt;/code&gt;. Later I’ve learned that there is a way to make empty commit.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git init
+git add README.md
+git commit -m &amp;quot;initial commit on master&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Create an orphan &lt;code&gt;source&lt;/code&gt; branch for source code. &lt;strong&gt;Remove&lt;/strong&gt; &lt;code&gt;public&lt;/code&gt; folder and commit everything.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git checkout --orphan source
+rm -rf public ## removes public!!!
+git add .
+git commit -m &amp;quot;initial commit on source branch&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Push everything&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git remote add origin git@github.com:username/username.github.io.git
+git push origin master
+git push origin source&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Add &lt;code&gt;master&lt;/code&gt; to &lt;code&gt;public&lt;/code&gt; folder as subtree.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git subtree add --prefix=public git@github.com:username/username.github.io.git master --squash&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;workflow&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;workflow&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Make changes to website in RStudio. Get real-time live preview with this command:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;blogdown:::serve_site()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default, live preview renders everything to &lt;code&gt;public&lt;/code&gt; folder, including drafts.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Generate web-version.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Stop live preview, reloading R session or by &lt;code&gt;servr::daemon_stop(&#34;number, shown by blogdown:::serve_site()&#34;)&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;blogdown::hugo_build()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Commit changes of the source code to &lt;code&gt;source&lt;/code&gt; branch.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git add -A
+git commit -m &amp;quot;update&amp;quot;
+git push origin source&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Publish the updated website to &lt;code&gt;master&lt;/code&gt; using &lt;code&gt;subtree push&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git subtree push --prefix=public https://github.com/tolikcode/tolikcode.github.io.git master&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Afterwards the website can be accessed from GitHub user pages &lt;code&gt;http://username.github.io/&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;solution-based-on-submodules&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;2. Solution based on submodules&lt;/h2&gt;
+&lt;p&gt;The second &lt;a href=&#34;https://gohugo.io/hosting-and-deployment/hosting-on-github/&#34;&gt;submodule-based solution&lt;/a&gt; is described in Hugo documentation. At first I could not understand it, but after this &lt;a href=&#34;https://www.youtube.com/watch?v=UQvXst5I41I&#34;&gt;video about submodules&lt;/a&gt; I worked out how to set up this.&lt;/p&gt;
+&lt;p&gt;Two repositories:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;username-src&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; — source code.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;username.github.io&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; — web version (only &lt;code&gt;public&lt;/code&gt; folder contents). this repository is added as a submodule to &lt;code&gt;public&lt;/code&gt; folder of the &lt;code&gt;username-src&lt;/code&gt; repository.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Advantage&lt;/strong&gt; of this solution — clean history for source code and web version.&lt;/p&gt;
+&lt;p&gt;Deployment is automated with a script &lt;code&gt;deploy.sh&lt;/code&gt;.&lt;/p&gt;
+&lt;div id=&#34;setup-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Setup&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Generate a web version of the site in the project folder.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;hugo -t hugo-academic # If using other theme edit the command to `hugo -t &amp;lt;YOURTHEME&amp;gt;`&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Initiailze a git repository in &lt;code&gt;public&lt;/code&gt; sub-folder and push everything.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;cd public
+git init
+git remote add origin git@github.com:username/username.github.io.git
+git add .
+git commit -m &amp;quot;initial commit of website&amp;quot;
+git push -u origin master&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;3&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Go to the project folder and totally &lt;strong&gt;remove&lt;/strong&gt; &lt;code&gt;public&lt;/code&gt; folder.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;cd ..
+rm -rf public&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;4&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Initialize git repository in the project folder. Add &lt;code&gt;public&lt;/code&gt; to &lt;code&gt;.gitignore&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git init
+git remote add origin git@github.com:username/username-src.git
+echo &amp;quot;public&amp;quot; &amp;gt;&amp;gt; .gitignore
+git add .
+git commit -m &amp;quot;initial commit of source code&amp;quot;
+git push -u origin master&lt;/code&gt;&lt;/pre&gt;
+&lt;ol start=&#34;5&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Connect a repository with web version as a submodule to &lt;code&gt;public&lt;/code&gt;folder.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;git submodule add -b master git@github.com varmara/varmara.github.io.git
+git add .
+git commit -m &amp;#39;added public as a submodule&amp;#39;
+git push origin master&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;workflow-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Workflow&lt;/h3&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Work on website in RStudio. All changes can be previewed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;blogdown:::serve_site()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Сайт будет сгенерирован в &lt;code&gt;public&lt;/code&gt;, но не спешите его в таком виде отправлять на гитхаб: предпросмотр рендерит в т.ч. черновики. By default, live preview renders everything to &lt;code&gt;public&lt;/code&gt; folder, including drafts.&lt;/p&gt;
+&lt;p&gt;All source code changes can be commited to &lt;code&gt;username-src&lt;/code&gt;.&lt;/p&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;When time has come to update, generate web-version.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Stop live preview, reloading R session or by &lt;code&gt;servr::daemon_stop(&#34;number, shown by blogdown:::serve_site()&#34;)&lt;/code&gt;. Then execute a script &lt;code&gt;deploy.sh&lt;/code&gt;, which automatically removes outdated contents of &lt;code&gt;public&lt;/code&gt; folder, generates website and commits it to &lt;code&gt;username.github.io&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;bash&#34;&gt;&lt;code&gt;#!/bin/bash
+
+# a script for easy site deploymend from submodule
+# make it executable with chmod +x deploy.sh
+
+# Set the English locale for the `date` command.
+export LC_TIME=en_US.UTF-8
+
+# The commit message.
+MESSAGE=&amp;quot;Site rebuild $(date)&amp;quot;
+
+echo -e &amp;quot;\033[0;32mDeploying updates to GitHub...\033[0m&amp;quot;
+
+# Remove old files in public
+pushd public
+git rm -rf *
+popd
+
+# Build the project.
+hugo -t hugo-academic # if using a theme, replace with `hugo -t &amp;lt;YOURTHEME&amp;gt;`
+
+# Go To Public folder
+cd public
+
+# Add changes to git.
+git add .
+
+# Commit changes.
+msg=&amp;quot;rebuilding site `date`&amp;quot;
+if [ $# -eq 1 ]
+  then MESSAGE=&amp;quot;$1&amp;quot;
+fi
+git commit -m &amp;quot;$MESSAGE&amp;quot;
+
+# Push source and build repos.
+git push origin master
+
+# Come Back up to the Project Root
+cd ..&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That’s all. An updated website can be accessed from GitHub user pages at &lt;code&gt;http://username.github.io/&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

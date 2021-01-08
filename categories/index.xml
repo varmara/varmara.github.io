@@ -1,33 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on Marina Varfolomeeva</title>
+    <title>Categories | Marina Varfolomeeva</title>
     <link>https://varmara.github.io/categories/</link>
-    <description>Recent content in Categories on Marina Varfolomeeva</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc/4.0/&#34;&gt;&lt;img class=&#34;display-centered&#34; alt=&#34;Creative Commons License&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc/4.0/80x15.png&#34; /&gt;&lt;/a&gt;&amp;copy; Marina Varfolomeeva 2018-present</copyright>
-    
-	<atom:link href="https://varmara.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>academic stuff</title>
-      <link>https://varmara.github.io/categories/academic-stuff/</link>
-      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://varmara.github.io/categories/academic-stuff/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>website</title>
-      <link>https://varmara.github.io/categories/website/</link>
-      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://varmara.github.io/categories/website/</guid>
-      <description></description>
-    </item>
+      <atom:link href="https://varmara.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <description>Categories</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-uk</language><copyright>© Marina A. Varfolomeeva 2018-2021</copyright><lastBuildDate>Tue, 15 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://varmara.github.io/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_2.png</url>
+      <title>Categories</title>
+      <link>https://varmara.github.io/categories/</link>
+    </image>
     
   </channel>
 </rss>
