@@ -3,8 +3,23 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://varmara.github.io/ru/author/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/"
+                />
+  </url>
+  
+  <url>
     <loc>https://varmara.github.io/ru/publication-type/2/</loc>
-    <lastmod>2020-11-24T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -19,7 +34,7 @@
   
   <url>
     <loc>https://varmara.github.io/ru/authors/</loc>
-    <lastmod>2020-11-24T00:00:00+00:00</lastmod>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -29,6 +44,396 @@
                 rel="alternate"
                 hreflang="ru"
                 href="https://varmara.github.io/ru/authors/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2022-gut-microbiomes-and-the-diet-of-the-littorina-snail-ecotypes/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2022-gut-microbiomes-and-the-diet-of-the-littorina-snail-ecotypes/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2022-gut-microbiomes-and-the-diet-of-the-littorina-snail-ecotypes/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/gafarova-e/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/gafarova-e/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/gafarova-e/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/granovitch-a/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/granovitch-a/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/granovitch-a/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/maltseva-a/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/maltseva-a/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/maltseva-a/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/mikhailova-n/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/mikhailova-n/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/mikhailova-n/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/panova-m/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/panova-m/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/panova-m/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication_types/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication_types/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication_types/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/</loc>
+    <lastmod>2022-07-13T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/ayanka-r/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/ayanka-r/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/ayanka-r/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2022-effects-of-natural-and-anthropogenic-stressors-on-reproduction-of-littorina-saxatilis/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2022-effects-of-natural-and-anthropogenic-stressors-on-reproduction-of-littorina-saxatilis/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2022-effects-of-natural-and-anthropogenic-stressors-on-reproduction-of-littorina-saxatilis/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/golikova-e/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/golikova-e/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/golikova-e/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/kursheva-a/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/kursheva-a/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/kursheva-a/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/lobov-a/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/lobov-a/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/lobov-a/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/morgunova-i/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/morgunova-i/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/morgunova-i/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/pavlova-p/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/pavlova-p/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/pavlova-p/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/renaud-p/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/renaud-p/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/renaud-p/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/repkin-e/</loc>
+    <lastmod>2022-07-05T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/repkin-e/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/repkin-e/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2021-divergence-together-with-microbes_microbiomes-in-littorina-species/</loc>
+    <lastmod>2021-12-21T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2021-divergence-together-with-microbes_microbiomes-in-littorina-species/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2021-divergence-together-with-microbes_microbiomes-in-littorina-species/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication-type/4/</loc>
+    <lastmod>2021-07-22T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication-type/4/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication-type/4/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2021-linking-ecology-morphology-and-metabolism_niche-differentiation-in-sympatric-species-of-littorina/</loc>
+    <lastmod>2021-07-22T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2021-linking-ecology-morphology-and-metabolism_niche-differentiation-in-sympatric-species-of-littorina/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2021-linking-ecology-morphology-and-metabolism_niche-differentiation-in-sympatric-species-of-littorina/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2021-microhabitat-distribution-shell-shape-and-metabolomes-in-sympatric-populations-of-closely-related-species-of-the-genus-littorina/</loc>
+    <lastmod>2021-07-22T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2021-microhabitat-distribution-shell-shape-and-metabolomes-in-sympatric-populations-of-closely-related-species-of-the-genus-littorina/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2021-microhabitat-distribution-shell-shape-and-metabolomes-in-sympatric-populations-of-closely-related-species-of-the-genus-littorina/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/shavarda-a/</loc>
+    <lastmod>2021-07-22T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/shavarda-a/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/shavarda-a/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/babkina-i/</loc>
+    <lastmod>2021-03-11T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/babkina-i/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/babkina-i/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/publication/2021-premating-barriers-in-young-sympatric-snail-species/</loc>
+    <lastmod>2021-03-11T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/publication/2021-premating-barriers-in-young-sympatric-snail-species/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/publication/2021-premating-barriers-in-young-sympatric-snail-species/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://varmara.github.io/ru/author/tikanova-p/</loc>
+    <lastmod>2021-03-11T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://varmara.github.io/author/tikanova-p/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="ru"
+                href="https://varmara.github.io/ru/author/tikanova-p/"
                 />
   </url>
   
@@ -89,51 +494,6 @@
                 rel="alternate"
                 hreflang="ru"
                 href="https://varmara.github.io/ru/publication/2020-moonsnail-hatching-success-development-timing-and-early-feeding-behaviour-at-the-high-latitude-white-sea/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://varmara.github.io/ru/publication_types/</loc>
-    <lastmod>2020-11-24T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://varmara.github.io/publication_types/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ru"
-                href="https://varmara.github.io/ru/publication_types/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://varmara.github.io/ru/</loc>
-    <lastmod>2020-11-24T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://varmara.github.io/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ru"
-                href="https://varmara.github.io/ru/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://varmara.github.io/ru/publication/</loc>
-    <lastmod>2020-11-24T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://varmara.github.io/publication/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ru"
-                href="https://varmara.github.io/ru/publication/"
                 />
   </url>
   
@@ -1364,20 +1724,6 @@
                 rel="alternate"
                 hreflang="ru"
                 href="https://varmara.github.io/ru/publication/2007-effect-of-habitat-architecture-on-mibile-benthic-macrophauna/"
-                />
-  </url>
-  
-  <url>
-    <loc>https://varmara.github.io/ru/author/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://varmara.github.io/author/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="ru"
-                href="https://varmara.github.io/ru/author/"
                 />
   </url>
   
