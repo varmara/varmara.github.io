@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>academic stuff | Марина Варфоломеева</title>
+    <link>https://varmara.github.io/ru/category/academic-stuff/</link>
+      <atom:link href="https://varmara.github.io/ru/category/academic-stuff/index.xml" rel="self" type="application/rss+xml" />
+    <description>academic stuff</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>ru</language><lastBuildDate>Sat, 12 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://varmara.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
+      <title>academic stuff</title>
+      <link>https://varmara.github.io/ru/category/academic-stuff/</link>
+    </image>
+    
+    <item>
+      <title>Сложности создания собственного архива статей</title>
+      <link>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</link>
+      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</guid>
+      <description>&lt;p&gt;Оказалось, что довольно сложно дополнить pdf-версиями статей традиционный для личного сайта список публикаций. Не всякую версию можно выложить на сайт &amp;mdash; нужно соблюдать правила издательств. Большинство издательств позволяют выкладывать только версии без журнального оформления, а я как не очень (совсем не) аккуратный человек, не всегда сохраняла последние варианты рукописи со внесенными исправлениями рецензентов. Поэтому мне придется изрядно покопаться в недрах компьютера прежде чем получится найти подходящие версии.&lt;/p&gt;
+&lt;p&gt;Чтобы не запутаться в правилах, я собрала информацию об издательствах и журналах, в которых приходилось публиковаться. Вся информация ниже актуальна на момент публикации поста, ее лучше перепроверить.&lt;/p&gt;
+&lt;h2 id=&#34;термины&#34;&gt;Термины&lt;/h2&gt;
+&lt;p&gt;В употреблении терминов путаница. Каждый называет препринтом то, что хочет (иногда версию с правками рецензентов, иногда без них), но я думаю, что это будет точнее:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Пре-принт (pre-print) &amp;mdash; исходная версия рукописи при отправке в редакцию журнала. До рецензирования. Без форматирования.&lt;/li&gt;
+&lt;li&gt;Пост-принт (post-print) &amp;mdash; версия рукописи после рецензирования, готовая для пубикации. Скорее всего без финального форматирования и издательского редактирования.&lt;/li&gt;
+&lt;li&gt;Версия издателя (publishers version) &amp;mdash; версия, которая опубликована на сайте журнала. Отформатирована как в журнале. Содержит все выходные данные.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;главный-ресурс&#34;&gt;Главный ресурс&lt;/h2&gt;
+&lt;p&gt;Проверить политику самоархивирования для журнала можно на сайте &lt;a href=&#34;http://www.sherpa.ac.uk/romeo/index.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Sherpa/RoMEO&lt;/a&gt;. При этом все равно стоит уточнить подробности на сайте издательства или самого журнала.&lt;/p&gt;
+&lt;h2 id=&#34;некоторые-журналы&#34;&gt;Некоторые журналы&lt;/h2&gt;
+&lt;h3 id=&#34;издательство-inter-researchhttpswwwint-rescomhome&#34;&gt;Издательство &lt;a href=&#34;https://www.int-res.com/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Inter-Research&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;pdf статьи в открытом виде лежит на сайте журнала и можно просто разместить на него ссылку. Но в виде файла издательскую версию можно выкладывать только через 5 лет после публикации.&lt;/p&gt;
+&lt;h4 id=&#34;diseases-of-aquatic-organismshttpswwwint-rescomjournalsdaodao-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/dao/dao-home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Diseases of Aquatic Organisms&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0177-5103/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DAO в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+&lt;h4 id=&#34;marine-ecology-progress-serieshttpswwwint-rescomjournalsmepsmeps-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/meps/meps-home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Marine Ecology Progress Series&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0171-8630/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MEPS в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-спбгу-st-petersburg-university-pressst-petersburg-university-press&#34;&gt;Издательство СПбГУ [St. Petersburg University Press](St. Petersburg University Press)&lt;/h3&gt;
+&lt;p&gt;Общей политики для этого издательства я не нашла.&lt;/p&gt;
+&lt;h4 id=&#34;biological-communicationshttpsbiocommspburu&#34;&gt;&lt;a href=&#34;https://biocomm.spbu.ru/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Biological Communications&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Журнал открытого доступа. pdf лежит на сайте журнала, можно просто разместить на него ссылку.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-springer-verlaghttpwwwspringerlinkcommudmp&#34;&gt;Издательство &lt;a href=&#34;http://www.springerlink.com/?MUD=MP&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Springer Verlag&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте издательства четкий и ясный &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights/self-archiving-policy/2124&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;раздел о политике само-архивирования&lt;/a&gt;. И есть &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;раздел о правах авторов&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;То, что Sherpa/RoMEO называют post-print, они называют Author&amp;rsquo;s Accepted Manuscript (AAM): &amp;ldquo;&amp;hellip;the version accepted for publication in a journal following peer review but &lt;strong&gt;prior to copyediting and typesetting&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;При размещении пре- и пост-принтов нужна специальная фраза со ссылкой на издателя:&lt;/p&gt;
+&lt;p&gt;“This is a [pre-print / post-peer-review, pre-copyedit version] of an article published in [insert journal title]. The final authenticated version is available online at: &lt;code&gt;https://doi.org/[insert DOI]&lt;/code&gt;”&lt;/p&gt;
+&lt;h4 id=&#34;hydrobiologiahttpslinkspringercomjournal10750&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/10750&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hydrobiologia&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0018-8158/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hydrobiologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+&lt;h4 id=&#34;oecologiahttpslinkspringercomjournal442&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/442&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Oecologia&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0029-8549/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Oecologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-cambridge-university-presshttpwwwcambridgeorguk&#34;&gt;Издательство &lt;a href=&#34;http://www.cambridge.org/uk/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Cambridge University Press&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте сложно найти политику само-архивирования. Мне не удалось.&lt;/p&gt;
+&lt;h4 id=&#34;journal-of-the-marine-biological-association-of-the-united-kingdomhttpjournalscambridgeorgactiondisplayjournaljidmbi&#34;&gt;&lt;a href=&#34;http://journals.cambridge.org/action/displayJournal?jid=MBI&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Journal of the Marine Biological Association of the United Kingdom&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0025-3154/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;JMBA в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 6 месяцев. Версию издателя использовать нельзя. Abstract &amp;mdash; можно. Нужна ссылка на издателя.&lt;/p&gt;
+&lt;h3 id=&#34;elsevierhttpwwwelseviercom&#34;&gt;&lt;a href=&#34;http://www.elsevier.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Elsevier&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;информацию о само-архивировании&lt;/a&gt; найти удается не сразу.&lt;/p&gt;
+&lt;h4 id=&#34;journal-of-experimental-marine-biology-and-ecologyhttpswwwjournalselseviercomjournal-of-experimental-marine-biology-and-ecology&#34;&gt;&lt;a href=&#34;https://www.journals.elsevier.com/journal-of-experimental-marine-biology-and-ecology&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Journal of Experimental Marine Biology and Ecology&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0022-0981/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;JEMBE в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 24 месяца. Версию издателя использовать нельзя. Нужна ссылка на издателя с DOI. Пост-принт должен быть по лицензии CC BY-NC-ND. Пост-принт &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;не должен выглядеть похоже на опубликованную статью&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
