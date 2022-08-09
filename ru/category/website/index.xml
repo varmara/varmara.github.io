@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>website | Марина Варфоломеева</title>
+    <link>https://varmara.github.io/ru/category/website/</link>
+      <atom:link href="https://varmara.github.io/ru/category/website/index.xml" rel="self" type="application/rss+xml" />
+    <description>website</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>ru</language><lastBuildDate>Tue, 15 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://varmara.github.io/media/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_512x512_fill_lanczos_center_3.png</url>
+      <title>website</title>
+      <link>https://varmara.github.io/ru/category/website/</link>
+    </image>
+    
+    <item>
+      <title>Как разместить сайт на Hugo на GitHub user pages</title>
+      <link>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</link>
+      <pubDate>Tue, 15 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>https://varmara.github.io/ru/post/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/</guid>
+      <description>&lt;p&gt;Чтобы разместить сайт на GitHub user pages, нужно, чтобы его содержимое было в ветке &lt;code&gt;master&lt;/code&gt; репозитория &lt;code&gt;username.github.io&lt;/code&gt;. В идеале, хотелось бы, организовать репозиторий так, чтобы исходный код хранился где-то рядом. Я нагуглила два решения. Отправная точка для обоих &amp;mdash; локально работающий сайт, созданный при помощи &lt;code&gt;blogdown&lt;/code&gt; в RStudio с темой Academic.&lt;/p&gt;
+&lt;h2 id=&#34;1-решение-на-основе-поддеревьев&#34;&gt;1. Решение на основе поддеревьев&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Решение на основе поддеревьев (subtrees)&lt;/a&gt; мне показалось более простым, поскольку я не так хорошо понимаю git. Но потом пришлось все переделать, чтобы было аккуратно.&lt;/p&gt;
+&lt;p&gt;Получится один репозиторий с двумя ветками:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;username.github.io&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;source&lt;/code&gt; &amp;mdash; исходный код + содержимое папки &lt;code&gt;public&lt;/code&gt;;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; &amp;mdash; веб-версия (только содержимое папки &lt;code&gt;public&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Веб-версия пушится в удаленный репозиторий командой &lt;code&gt;git subtree push&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Основной недостаток&lt;/strong&gt; этого решения &amp;mdash; ветка &lt;code&gt;source&lt;/code&gt; содержит содержимое &lt;code&gt;publiс&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;В блоге Анатолия (&lt;code&gt;@tolikcode&lt;/code&gt;) очень &lt;a href=&#34;https://tolikcode.github.io/post/hugoOnGitHub/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;просто описано, как нужно все настраивать&lt;/a&gt;. А чтобы немного автоматизировать процесс выгрузки можно использовать скрипт, &lt;a href=&#34;https://www.hjdskes.nl/blog/update-deploying-hugo-on-personal-gh-pages/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;как предлагает Jente Hidskes&lt;/a&gt;. Здесь я кратко законспектирую, что я делала, на случай, если придется повторить.&lt;/p&gt;
+&lt;h3 id=&#34;настройка&#34;&gt;Настройка&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;В директории сайта инициализируем &lt;strong&gt;пустой&lt;/strong&gt; репозиторий git и в его ветку master коммитим что-то неважное. Например, файл &lt;code&gt;README.md&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git init
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add README.md
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;initial commit on master&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Создаем ветку &lt;code&gt;source&lt;/code&gt; для исходного кода (орфан, т.е. без &amp;ldquo;родителя&amp;rdquo;).
+В эту ветку закоммичено все, кроме предварительно удаленной директории &lt;code&gt;public&lt;/code&gt;, куда рендерится сайт по-умолчанию.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git checkout --orphan &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rm -rf public &lt;span class=&#34;c1&#34;&gt;## Удаляет директорию public!!!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;initial commit on source branch&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Пушим все&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git remote add origin git@github.com:username/username.github.io.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push origin master
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push origin &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Подключаем ветку &lt;code&gt;master&lt;/code&gt; в директорию &lt;code&gt;public&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git subtree add --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;public git@github.com:username/username.github.io.git master --squash
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;работа&#34;&gt;Работа&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Работаем над сайтом в RStudio. Внесенные изменения можно просмотреть в реальном времени.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blogdown&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;serve_site&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Сайт будет сгенерирован в &lt;code&gt;public&lt;/code&gt;, но не спешите его в таком виде отправлять на гитхаб: предпросмотр рендерит в т.ч. черновики.
+В процессе можно все коммитить как обычно в ветку &lt;code&gt;source&lt;/code&gt;, если это долгая работа.&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Генерируем веб-версию.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Предварительно нужно остановить живое превью, перезагрузив R сессию или &lt;code&gt;servr::daemon_stop(&amp;quot;номер, выданный blogdown:::serve_site()&amp;quot;)&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blogdown&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;hugo_build&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;В консоли коммитим окончательные изменения.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add -A
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;update&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push origin &lt;span class=&#34;nb&#34;&gt;source&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Публикуем измененный сайт в &lt;code&gt;master&lt;/code&gt; при помощи &lt;code&gt;subtree push&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git subtree push --prefix&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;public https://github.com/tolikcode/tolikcode.github.io.git master
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;После этого сайт будет доступен на GitHub user pages &lt;code&gt;http://username.github.io/&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;2-решение-на-основе-подмодулей-submodules&#34;&gt;2. Решение на основе подмодулей (submodules)&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&#34;https://gohugo.io/hosting-and-deployment/hosting-on-github/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Решение на основе подмодулей (submodules)&lt;/a&gt; описано в документации Hugo. Сначала я не поняла как его развернуть. Но после этого &lt;a href=&#34;https://www.youtube.com/watch?v=UQvXst5I41I&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;видео про подмодули&lt;/a&gt; все поняла и сделала именно так.&lt;/p&gt;
+&lt;p&gt;Получится два репозитория:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;username-src&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; &amp;mdash; исходный код.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;username.github.io&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;master&lt;/code&gt; &amp;mdash; веб-версия (только содержимое папки &lt;code&gt;public&lt;/code&gt;). Этот репозиторий подключен в виде submodule в папку &lt;code&gt;public&lt;/code&gt; репозитория &lt;code&gt;username-src&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Достоинство&lt;/strong&gt; этого решения &amp;mdash; отдельная чистая история для исходного кода и сайта.&lt;/p&gt;
+&lt;p&gt;Для автоматизации веб-версия пушится в удаленный репозиторий скриптом &lt;code&gt;deploy.sh&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;настройка-1&#34;&gt;Настройка&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;В директории проекта генерируем сайт.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hugo -t hugo-academic &lt;span class=&#34;c1&#34;&gt;# Если используете тему, замените на `hugo -t &amp;lt;YOURTHEME&amp;gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;В под-директории &lt;code&gt;public&lt;/code&gt; создаем репозиторий для веб-версии. Пушим все изменения.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; public
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git init
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git remote add origin git@github.com:username/username.github.io.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;initial commit of website&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push -u origin master
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Возвращаемся в директорию проекта и удаляем под-директорию &lt;code&gt;public&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; ..
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;rm -rf public
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;В директории проекта инициализируем репозиторий git. Добавляем &lt;code&gt;public&lt;/code&gt; в &lt;code&gt;.gitignore&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git init
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git remote add origin git@github.com:username/username-src.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;public&amp;#34;&lt;/span&gt; &amp;gt;&amp;gt; .gitignore
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;initial commit of source code&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push -u origin master
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;Подключаем репозиторий с веб-версией в директорию &lt;code&gt;public&lt;/code&gt; в качестве подмодуля.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git submodule add -b master git@github.com varmara/varmara.github.io.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s1&#34;&gt;&amp;#39;added public as a submodule&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push origin master
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;работа-1&#34;&gt;Работа&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Работаем над сайтом в RStudio. Внесенные изменения можно просмотреть в реальном времени.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-r&#34; data-lang=&#34;r&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;blogdown&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:::&lt;/span&gt;&lt;span class=&#34;nf&#34;&gt;serve_site&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Сайт будет сгенерирован в &lt;code&gt;public&lt;/code&gt;, но не спешите его в таком виде отправлять на гитхаб: предпросмотр рендерит в т.ч. черновики.&lt;/p&gt;
+&lt;p&gt;Изменения спокойно коммитим в репозиторий с исходным кодом &lt;code&gt;username-src&lt;/code&gt;.&lt;/p&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Когда приходит время, генерируем веб-версию.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Останавливаем живое превью, перезагрузив R сессию или &lt;code&gt;servr::daemon_stop(&amp;quot;номер, выданный blogdown:::serve_site()&amp;quot;)&lt;/code&gt;. Затем, запускаем скрипт &lt;code&gt;deploy.sh&lt;/code&gt;, который сам удаляет устаревшее содержимое public, генерирует сайт и коммитит его в &lt;code&gt;username.github.io&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#!/bin/bash
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# a script for easy site deploymend from submodule&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# make it executable with chmod +x deploy.sh&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Set the English locale for the `date` command.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;LC_TIME&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;en_US.UTF-8
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# The commit message.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;MESSAGE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Site rebuild &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;$(&lt;/span&gt;date&lt;span class=&#34;k&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; -e &lt;span class=&#34;s2&#34;&gt;&amp;#34;\033[0;32mDeploying updates to GitHub...\033[0m&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Remove old files in public&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;pushd&lt;/span&gt; public
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git rm -rf *
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;popd&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Build the project.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;hugo -t hugo-academic &lt;span class=&#34;c1&#34;&gt;# if using a theme, replace with `hugo -t &amp;lt;YOURTHEME&amp;gt;`&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Go To Public folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; public
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Add changes to git.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git add .
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Commit changes.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nv&#34;&gt;msg&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;rebuilding site `date`&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$#&lt;/span&gt; -eq &lt;span class=&#34;m&#34;&gt;1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;k&#34;&gt;then&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;MESSAGE&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$1&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git commit -m &lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$MESSAGE&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Push source and build repos.&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;git push origin master
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# Come Back up to the Project Root&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; ..
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Теперь обновленный сайт доступен на GitHub user pages &lt;code&gt;http://username.github.io/&lt;/code&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Сложности создания собственного архива статей</title>
+      <link>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</link>
+      <pubDate>Sat, 12 Jan 2019 00:00:00 +0000</pubDate>
+      <guid>https://varmara.github.io/ru/post/2019-01-12-hardships-of-self-archiving/</guid>
+      <description>&lt;p&gt;Оказалось, что довольно сложно дополнить pdf-версиями статей традиционный для личного сайта список публикаций. Не всякую версию можно выложить на сайт &amp;mdash; нужно соблюдать правила издательств. Большинство издательств позволяют выкладывать только версии без журнального оформления, а я как не очень (совсем не) аккуратный человек, не всегда сохраняла последние варианты рукописи со внесенными исправлениями рецензентов. Поэтому мне придется изрядно покопаться в недрах компьютера прежде чем получится найти подходящие версии.&lt;/p&gt;
+&lt;p&gt;Чтобы не запутаться в правилах, я собрала информацию об издательствах и журналах, в которых приходилось публиковаться. Вся информация ниже актуальна на момент публикации поста, ее лучше перепроверить.&lt;/p&gt;
+&lt;h2 id=&#34;термины&#34;&gt;Термины&lt;/h2&gt;
+&lt;p&gt;В употреблении терминов путаница. Каждый называет препринтом то, что хочет (иногда версию с правками рецензентов, иногда без них), но я думаю, что это будет точнее:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Пре-принт (pre-print) &amp;mdash; исходная версия рукописи при отправке в редакцию журнала. До рецензирования. Без форматирования.&lt;/li&gt;
+&lt;li&gt;Пост-принт (post-print) &amp;mdash; версия рукописи после рецензирования, готовая для пубикации. Скорее всего без финального форматирования и издательского редактирования.&lt;/li&gt;
+&lt;li&gt;Версия издателя (publishers version) &amp;mdash; версия, которая опубликована на сайте журнала. Отформатирована как в журнале. Содержит все выходные данные.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;главный-ресурс&#34;&gt;Главный ресурс&lt;/h2&gt;
+&lt;p&gt;Проверить политику самоархивирования для журнала можно на сайте &lt;a href=&#34;http://www.sherpa.ac.uk/romeo/index.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Sherpa/RoMEO&lt;/a&gt;. При этом все равно стоит уточнить подробности на сайте издательства или самого журнала.&lt;/p&gt;
+&lt;h2 id=&#34;некоторые-журналы&#34;&gt;Некоторые журналы&lt;/h2&gt;
+&lt;h3 id=&#34;издательство-inter-researchhttpswwwint-rescomhome&#34;&gt;Издательство &lt;a href=&#34;https://www.int-res.com/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Inter-Research&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;pdf статьи в открытом виде лежит на сайте журнала и можно просто разместить на него ссылку. Но в виде файла издательскую версию можно выкладывать только через 5 лет после публикации.&lt;/p&gt;
+&lt;h4 id=&#34;diseases-of-aquatic-organismshttpswwwint-rescomjournalsdaodao-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/dao/dao-home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Diseases of Aquatic Organisms&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0177-5103/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;DAO в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+&lt;h4 id=&#34;marine-ecology-progress-serieshttpswwwint-rescomjournalsmepsmeps-home&#34;&gt;&lt;a href=&#34;https://www.int-res.com/journals/meps/meps-home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Marine Ecology Progress Series&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0171-8630/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MEPS в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев, версия издателя - через 5 лет. Нужна ссылка на издателя и копирайт.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-спбгу-st-petersburg-university-pressst-petersburg-university-press&#34;&gt;Издательство СПбГУ [St. Petersburg University Press](St. Petersburg University Press)&lt;/h3&gt;
+&lt;p&gt;Общей политики для этого издательства я не нашла.&lt;/p&gt;
+&lt;h4 id=&#34;biological-communicationshttpsbiocommspburu&#34;&gt;&lt;a href=&#34;https://biocomm.spbu.ru/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Biological Communications&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Журнал открытого доступа. pdf лежит на сайте журнала, можно просто разместить на него ссылку.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-springer-verlaghttpwwwspringerlinkcommudmp&#34;&gt;Издательство &lt;a href=&#34;http://www.springerlink.com/?MUD=MP&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Springer Verlag&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте издательства четкий и ясный &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights/self-archiving-policy/2124&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;раздел о политике само-архивирования&lt;/a&gt;. И есть &lt;a href=&#34;https://www.springer.com/gp/open-access/authors-rights&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;раздел о правах авторов&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;То, что Sherpa/RoMEO называют post-print, они называют Author&amp;rsquo;s Accepted Manuscript (AAM): &amp;ldquo;&amp;hellip;the version accepted for publication in a journal following peer review but &lt;strong&gt;prior to copyediting and typesetting&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;При размещении пре- и пост-принтов нужна специальная фраза со ссылкой на издателя:&lt;/p&gt;
+&lt;p&gt;“This is a [pre-print / post-peer-review, pre-copyedit version] of an article published in [insert journal title]. The final authenticated version is available online at: &lt;code&gt;https://doi.org/[insert DOI]&lt;/code&gt;”&lt;/p&gt;
+&lt;h4 id=&#34;hydrobiologiahttpslinkspringercomjournal10750&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/10750&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hydrobiologia&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0018-8158/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Hydrobiologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+&lt;h4 id=&#34;oecologiahttpslinkspringercomjournal442&#34;&gt;&lt;a href=&#34;https://link.springer.com/journal/442&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Oecologia&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0029-8549/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Oecologia в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 12 месяцев. Версию издателя использовать нельзя. Нужна ссылка на издателя и специальная фраза к ней.&lt;/p&gt;
+&lt;h3 id=&#34;издательство-cambridge-university-presshttpwwwcambridgeorguk&#34;&gt;Издательство &lt;a href=&#34;http://www.cambridge.org/uk/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Cambridge University Press&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте сложно найти политику само-архивирования. Мне не удалось.&lt;/p&gt;
+&lt;h4 id=&#34;journal-of-the-marine-biological-association-of-the-united-kingdomhttpjournalscambridgeorgactiondisplayjournaljidmbi&#34;&gt;&lt;a href=&#34;http://journals.cambridge.org/action/displayJournal?jid=MBI&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Journal of the Marine Biological Association of the United Kingdom&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0025-3154/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;JMBA в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 6 месяцев. Версию издателя использовать нельзя. Abstract &amp;mdash; можно. Нужна ссылка на издателя.&lt;/p&gt;
+&lt;h3 id=&#34;elsevierhttpwwwelseviercom&#34;&gt;&lt;a href=&#34;http://www.elsevier.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Elsevier&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;На сайте &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;информацию о само-архивировании&lt;/a&gt; найти удается не сразу.&lt;/p&gt;
+&lt;h4 id=&#34;journal-of-experimental-marine-biology-and-ecologyhttpswwwjournalselseviercomjournal-of-experimental-marine-biology-and-ecology&#34;&gt;&lt;a href=&#34;https://www.journals.elsevier.com/journal-of-experimental-marine-biology-and-ecology&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Journal of Experimental Marine Biology and Ecology&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&#34;http://www.sherpa.ac.uk/romeo/issn/0022-0981/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;JEMBE в Sherpa/RoMEO&lt;/a&gt;: post-print на личном сайте сразу, в репозитории через 24 месяца. Версию издателя использовать нельзя. Нужна ссылка на издателя с DOI. Пост-принт должен быть по лицензии CC BY-NC-ND. Пост-принт &lt;a href=&#34;https://www.elsevier.com/about/policies/sharing&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;не должен выглядеть похоже на опубликованную статью&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
