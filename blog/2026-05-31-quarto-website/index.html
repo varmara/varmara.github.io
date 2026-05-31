@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marina Varfolomeeva">
-<meta name="dcterms.date" content="2019-01-15">
-<meta name="description" content="A comparison of subtree vs.&nbsp;submodule methods for deploying Hugo websites to GitHub User Pages.">
+<meta name="dcterms.date" content="2026-05-31">
+<meta name="description" content="How I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.">
 
-<title>Deploying a hugo-based website on GitHub user pages – Marina Varfolomeeva</title>
+<title>Building a Personal Website with Quarto – Marina Varfolomeeva</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<meta name="quarto:status" content="draft">
 
 
 <link rel="stylesheet" href="../../assets/styles.css">
@@ -118,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -176,16 +177,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#solution-with-subtrees" id="toc-solution-with-subtrees" class="nav-link active" data-scroll-target="#solution-with-subtrees">1. Solution with subtrees</a>
-  <ul class="collapse">
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
-  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">workflow</a></li>
-  </ul></li>
-  <li><a href="#solution-based-on-submodules" id="toc-solution-based-on-submodules" class="nav-link" data-scroll-target="#solution-based-on-submodules">2. Solution based on submodules</a>
-  <ul class="collapse">
-  <li><a href="#setup-1" id="toc-setup-1" class="nav-link" data-scroll-target="#setup-1">Setup</a></li>
-  <li><a href="#workflow-1" id="toc-workflow-1" class="nav-link" data-scroll-target="#workflow-1">Workflow</a></li>
-  </ul></li>
+  <li><a href="#initial-setup" id="toc-initial-setup" class="nav-link active" data-scroll-target="#initial-setup">Initial setup</a></li>
+  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure">Project structure</a></li>
+  <li><a href="#blog-with-r-and-python" id="toc-blog-with-r-and-python" class="nav-link" data-scroll-target="#blog-with-r-and-python">Blog with R and Python</a></li>
+  <li><a href="#deployment" id="toc-deployment" class="nav-link" data-scroll-target="#deployment">Deployment</a></li>
   </ul>
 </nav>
     </div>
@@ -194,15 +189,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Deploying a hugo-based website on GitHub user pages</h1>
+<h1 class="title">Building a Personal Website with Quarto</h1>
   <div class="quarto-categories">
+    <div class="quarto-category">Quarto</div>
     <div class="quarto-category">website</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    A comparison of subtree vs.&nbsp;submodule methods for deploying Hugo websites to GitHub User Pages.
+    How I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.
   </div>
 </div>
 
@@ -219,16 +215,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 15, 2019</p>
+      <p class="date">May 31, 2026</p>
     </div>
   </div>
   
-    <div>
-    <div class="quarto-title-meta-heading">Modified</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 15, 2019</p>
-    </div>
-  </div>
     
   </div>
   
@@ -237,208 +227,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>To host a site on GitHub user pages, its contents should be located on <code>master</code> branch of the reposotory <code>username.github.io</code>. A convenient solution would be to store the source code and the site together. I’ve googled two schemes. The common starting point is a locally functionining website, created with <code>blogdown</code> in RStudio (Hugo, Academic theme).</p>
-<section id="solution-with-subtrees" class="level2">
-<h2 class="anchored" data-anchor-id="solution-with-subtrees">1. Solution with subtrees</h2>
-<p>The first <a href="https://tolikcode.github.io/post/hugoOnGitHub/">solution with subtrees</a> occurred simple enough for me, with my little knowledge of git. But later I’ve followed the second, more organized solution.</p>
-<p>One repository with two branches:</p>
-<ul>
-<li><code>username.github.io</code>:
-<ul>
-<li><code>source</code> — source code + <code>public</code> folder contents;</li>
-<li><code>master</code> — web-version (only <code>public</code> folder contents).</li>
-</ul></li>
-</ul>
-<p>Web version is pushed to remote repository with <code>git subtree push</code> command.</p>
-<p><strong>Main disadvantage</strong> of this solution — <code>source</code> branch contains <code>publiс</code> folder.</p>
-<p>In a blog by Anatoliy (<code>@tolikcode</code>) there is <a href="https://tolikcode.github.io/post/hugoOnGitHub/">an easy to follow setup description</a>. A deployment process can be automated with a script, <a href="https://www.hjdskes.nl/blog/update-deploying-hugo-on-personal-gh-pages/">suggested by Jente Hidskes</a>. Here I only outline the steps in case I will have to reproduce them later.</p>
-<section id="setup" class="level3">
-<h3 class="anchored" data-anchor-id="setup">Setup</h3>
-<ol type="1">
-<li>Initialize an <strong>empty</strong> git repository and commit something unimportant to <code>master</code>, e.g.&nbsp;<code>README.md</code>. Later I’ve learned that there is a way to make empty commit.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">git</span> init</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">git</span> add README.md</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"initial commit on master"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For many years I <del>maintained</del> neglected a Hugo-based personal page using Academic framework (which is now became <a href="https://hugoblox.com/hugo-academic">HugoBlox</a>). It looked pretty-ish, but it was too complex to maintain and the framework was updated too often. It took some discipline to keep publication list up to date, and the only reason I kept the site alive was the list of courses I taught. But I never got around to writing blog posts, and the site felt more like a static CV than a dynamic hub for my work. Then I changed jobs and moved to a new country and stopped maintaining the site at all.</p>
+<p>This time I wanted something simpler, so I rebuilt the site from scratch using <a href="https://quarto.org/">Quarto</a>. The main reason for this choice is that Quarto handles both R and Python natively — no plugins, no workarounds.</p>
+<section id="initial-setup" class="level2">
+<h2 class="anchored" data-anchor-id="initial-setup">Initial setup</h2>
+<p>Creating a new Quarto website project:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">quarto</span> create project website .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This generates a minimal <code>_quarto.yml</code> and <code>index.qmd</code>. I configured the output directory, navigation, theme, and execution settings:</p>
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>_quarto.yml</strong></pre>
 </div>
-<ol start="2" type="1">
-<li>Create an orphan <code>source</code> branch for source code. <strong>Remove</strong> <code>public</code> folder and commit everything.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">git</span> checkout <span class="at">--orphan</span> source</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">rm</span> <span class="at">-rf</span> public <span class="co">## removes public!!!</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">git</span> add .</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"initial commit on source branch"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-filename="_quarto.yml"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">project</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="at">  </span><span class="fu">output-dir</span><span class="kw">:</span><span class="at"> docs</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">website</span><span class="kw">:</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"User Name"</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="at">  </span><span class="fu">navbar</span><span class="kw">:</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="at">    </span><span class="fu">left</span><span class="kw">:</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">href</span><span class="kw">:</span><span class="at"> index.qmd</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="at">        </span><span class="fu">text</span><span class="kw">:</span><span class="at"> About me</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">href</span><span class="kw">:</span><span class="at"> blog/index.qmd</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="at">        </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Blog</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="fu">format</span><span class="kw">:</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> lightly</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a><span class="fu">execute</span><span class="kw">:</span></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> auto</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<ol start="3" type="1">
-<li>Push everything</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">git</span> remote add origin git@github.com:username/username.github.io.git</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">git</span> push origin master</span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">git</span> push origin source</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="4" type="1">
-<li>Add <code>master</code> to <code>public</code> folder as subtree.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">git</span> subtree add <span class="at">--prefix</span><span class="op">=</span>public git@github.com:username/username.github.io.git master <span class="at">--squash</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
+<p>Live preview while editing:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">quarto</span> preview</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="workflow" class="level3">
-<h3 class="anchored" data-anchor-id="workflow">workflow</h3>
-<ol type="1">
-<li>Make changes to website in RStudio. Get real-time live preview with this command:</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>blogdown<span class="sc">:::</span><span class="fu">serve_site</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>By default, live preview renders everything to <code>public</code> folder, including drafts.</p>
-<ol start="2" type="1">
-<li>Generate web-version.</li>
-</ol>
-<p>Stop live preview, reloading R session or by <code>servr::daemon_stop("number, shown by blogdown:::serve_site()")</code>.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>blogdown<span class="sc">::</span><span class="fu">hugo_build</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Commit changes of the source code to <code>source</code> branch.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">git</span> add <span class="at">-A</span></span>
+<section id="project-structure" class="level2">
+<h2 class="anchored" data-anchor-id="project-structure">Project structure</h2>
+<p>Top-level pages (<code>index.qmd</code>, <code>publications.qmd</code>, <code>teaching.qmd</code>) live at the root; blog posts each get their own directory under <code>blog/</code>:</p>
+<pre><code>blog/
+  2025-01-10-my-post/
+    index.qmd
+    data/</code></pre>
+<p>The publications and teaching pages are driven by YAML data files rendered through EJS templates, which keeps the content separate from the layout.</p>
+</section>
+<section id="blog-with-r-and-python" class="level2">
+<h2 class="anchored" data-anchor-id="blog-with-r-and-python">Blog with R and Python</h2>
+<p>Blog posts are plain <code>.qmd</code> files with a short YAML header:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Post Title"</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">"2025-01-10"</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">categories</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">R</span><span class="kw">,</span><span class="at"> Statistics</span><span class="kw">]</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="pp">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Quarto runs R chunks via knitr and Python chunks via Jupyter. The key setting that makes this practical is <code>freeze: auto</code> in <code>_quarto.yml</code> — code is only re-executed when the source file changes, so a Python post doesn’t re-run every time I touch a page written in R.</p>
+<p>Maybe I will have to rethink this approach if I actually start writing more, but for now it works.</p>
+</section>
+<section id="deployment" class="level2">
+<h2 class="anchored" data-anchor-id="deployment">Deployment</h2>
+<p>The site is deployed to GitHub Pages using <code>quarto publish gh-pages</code>, which renders the project and force-pushes the output to a <code>gh-pages</code> branch. Source code lives in a separate private repository, so the public <code>varmara/varmara.github.io</code> repo contains only rendered HTML.</p>
+<p>Setting up the remotes:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">git</span> init</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">git</span> remote add origin git@github.com:username/username.github.io.git</span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">git</span> remote add src    git@github.com:username/username-src.git</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="fu">git</span> config branch.master.pushRemote src</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Backing up source and publishing:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">git</span> add .</span>
 <span id="cb7-2"><a href="#cb7-2"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"update"</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">git</span> push origin source</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="3" type="1">
-<li>Publish the updated website to <code>master</code> using <code>subtree push</code>.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">git</span> subtree push <span class="at">--prefix</span><span class="op">=</span>public https://github.com/tolikcode/tolikcode.github.io.git master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Afterwards the website can be accessed from GitHub user pages <code>http://username.github.io/</code>.</p>
-</section>
-</section>
-<section id="solution-based-on-submodules" class="level2">
-<h2 class="anchored" data-anchor-id="solution-based-on-submodules">2. Solution based on submodules</h2>
-<p>The second <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/">submodule-based solution</a> is described in Hugo documentation. At first I could not understand it, but after this <a href="https://www.youtube.com/watch?v=UQvXst5I41I">video about submodules</a> I worked out how to set up this.</p>
-<p>Two repositories:</p>
-<ul>
-<li><code>username-src</code>:
-<ul>
-<li><code>master</code> — source code.</li>
-</ul></li>
-<li><code>username.github.io</code>:
-<ul>
-<li><code>master</code> — web version (only <code>public</code> folder contents). this repository is added as a submodule to <code>public</code> folder of the <code>username-src</code> repository.</li>
-</ul></li>
-</ul>
-<p><strong>Advantage</strong> of this solution — clean history for source code and web version.</p>
-<p>Deployment is automated with a script <code>deploy.sh</code>.</p>
-<section id="setup-1" class="level3">
-<h3 class="anchored" data-anchor-id="setup-1">Setup</h3>
-<ol type="1">
-<li>Generate a web version of the site in the project folder.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="ex">hugo</span> <span class="at">-t</span> hugo-academic <span class="co"># If using other theme edit the command to `hugo -t &lt;YOURTHEME&gt;`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="2" type="1">
-<li>Initiailze a git repository in <code>public</code> sub-folder and push everything.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="bu">cd</span> public</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="fu">git</span> init</span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="fu">git</span> remote add origin git@github.com:username/username.github.io.git</span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="fu">git</span> add .</span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"initial commit of website"</span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="fu">git</span> push <span class="at">-u</span> origin master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="3" type="1">
-<li>Go to the project folder and totally <strong>remove</strong> <code>public</code> folder.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="bu">cd</span> ..</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">rm</span> <span class="at">-rf</span> public</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="4" type="1">
-<li>Initialize git repository in the project folder. Add <code>public</code> to <code>.gitignore</code>.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">git</span> init</span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="fu">git</span> remote add origin git@github.com:username/username-src.git</span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="bu">echo</span> <span class="st">"public"</span> <span class="op">&gt;&gt;</span> .gitignore</span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="fu">git</span> add .</span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"initial commit of source code"</span></span>
-<span id="cb12-6"><a href="#cb12-6"></a><span class="fu">git</span> push <span class="at">-u</span> origin master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ol start="5" type="1">
-<li>Connect a repository with web version as a submodule to <code>public</code>folder.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">git</span> submodule add <span class="at">-b</span> master git@github.com varmara/varmara.github.io.git</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">git</span> add .</span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">'added public as a submodule'</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="fu">git</span> push origin master</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</section>
-<section id="workflow-1" class="level3">
-<h3 class="anchored" data-anchor-id="workflow-1">Workflow</h3>
-<ol type="1">
-<li>Work on website in RStudio. All changes can be previewed.</li>
-</ol>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>blogdown<span class="sc">:::</span><span class="fu">serve_site</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Сайт будет сгенерирован в <code>public</code>, но не спешите его в таком виде отправлять на гитхаб: предпросмотр рендерит в т.ч. черновики. By default, live preview renders everything to <code>public</code> folder, including drafts.</p>
-<p>All source code changes can be commited to <code>username-src</code>.</p>
-<ol start="2" type="1">
-<li>When time has come to update, generate web-version.</li>
-</ol>
-<p>Stop live preview, reloading R session or by <code>servr::daemon_stop("number, shown by blogdown:::serve_site()")</code>. Then execute a script <code>deploy.sh</code>, which automatically removes outdated contents of <code>public</code> folder, generates website and commits it to <code>username.github.io</code>.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="co"># a script for easy site deploymend from submodule</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a><span class="co"># make it executable with chmod +x deploy.sh</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a></span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="co"># Set the English locale for the `date` command.</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="bu">export</span> <span class="va">LC_TIME</span><span class="op">=</span>en_US.UTF-8</span>
-<span id="cb15-8"><a href="#cb15-8"></a></span>
-<span id="cb15-9"><a href="#cb15-9"></a><span class="co"># The commit message.</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="va">MESSAGE</span><span class="op">=</span><span class="st">"Site rebuild </span><span class="va">$(</span><span class="fu">date</span><span class="va">)</span><span class="st">"</span></span>
-<span id="cb15-11"><a href="#cb15-11"></a></span>
-<span id="cb15-12"><a href="#cb15-12"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">"\033[0;32mDeploying updates to GitHub...\033[0m"</span></span>
-<span id="cb15-13"><a href="#cb15-13"></a></span>
-<span id="cb15-14"><a href="#cb15-14"></a><span class="co"># Remove old files in public</span></span>
-<span id="cb15-15"><a href="#cb15-15"></a><span class="bu">pushd</span> public</span>
-<span id="cb15-16"><a href="#cb15-16"></a><span class="fu">git</span> rm <span class="at">-rf</span> <span class="pp">*</span></span>
-<span id="cb15-17"><a href="#cb15-17"></a><span class="bu">popd</span></span>
-<span id="cb15-18"><a href="#cb15-18"></a></span>
-<span id="cb15-19"><a href="#cb15-19"></a><span class="co"># Build the project.</span></span>
-<span id="cb15-20"><a href="#cb15-20"></a><span class="ex">hugo</span> <span class="at">-t</span> hugo-academic <span class="co"># if using a theme, replace with `hugo -t &lt;YOURTHEME&gt;`</span></span>
-<span id="cb15-21"><a href="#cb15-21"></a></span>
-<span id="cb15-22"><a href="#cb15-22"></a><span class="co"># Go To Public folder</span></span>
-<span id="cb15-23"><a href="#cb15-23"></a><span class="bu">cd</span> public</span>
-<span id="cb15-24"><a href="#cb15-24"></a></span>
-<span id="cb15-25"><a href="#cb15-25"></a><span class="co"># Add changes to git.</span></span>
-<span id="cb15-26"><a href="#cb15-26"></a><span class="fu">git</span> add .</span>
-<span id="cb15-27"><a href="#cb15-27"></a></span>
-<span id="cb15-28"><a href="#cb15-28"></a><span class="co"># Commit changes.</span></span>
-<span id="cb15-29"><a href="#cb15-29"></a><span class="va">msg</span><span class="op">=</span><span class="st">"rebuilding site </span><span class="kw">`</span><span class="fu">date</span><span class="kw">`</span><span class="st">"</span></span>
-<span id="cb15-30"><a href="#cb15-30"></a><span class="cf">if</span> <span class="bu">[</span> <span class="va">$#</span> <span class="ot">-eq</span> 1 <span class="bu">]</span></span>
-<span id="cb15-31"><a href="#cb15-31"></a>  <span class="cf">then</span> <span class="va">MESSAGE</span><span class="op">=</span><span class="st">"</span><span class="va">$1</span><span class="st">"</span></span>
-<span id="cb15-32"><a href="#cb15-32"></a><span class="cf">fi</span></span>
-<span id="cb15-33"><a href="#cb15-33"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"</span><span class="va">$MESSAGE</span><span class="st">"</span></span>
-<span id="cb15-34"><a href="#cb15-34"></a></span>
-<span id="cb15-35"><a href="#cb15-35"></a><span class="co"># Push source and build repos.</span></span>
-<span id="cb15-36"><a href="#cb15-36"></a><span class="fu">git</span> push origin master</span>
-<span id="cb15-37"><a href="#cb15-37"></a></span>
-<span id="cb15-38"><a href="#cb15-38"></a><span class="co"># Come Back up to the Project Root</span></span>
-<span id="cb15-39"><a href="#cb15-39"></a><span class="bu">cd</span> ..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>That’s all. An updated website can be accessed from GitHub user pages at <code>http://username.github.io/</code>.</p>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">git</span> push                 <span class="co"># goes to private source repo</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">quarto</span> publish gh-pages  <span class="co"># renders and pushes HTML to public repo</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In the public repository settings: Pages → branch <code>gh-pages</code>, folder <code>/</code>.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

@@ -9,3 +9,8 @@
 .list .listing-author {
   display: none !important;
 }
+
+div.sourceCode {
+  border-left: 3px solid var(--bs-primary);
+  padding-left: 0.75rem;
+}
