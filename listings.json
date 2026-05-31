@@ -1,0 +1,18 @@
+[
+  {
+    "listing": "/blog/index.html",
+    "items": [
+      "/blog/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/index.html",
+      "/blog/2019-01-12-hardships-of-self-archiving/index.html",
+      "/blog/2019-01-05-ss-type-iii-and-anova-parametrization/index.html"
+    ]
+  },
+  {
+    "listing": "/teaching.html",
+    "items": []
+  },
+  {
+    "listing": "/publications.html",
+    "items": []
+  }
+]

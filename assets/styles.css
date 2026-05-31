@@ -1,0 +1,11 @@
+.about-image-rounded {
+  border-radius: 50%; /* Makes it circular/oval */
+  border: 5px solid #333; /* Adds the frame (thickness, style, color) */
+  width: 200px; /* Adjust size as needed */
+  height: 250px; /* Set height > width for oval, or equal for circle */
+  object-fit: cover; /* Ensures image covers area without stretching */
+}
+
+.list .listing-author {
+  display: none !important;
+}
