@@ -28,6 +28,41 @@
     "text": "Selected journals\n\nInter-Research\npdf of the paper may be freely accessed from the publisher’s web site, and can be linked directly. However, the publisher’s version itself cannot be used earlier than 5 years after publication.\n\nDiseases of Aquatic Organisms\nDAO on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 12 months, publishers version — in 5 years. A link to the published version and publisher’s copyright is required.\n\n\nMarine Ecology Progress Series\nMEPS on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 12 months, publishers version — in 5 years. A link to the published version and publisher’s copyright is required.\n\n\n\nSt. Petersburg University Press\nI could not find a common self-archiving policy on a publisher’s site.\n\nBiological Communications\nOpen-access journal. pdf is freely available on journal’s site and can be linked directly.\n\n\n\nSpringer Verlag\nClear and concise self-archiving policy can be found on a publisher’s web site. There is also a section on author’s rights.\nPost-print is called an Author’s Accepted Manuscript (AAM): “…the version accepted for publication in a journal following peer review but prior to copyediting and typesetting”.\nPre- and post-prints should be shared with a special phrase which contains a link to the publisher and DOI:\n“This is a [pre-print / post-peer-review, pre-copyedit version] of an article published in [insert journal title]. The final authenticated version is available online at: https://doi.org/[insert DOI]”\n\nHydrobiologia\nHydrobiologia on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 12 months. Publishers version cannot be used. Needs a link to the publisher and special phrase with DOI.\n\n\nOecologia\nOecologia on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 12 months. Publishers version cannot be used. Needs a link to the publisher and special phrase with DOI.\n\n\n\nCambridge University Press\nI did not succeed in finding a self-archiving policy on the publisher’s site. May be it is called somehow differently.\n\nJournal of the Marine Biological Association of the United Kingdom\nJMBA on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 6 months. Publishers version cannot be used. Abstract can be used. Needs a link to the publisher.\n\n\n\nElsevier\nSharing policy is hard to find.\n\nJournal of Experimental Marine Biology and Ecology\nJEMBE on Sherpa/RoMEO: post-print can be published on personal site immediately, in a repository - after 24 months. Publishers version cannot be used. Needs a link to the publisher with DOI. Post print should be licenced by CC BY-NC-ND. Post-print should not look similar to published version."
   },
   {
+    "objectID": "blog/2026-05-31-quarto-website/index.html",
+    "href": "blog/2026-05-31-quarto-website/index.html",
+    "title": "Building a Personal Website with Quarto",
+    "section": "",
+    "text": "For many years I maintained neglected a Hugo-based personal page using Academic framework (which is now became HugoBlox). It looked pretty-ish, but it was too complex to maintain and the framework was updated too often. It took some discipline to keep publication list up to date, and the only reason I kept the site alive was the list of courses I taught. But I never got around to writing blog posts, and the site felt more like a static CV than a dynamic hub for my work. Then I changed jobs and moved to a new country and stopped maintaining the site at all.\nThis time I wanted something simpler, so I rebuilt the site from scratch using Quarto. The main reason for this choice is that Quarto handles both R and Python natively — no plugins, no workarounds."
+  },
+  {
+    "objectID": "blog/2026-05-31-quarto-website/index.html#initial-setup",
+    "href": "blog/2026-05-31-quarto-website/index.html#initial-setup",
+    "title": "Building a Personal Website with Quarto",
+    "section": "Initial setup",
+    "text": "Initial setup\nCreating a new Quarto website project:\nquarto create project website .\nThis generates a minimal _quarto.yml and index.qmd. I configured the output directory, navigation, theme, and execution settings:\n\n\n_quarto.yml\n\nproject:\n  type: website\n  output-dir: docs\n\nwebsite:\n  title: \"User Name\"\n  navbar:\n    left:\n      - href: index.qmd\n        text: About me\n      - href: blog/index.qmd\n        text: Blog\n\nformat:\n  html:\n    theme: lightly\n\nexecute:\n  freeze: auto\n\nLive preview while editing:\nquarto preview"
+  },
+  {
+    "objectID": "blog/2026-05-31-quarto-website/index.html#project-structure",
+    "href": "blog/2026-05-31-quarto-website/index.html#project-structure",
+    "title": "Building a Personal Website with Quarto",
+    "section": "Project structure",
+    "text": "Project structure\nTop-level pages (index.qmd, publications.qmd, teaching.qmd) live at the root; blog posts each get their own directory under blog/:\nblog/\n  2025-01-10-my-post/\n    index.qmd\n    data/\nThe publications and teaching pages are driven by YAML data files rendered through EJS templates, which keeps the content separate from the layout."
+  },
+  {
+    "objectID": "blog/2026-05-31-quarto-website/index.html#blog-with-r-and-python",
+    "href": "blog/2026-05-31-quarto-website/index.html#blog-with-r-and-python",
+    "title": "Building a Personal Website with Quarto",
+    "section": "Blog with R and Python",
+    "text": "Blog with R and Python\nBlog posts are plain .qmd files with a short YAML header:\n---\ntitle: \"Post Title\"\ndate: \"2025-01-10\"\ncategories: [R, Statistics]\n---\nQuarto runs R chunks via knitr and Python chunks via Jupyter. The key setting that makes this practical is freeze: auto in _quarto.yml — code is only re-executed when the source file changes, so a Python post doesn’t re-run every time I touch a page written in R.\nMaybe I will have to rethink this approach if I actually start writing more, but for now it works."
+  },
+  {
+    "objectID": "blog/2026-05-31-quarto-website/index.html#deployment",
+    "href": "blog/2026-05-31-quarto-website/index.html#deployment",
+    "title": "Building a Personal Website with Quarto",
+    "section": "Deployment",
+    "text": "Deployment\nThe site is deployed to GitHub Pages using quarto publish gh-pages, which renders the project and force-pushes the output to a gh-pages branch. Source code lives in a separate private repository, so the public varmara/varmara.github.io repo contains only rendered HTML.\nSetting up the remotes:\ngit init\ngit remote add origin git@github.com:username/username.github.io.git\ngit remote add src    git@github.com:username/username-src.git\ngit config branch.master.pushRemote src\nBacking up source and publishing:\ngit add .\ngit commit -m \"update\"\ngit push                 # goes to private source repo\nquarto publish gh-pages  # renders and pushes HTML to public repo\nIn the public repository settings: Pages → branch gh-pages, folder /."
+  },
+  {
     "objectID": "publications.html",
     "href": "publications.html",
     "title": "Publications",
@@ -109,7 +144,7 @@
     "href": "blog/index.html",
     "title": "Marina Varfolomeeva",
     "section": "",
-    "text": "Deploying a hugo-based website on GitHub user pages\n\n\n\nwebsite\n\n\n\nA comparison of subtree vs. submodule methods for deploying Hugo websites to GitHub User Pages.\n\n\n\n\n\nJan 15, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nHardships of Self-Archiving: Policies of Academic Journals\n\n\n\nAcademic Publishing\n\nwebsite\n\n\n\nUnderstanding publisher rules for sharing article versions on personal sites.\n\n\n\n\n\nJan 12, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nType III Sums of Squares and ANOVA Parametrization\n\n\n\nStatistics\n\nR\n\n\n\nA discussion on the implications of using Type III sums of squares in ANOVA and the importance of choosing the correct parametrization.\n\n\n\n\n\nJan 5, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\nNo matching items"
+    "text": "Building a Personal Website with Quarto\n\n\n\nQuarto\n\nwebsite\n\n\n\nHow I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.\n\n\n\n\n\nMay 31, 2026\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nDeploying a hugo-based website on GitHub user pages\n\n\n\nwebsite\n\n\n\nA comparison of subtree vs. submodule methods for deploying Hugo websites to GitHub User Pages.\n\n\n\n\n\nJan 15, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nHardships of Self-Archiving: Policies of Academic Journals\n\n\n\nAcademic Publishing\n\nwebsite\n\n\n\nUnderstanding publisher rules for sharing article versions on personal sites.\n\n\n\n\n\nJan 12, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nType III Sums of Squares and ANOVA Parametrization\n\n\n\nStatistics\n\nR\n\n\n\nA discussion on the implications of using Type III sums of squares in ANOVA and the importance of choosing the correct parametrization.\n\n\n\n\n\nJan 5, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/index.html",

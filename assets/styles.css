@@ -14,3 +14,22 @@ div.sourceCode {
   border-left: 3px solid var(--bs-primary);
   padding-left: 0.75rem;
 }
+
+.quarto-title-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 0.8rem;
+  color: var(--bs-secondary-color);
+  row-gap: 0.25rem;
+}
+
+.quarto-title-meta-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quarto-title-meta-contents p {
+  margin-bottom: 0;
+}
