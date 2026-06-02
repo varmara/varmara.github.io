@@ -1,9 +1,5 @@
 [
   {
-    "listing": "/publications.html",
-    "items": []
-  },
-  {
     "listing": "/teaching.html",
     "items": []
   },
@@ -15,5 +11,9 @@
       "/blog/2019-01-12-hardships-of-self-archiving/index.html",
       "/blog/2019-01-05-ss-type-iii-and-anova-parametrization/index.html"
     ]
+  },
+  {
+    "listing": "/publications.html",
+    "items": []
   }
 ]

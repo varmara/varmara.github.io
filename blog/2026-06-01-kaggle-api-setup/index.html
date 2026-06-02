@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Marina Varfolomeeva">
+<meta name="dcterms.date" content="2026-06-01">
+<meta name="description" content="How to download public datasets from Kaggle from code. Setup credentials and a reproducible path for keeping large files out of repos. Read environment variables, and use the Kaggle API from Python and R.">
 
-<title>claude – Marina Varfolomeeva</title>
+<title>Downloading Datasets with the Kaggle API – Marina Varfolomeeva</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,28 +61,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,19 +110,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<meta name="quarto:status" content="draft">
 
 
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="../../assets/styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Marina Varfolomeeva</span>
     </a>
   </div>
@@ -130,19 +134,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
+    <a class="nav-link" href="../../index.html"> 
 <span class="menu-text">About me</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./blog/index.html"> 
+    <a class="nav-link" href="../../blog/index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./publications.html"> 
+    <a class="nav-link" href="../../publications.html"> 
 <span class="menu-text">Publications</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./teaching.html"> 
+    <a class="nav-link" href="../../teaching.html"> 
 <span class="menu-text">Teaching</span></a>
   </li>  
 </ul>
@@ -173,119 +177,132 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#varmara.github.io" id="toc-varmara.github.io" class="nav-link active" data-scroll-target="#varmara.github.io">varmara.github.io</a>
-  <ul class="collapse">
-  <li><a href="#build-preview" id="toc-build-preview" class="nav-link" data-scroll-target="#build-preview">Build &amp; preview</a></li>
-  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure">Project structure</a></li>
-  <li><a href="#adding-a-blog-post" id="toc-adding-a-blog-post" class="nav-link" data-scroll-target="#adding-a-blog-post">Adding a blog post</a>
-  <ul class="collapse">
-  <li><a href="#r-posts" id="toc-r-posts" class="nav-link" data-scroll-target="#r-posts">R posts</a></li>
-  <li><a href="#python-posts" id="toc-python-posts" class="nav-link" data-scroll-target="#python-posts">Python posts</a></li>
-  </ul></li>
-  <li><a href="#adding-a-publication" id="toc-adding-a-publication" class="nav-link" data-scroll-target="#adding-a-publication">Adding a publication</a></li>
-  <li><a href="#styling" id="toc-styling" class="nav-link" data-scroll-target="#styling">Styling</a></li>
-  </ul></li>
+  <li><a href="#kaggle-account-and-api-token" id="toc-kaggle-account-and-api-token" class="nav-link active" data-scroll-target="#kaggle-account-and-api-token">Kaggle account and API token</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#keeping-large-files-out-of-repos" id="toc-keeping-large-files-out-of-repos" class="nav-link" data-scroll-target="#keeping-large-files-out-of-repos">Keeping large files out of repos</a></li>
+  <li><a href="#downloading-a-dataset" id="toc-downloading-a-dataset" class="nav-link" data-scroll-target="#downloading-a-dataset">Downloading a dataset</a></li>
+  <li><a href="#downloading-from-python" id="toc-downloading-from-python" class="nav-link" data-scroll-target="#downloading-from-python">Downloading from Python</a></li>
+  <li><a href="#using-from-r" id="toc-using-from-r" class="nav-link" data-scroll-target="#using-from-r">Using from R</a></li>
+  <li><a href="#checking-available-datasets" id="toc-checking-available-datasets" class="nav-link" data-scroll-target="#checking-available-datasets">Checking available datasets</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Downloading Datasets with the Kaggle API</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Tools</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    How to download public datasets from Kaggle from code. Setup credentials and a reproducible path for keeping large files out of repos. Read environment variables, and use the Kaggle API from Python and R.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marina Varfolomeeva </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
-<section id="varmara.github.io" class="level1">
-<h1>varmara.github.io</h1>
-<p>Personal website for Marina Varfolomeeva, built with <a href="https://quarto.org/">Quarto</a>. Deployed to GitHub Pages from the <code>docs/</code> output directory.</p>
-<section id="build-preview" class="level2">
-<h2 class="anchored" data-anchor-id="build-preview">Build &amp; preview</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">quarto</span> preview          <span class="co"># live preview with hot reload</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">quarto</span> render           <span class="co"># full build to docs/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Python posts use the local <code>.venv/</code>. Activate it before rendering if needed:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="bu">source</span> .venv/bin/activate</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">quarto</span> render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>execute: freeze: auto</code> is set globally — code chunks only re-execute when source changes. Frozen outputs live in <code>_freeze/</code>.</p>
-</section>
-<section id="project-structure" class="level2">
-<h2 class="anchored" data-anchor-id="project-structure">Project structure</h2>
-<pre><code>_quarto.yml             # site config: output-dir, navbar, theme, freeze
-_brand.yml              # color palette (teal) and typography (Inter)
-assets/styles.css       # custom CSS overrides
-index.qmd               # About me / homepage (solana template)
-publications.qmd        # publications listing from data/
-teaching.qmd            # teaching listing from data/
-blog/
-  index.qmd             # blog listing page (sorted by date desc, with categories)
-  &lt;date&gt;-&lt;slug&gt;/
-    index.qmd           # one directory per post
-data/
-  publications.yml      # publication entries (id, title, author, year, journal, doi, pdf)
-  courses_grad.yml      # graduate courses
-  courses_undergrad.yml # undergraduate courses
-_templates/
-  publications.ejs      # EJS template for publications listing
-  courses.ejs           # EJS template for courses listing
-_drafts/                # drafts not yet in blog/ (excluded from render via .quartoignore)
-_meta/                  # project documentation: DEPLOY.md, STANDALONE_POSTS.md (gitignored)
-docs/                   # rendered output (gitignored, served by GitHub Pages)
-_freeze/                # frozen code execution outputs (committed to git)</code></pre>
-</section>
-<section id="adding-a-blog-post" class="level2">
-<h2 class="anchored" data-anchor-id="adding-a-blog-post">Adding a blog post</h2>
-<p>Use the scaffold script to create a new post:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># draft inside the site (no publish date needed yet)</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="fu">bash</span> _meta/new-post.sh python my-analysis <span class="at">--draft</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="fu">bash</span> _meta/new-post.sh r     my-analysis <span class="at">--draft</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># standalone repo in ~/projects/&lt;slug&gt;/ (default) or a custom directory</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a><span class="fu">bash</span> _meta/new-post.sh python my-analysis</span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="fu">bash</span> _meta/new-post.sh r     my-analysis <span class="at">--dir</span> ~/research</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>For standalone posts, see <code>_meta/STANDALONE_POSTS.md</code> for the migration workflow.</p>
-<p>To add manually, create <code>blog/&lt;YYYY-MM-DD&gt;-&lt;slug&gt;/index.qmd</code>. Required frontmatter:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Post Title"</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">"YYYY-MM-DD"</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Marina Varfolomeeva"</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="fu">categories</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">Category1</span><span class="kw">,</span><span class="at"> Category2</span><span class="kw">]</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">"One-sentence description shown in the listing."</span></span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="pp">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Add <code>draft: true</code> to hide from the listing while writing (<code>draft-mode: unlinked</code> means it still renders).</p>
-<section id="r-posts" class="level3">
-<h3 class="anchored" data-anchor-id="r-posts">R posts</h3>
-<p>Use <code>{r}</code> code chunks. No special setup needed beyond a working R installation.</p>
-</section>
-<section id="python-posts" class="level3">
-<h3 class="anchored" data-anchor-id="python-posts">Python posts</h3>
-<p>Use <code>{python}</code> code chunks. Python packages are in <code>.venv/</code> and listed in <code>requirements.txt</code>. Add new dependencies there and install with <code>pip install -r requirements.txt</code> inside the venv.</p>
-</section>
-</section>
-<section id="adding-a-publication" class="level2">
-<h2 class="anchored" data-anchor-id="adding-a-publication">Adding a publication</h2>
-<p>Append an entry to <code>data/publications.yml</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">id</span><span class="kw">:</span><span class="at"> lastname2025keyword</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Full title"</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="at">  </span><span class="fu">author</span><span class="kw">:</span><span class="at"> </span><span class="st">"Last, F., Coauthor, G. &amp; Varfolomeeva, M."</span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="at">  </span><span class="fu">year</span><span class="kw">:</span><span class="at"> </span><span class="dv">2025</span></span>
-<span id="cb6-5"><a href="#cb6-5"></a><span class="at">  </span><span class="fu">journal</span><span class="kw">:</span><span class="at"> </span><span class="st">"Journal Name"</span></span>
-<span id="cb6-6"><a href="#cb6-6"></a><span class="at">  </span><span class="fu">volume</span><span class="kw">:</span><span class="at"> </span><span class="st">"10"</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="at">  </span><span class="fu">number</span><span class="kw">:</span><span class="at"> </span><span class="st">"2"</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="at">  </span><span class="fu">pages</span><span class="kw">:</span><span class="at"> </span><span class="st">"100-110"</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="at">  </span><span class="fu">doi</span><span class="kw">:</span><span class="at"> </span><span class="st">"doi.org/10.xxxx/xxxxx"</span><span class="co">   # omit https://</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="at">  </span><span class="fu">pdf</span><span class="kw">:</span><span class="at"> </span><span class="st">""</span><span class="co">                         # relative path or leave empty</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The EJS template renders entries in reverse chronological order and shows DOI/PDF links only when non-empty.</p>
-</section>
-<section id="styling" class="level2">
-<h2 class="anchored" data-anchor-id="styling">Styling</h2>
-<ul>
-<li>Theme: <code>lightly</code> (Bootstrap) with <code>_brand.yml</code> overrides</li>
-<li>Primary color: teal <code>#458d8f</code></li>
-<li>Font: Inter (Google Fonts)</li>
-<li>Profile image: <code>assets/profile.jpg</code> (oval crop via CSS, 200×250px)</li>
-<li>Author name hidden in blog listing via <code>.list .listing-author { display: none }</code></li>
-</ul>
+</header>
 
 
+<p>Many public datasets used in data science tutorials live on Kaggle. Downloading them manually through the browser works once, but it breaks reproducibility — there is no record of where the file came from or which version was used. The Kaggle API solves this: one command downloads the exact dataset, and that command can live in a notebook or a script alongside the analysis.</p>
+<p>The Olist dataset contains nine CSV files covering orders, customers, products, sellers, payments, reviews, and geolocation. A good example to demonstrate cohort analysis, RFM segmentation, customer lifetime value, and more.</p>
+<p>Let’s set up the Kaggle API and download the Olist dataset.</p>
+<section id="kaggle-account-and-api-token" class="level2">
+<h2 class="anchored" data-anchor-id="kaggle-account-and-api-token">Kaggle account and API token</h2>
+<p>You need a Kaggle account. Once logged in, go to <strong>Account → API → Create New Token</strong>.</p>
+<p>Save it to <code>~/.kaggle/access_token</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.kaggle <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> REPLACE_WITH_YOUR_KAGGLE_TOKEN <span class="op">&gt;</span> ~/.kaggle/access_token <span class="kw">&amp;&amp;</span> <span class="fu">chmod</span> 600 ~/.kaggle/access_token</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The <code>chmod 600</code> restricts read access to your user only.</p>
 </section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="ex">pip</span> install kaggle</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="keeping-large-files-out-of-repos" class="level2">
+<h2 class="anchored" data-anchor-id="keeping-large-files-out-of-repos">Keeping large files out of repos</h2>
+<p>Downloaded datasets should never be committed to a git repository — they are large, binary, and can always be re-downloaded. The solution is to store them in a fixed local location outside the project and reference that location via an environment variable.</p>
+<p>Create a <code>.env</code> file in the project root. Add these lines to <code>.gitignore</code> to make sure neither the data nor the credentials end up in version control:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">.env</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">/path/to/data/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then set the path to your data directory in <code>.env</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="va">DATA_DIR</span><span class="op">=</span>/home/user/path/to/data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Load environment variables into the shell before using:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">export</span> <span class="va">$(</span><span class="fu">xargs</span> <span class="op">&lt;</span> .env<span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="downloading-a-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="downloading-a-dataset">Downloading a dataset</h2>
+<p>The dataset identifier is the path segment after <code>kaggle.com/datasets/</code> in the URL. For the <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce">Olist Brazilian E-commerce dataset</a> it is <code>olistbr/brazilian-ecommerce</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">kaggle</span> datasets download <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">-d</span> olistbr/brazilian-ecommerce <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">-p</span> <span class="st">"</span><span class="va">$DATA_DIR</span><span class="st">/olist"</span> <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">--unzip</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>-p</code> sets the destination directory (created if it does not exist). <code>--unzip</code> extracts the archive and removes the zip file.</p>
+</section>
+<section id="downloading-from-python" class="level2">
+<h2 class="anchored" data-anchor-id="downloading-from-python">Downloading from Python</h2>
+<p>First, set up the environment variable in Python:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="im">import</span> os</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>load_dotenv()</span>
+<span id="cb7-5"><a href="#cb7-5"></a>data_dir <span class="op">=</span> os.getenv(<span class="st">"DATA_DIR"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Downloading inside a Quarto document to make the download step explicit and reproducible:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">import</span> kaggle</span>
+<span id="cb8-2"><a href="#cb8-2"></a></span>
+<span id="cb8-3"><a href="#cb8-3"></a>kaggle.api.dataset_download_files(</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="st">'olistbr/brazilian-ecommerce'</span>,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    path<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>data_dir<span class="sc">}</span><span class="ss">/olist/"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    quiet<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    unzip<span class="op">=</span><span class="va">True</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The Python API uses the same <code>~/.kaggle/access_token</code> credentials automatically.</p>
+</section>
+<section id="using-from-r" class="level2">
+<h2 class="anchored" data-anchor-id="using-from-r">Using from R</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">readRenviron</span>(<span class="st">".env"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"DATA_DIR"</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>orders <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"olist"</span>, <span class="st">"olist_orders_dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="checking-available-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="checking-available-datasets">Checking available datasets</h2>
+<p>To search for datasets from the command line:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">kaggle</span> datasets list <span class="at">-s</span> <span class="st">"brazilian ecommerce"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To see all files in a dataset before downloading:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">kaggle</span> datasets files olistbr/brazilian-ecommerce</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
 </section>
 
 </main> <!-- /main -->

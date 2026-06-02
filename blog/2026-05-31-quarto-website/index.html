@@ -264,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="project-structure">Project structure</h2>
 <p>Top-level pages (<code>index.qmd</code>, <code>publications.qmd</code>, <code>teaching.qmd</code>) live at the root; blog posts each get their own directory under <code>blog/</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>blog/</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  2025-01-10-my-post/</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  2026-05-10-my-post/</span>
 <span id="cb4-3"><a href="#cb4-3"></a>    index.qmd</span>
 <span id="cb4-4"><a href="#cb4-4"></a>    data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The publications and teaching pages are driven by YAML data files rendered through EJS templates, which keeps the content separate from the layout.</p>
@@ -282,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="deployment" class="level2">
 <h2 class="anchored" data-anchor-id="deployment">Deployment</h2>
-<p>The site is deployed to GitHub Pages using <code>quarto publish gh-pages</code>, which renders the project and force-pushes the output to a <code>gh-pages</code> branch. Source code lives in a separate private repository, so the public <code>varmara/varmara.github.io</code> repo contains only rendered HTML.</p>
+<p>The site is deployed to GitHub Pages using <code>quarto publish gh-pages</code>, which renders the project and force-pushes the output to a <code>gh-pages</code> branch. Source code lives in a separate private repository, so the public <code>username/username.github.io</code> repo contains only rendered HTML.</p>
 <p>Setting up the remotes:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">git</span> init</span>
 <span id="cb6-2"><a href="#cb6-2"></a><span class="fu">git</span> remote add origin git@github.com:username/username.github.io.git</span>
