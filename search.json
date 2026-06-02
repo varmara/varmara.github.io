@@ -28,6 +28,62 @@
     "text": "LinkedIn\n  \n  \n    \n     Github\n  \n  \n    \n     Email\n  \n\n      \n💻 Data Scientist with ~20 years of experience in statistical analysis, machine learning, and digital transformation.\n📈 Led cross-functional analytics projects and built automated reporting solutions for global organizations including PepsiCo.\n📊 Author of 30+ scientific papers in marine ecology and biology.\n🎓 Taught Statistics, Data Analysis, and R at St Petersburg State University for 17 years — from students to industry professionals.\n\nProgramming & DevOps: Python, R, SQL, Azure Databricks, BigQuery, GCP, Bash, Git, Docker, Azure DevOps\nVisualisation & Reporting: Power BI, Tableau, Shiny, Quarto, RMarkdown, LaTeX\n\nStatistical Modeling & ML: Predictive Modeling, Time Series, GLMMs, Multivariate Analysis, NLP, Classification, Clustering"
   },
   {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "",
+    "text": "Many public datasets used in data science tutorials live on Kaggle. Downloading them manually through the browser works once, but it breaks reproducibility — there is no record of where the file came from or which version was used. The Kaggle API solves this: one command downloads the exact dataset, and that command can live in a notebook or a script alongside the analysis.\nThe Olist dataset contains nine CSV files covering orders, customers, products, sellers, payments, reviews, and geolocation. A good example to demonstrate cohort analysis, RFM segmentation, customer lifetime value, and more.\nLet’s set up the Kaggle API and download the Olist dataset."
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#kaggle-account-and-api-token",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#kaggle-account-and-api-token",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Kaggle account and API token",
+    "text": "Kaggle account and API token\nYou need a Kaggle account. Once logged in, go to Account → API → Create New Token.\nSave it to ~/.kaggle/access_token.\nmkdir -p ~/.kaggle && echo REPLACE_WITH_YOUR_KAGGLE_TOKEN &gt; ~/.kaggle/access_token && chmod 600 ~/.kaggle/access_token\nThe chmod 600 restricts read access to your user only."
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#installation",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#installation",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Installation",
+    "text": "Installation\npip install kaggle"
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#keeping-large-files-out-of-repos",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#keeping-large-files-out-of-repos",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Keeping large files out of repos",
+    "text": "Keeping large files out of repos\nDownloaded datasets should never be committed to a git repository — they are large, binary, and can always be re-downloaded. The solution is to store them in a fixed local location outside the project and reference that location via an environment variable.\nCreate a .env file in the project root. Add these lines to .gitignore to make sure neither the data nor the credentials end up in version control:\n.env\n/path/to/data/\nThen set the path to your data directory in .env:\nDATA_DIR=/home/user/path/to/data/\nLoad environment variables into the shell before using:\nexport $(xargs &lt; .env)"
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#downloading-a-dataset",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#downloading-a-dataset",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Downloading a dataset",
+    "text": "Downloading a dataset\nThe dataset identifier is the path segment after kaggle.com/datasets/ in the URL. For the Olist Brazilian E-commerce dataset it is olistbr/brazilian-ecommerce.\nkaggle datasets download \\\n  -d olistbr/brazilian-ecommerce \\\n  -p \"$DATA_DIR/olist\" \\\n  --unzip\n-p sets the destination directory (created if it does not exist). --unzip extracts the archive and removes the zip file."
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#downloading-from-python",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#downloading-from-python",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Downloading from Python",
+    "text": "Downloading from Python\nFirst, set up the environment variable in Python:\n\nfrom dotenv import load_dotenv\nimport os\n\nload_dotenv()\ndata_dir = os.getenv(\"DATA_DIR\")\n\nDownloading inside a Quarto document to make the download step explicit and reproducible:\n\nimport kaggle\n\nkaggle.api.dataset_download_files(\n    'olistbr/brazilian-ecommerce',\n    path=f\"{data_dir}/olist/\",\n    quiet=False,\n    unzip=True\n)\n\nThe Python API uses the same ~/.kaggle/access_token credentials automatically."
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#using-from-r",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#using-from-r",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Using from R",
+    "text": "Using from R\n\nreadRenviron(\".env\")\ndata_dir &lt;- Sys.getenv(\"DATA_DIR\")\norders &lt;- read.csv(file.path(data_dir, \"olist\", \"olist_orders_dataset.csv\"))"
+  },
+  {
+    "objectID": "blog/2026-06-01-kaggle-api-setup/index.html#checking-available-datasets",
+    "href": "blog/2026-06-01-kaggle-api-setup/index.html#checking-available-datasets",
+    "title": "Downloading Datasets with the Kaggle API",
+    "section": "Checking available datasets",
+    "text": "Checking available datasets\nTo search for datasets from the command line:\nkaggle datasets list -s \"brazilian ecommerce\"\nTo see all files in a dataset before downloading:\nkaggle datasets files olistbr/brazilian-ecommerce"
+  },
+  {
     "objectID": "blog/2019-01-12-hardships-of-self-archiving/index.html",
     "href": "blog/2019-01-12-hardships-of-self-archiving/index.html",
     "title": "Hardships of Self-Archiving: Policies of Academic Journals",
@@ -151,7 +207,7 @@
     "href": "blog/index.html",
     "title": "Marina Varfolomeeva",
     "section": "",
-    "text": "Building a Personal Website with Quarto\n\n\n\nQuarto\n\nwebsite\n\n\n\nHow I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.\n\n\n\n\n\nMay 31, 2026\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nDeploying a hugo-based website on GitHub user pages\n\n\n\nwebsite\n\n\n\nA comparison of subtree vs. submodule methods for deploying Hugo websites to GitHub User Pages.\n\n\n\n\n\nJan 15, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nHardships of Self-Archiving: Policies of Academic Journals\n\n\n\nAcademic Publishing\n\nwebsite\n\n\n\nUnderstanding publisher rules for sharing article versions on personal sites.\n\n\n\n\n\nJan 12, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nType III Sums of Squares and ANOVA Parametrization\n\n\n\nStatistics\n\nR\n\n\n\nA discussion on the implications of using Type III sums of squares in ANOVA and the importance of choosing the correct parametrization.\n\n\n\n\n\nJan 5, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\nNo matching items"
+    "text": "Downloading Datasets with the Kaggle API\n\n\n\nPython\n\nTools\n\n\n\nHow to download public datasets from Kaggle from code. Setup credentials and a reproducible path for keeping large files out of repos. Read environment variables, and use the Kaggle API from Python and R.\n\n\n\n\n\nJun 1, 2026\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nBuilding a Personal Website with Quarto\n\n\n\nQuarto\n\nwebsite\n\n\n\nHow I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.\n\n\n\n\n\nMay 31, 2026\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nDeploying a hugo-based website on GitHub user pages\n\n\n\nwebsite\n\n\n\nA comparison of subtree vs. submodule methods for deploying Hugo websites to GitHub User Pages.\n\n\n\n\n\nJan 15, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nHardships of Self-Archiving: Policies of Academic Journals\n\n\n\nAcademic Publishing\n\nwebsite\n\n\n\nUnderstanding publisher rules for sharing article versions on personal sites.\n\n\n\n\n\nJan 12, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\n\n\n\n\n\n\n\nType III Sums of Squares and ANOVA Parametrization\n\n\n\nStatistics\n\nR\n\n\n\nA discussion on the implications of using Type III sums of squares in ANOVA and the importance of choosing the correct parametrization.\n\n\n\n\n\nJan 5, 2019\n\n\nMarina Varfolomeeva\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "publications.html",

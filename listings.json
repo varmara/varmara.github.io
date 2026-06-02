@@ -6,6 +6,7 @@
   {
     "listing": "/blog/index.html",
     "items": [
+      "/blog/2026-06-01-kaggle-api-setup/index.html",
       "/blog/2026-05-31-quarto-website/index.html",
       "/blog/2019-01-15-deploying-a-hugo-based-website-on-github-user-pages/index.html",
       "/blog/2019-01-12-hardships-of-self-archiving/index.html",
