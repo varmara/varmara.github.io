@@ -10,6 +10,11 @@
   display: none !important;
 }
 
+.list .listing-description {
+  font-size: 0.85rem;
+  color: #555;
+}
+
 div.sourceCode {
   border-left: 3px solid var(--bs-primary);
   padding-left: 0.75rem;
