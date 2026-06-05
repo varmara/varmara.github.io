@@ -75,14 +75,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d6a2ae2cb249da1580f0a11f71b8f854.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contents</h2>
    
   <ul>
   <li><a href="#kaggle-account-and-api-token" id="toc-kaggle-account-and-api-token" class="nav-link active" data-scroll-target="#kaggle-account-and-api-token">Kaggle account and API token</a></li>
@@ -230,8 +230,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Many public datasets used in data science tutorials live on Kaggle. Downloading them manually through the browser works once, but it breaks reproducibility — there is no record of where the file came from or which version was used. The Kaggle API solves this: one command downloads the exact dataset, and that command can live in a notebook or a script alongside the analysis.</p>
-<p>The Olist dataset contains nine CSV files covering orders, customers, products, sellers, payments, reviews, and geolocation. A good example to demonstrate cohort analysis, RFM segmentation, customer lifetime value, and more.</p>
-<p>Let’s set up the Kaggle API and download the Olist dataset.</p>
+<p>The series that follows this post uses two Olist datasets: the <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank" rel="nofollow noopener noreferrer">Brazilian E-Commerce dataset</a> (nine CSV files — orders, customers, products, sellers, payments, reviews, geolocation) and the <a href="https://www.kaggle.com/datasets/olistbr/marketing-funnel-olist" target="_blank" rel="nofollow noopener noreferrer">Marketing Funnel dataset</a> (two CSV files — marketing qualified leads and closed deals). They share a <code>seller_id</code> key, enabling end-to-end analysis from lead acquisition to customer outcomes.</p>
+<p>Let’s set up the Kaggle API and download both.</p>
 <section id="kaggle-account-and-api-token" class="level2">
 <h2 class="anchored" data-anchor-id="kaggle-account-and-api-token">Kaggle account and API token</h2>
 <p>You need a Kaggle account. Once logged in, go to <strong>Account → API → Create New Token</strong>.</p>
@@ -252,54 +252,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Then set the path to your data directory in <code>.env</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="va">DATA_DIR</span><span class="op">=</span>/home/user/path/to/data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Load environment variables into the shell before using:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">export</span> <span class="va">$(</span><span class="fu">xargs</span> <span class="op">&lt;</span> .env<span class="va">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="bu">set</span> <span class="at">-a</span><span class="kw">;</span> <span class="bu">source</span> .env<span class="kw">;</span> <span class="bu">set</span> +a</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="downloading-a-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="downloading-a-dataset">Downloading a dataset</h2>
-<p>The dataset identifier is the path segment after <code>kaggle.com/datasets/</code> in the URL. For the <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce">Olist Brazilian E-commerce dataset</a> it is <code>olistbr/brazilian-ecommerce</code>.</p>
+<p>The dataset identifier is the path segment after <code>kaggle.com/datasets/</code> in the URL. For the <a href="https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce" target="_blank" rel="nofollow noopener noreferrer">Olist Brazilian E-commerce dataset</a> it is <code>olistbr/brazilian-ecommerce</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">kaggle</span> datasets download <span class="dt">\</span></span>
 <span id="cb6-2"><a href="#cb6-2"></a>  <span class="at">-d</span> olistbr/brazilian-ecommerce <span class="dt">\</span></span>
 <span id="cb6-3"><a href="#cb6-3"></a>  <span class="at">-p</span> <span class="st">"</span><span class="va">$DATA_DIR</span><span class="st">/olist"</span> <span class="dt">\</span></span>
 <span id="cb6-4"><a href="#cb6-4"></a>  <span class="at">--unzip</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>-p</code> sets the destination directory (created if it does not exist). <code>--unzip</code> extracts the archive and removes the zip file.</p>
+<p>The same pattern works for any other Kaggle dataset. The <a href="https://www.kaggle.com/datasets/olistbr/marketing-funnel-olist" target="_blank" rel="nofollow noopener noreferrer">Olist Marketing Funnel dataset</a> goes into the same directory so both datasets will share one path:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">kaggle</span> datasets download <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>  <span class="at">-d</span> olistbr/marketing-funnel-olist <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  <span class="at">-p</span> <span class="st">"</span><span class="va">$DATA_DIR</span><span class="st">/olist"</span> <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="at">--unzip</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="downloading-from-python" class="level2">
 <h2 class="anchored" data-anchor-id="downloading-from-python">Downloading from Python</h2>
 <p>First, set up the environment variable in Python:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="im">import</span> os</span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a>load_dotenv()</span>
-<span id="cb7-5"><a href="#cb7-5"></a>data_dir <span class="op">=</span> os.getenv(<span class="st">"DATA_DIR"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="im">import</span> os</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>load_dotenv()</span>
+<span id="cb8-5"><a href="#cb8-5"></a>data_dir <span class="op">=</span> os.getenv(<span class="st">"DATA_DIR"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Downloading inside a Quarto document to make the download step explicit and reproducible:</p>
+<p>Downloading inside a Quarto document makes the download step explicit and reproducible. Download both Olist datasets into the same directory:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="im">import</span> kaggle</span>
-<span id="cb8-2"><a href="#cb8-2"></a></span>
-<span id="cb8-3"><a href="#cb8-3"></a>kaggle.api.dataset_download_files(</span>
-<span id="cb8-4"><a href="#cb8-4"></a>    <span class="st">'olistbr/brazilian-ecommerce'</span>,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>    path<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>data_dir<span class="sc">}</span><span class="ss">/olist/"</span>,</span>
-<span id="cb8-6"><a href="#cb8-6"></a>    quiet<span class="op">=</span><span class="va">False</span>,</span>
-<span id="cb8-7"><a href="#cb8-7"></a>    unzip<span class="op">=</span><span class="va">True</span></span>
-<span id="cb8-8"><a href="#cb8-8"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a><span class="im">import</span> kaggle</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="cf">for</span> dataset <span class="kw">in</span> [</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="st">"olistbr/brazilian-ecommerce"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    <span class="st">"olistbr/marketing-funnel-olist"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6"></a>]:</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    kaggle.api.dataset_download_files(</span>
+<span id="cb9-8"><a href="#cb9-8"></a>        dataset,</span>
+<span id="cb9-9"><a href="#cb9-9"></a>        path<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>data_dir<span class="sc">}</span><span class="ss">/olist/"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10"></a>        quiet<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb9-11"><a href="#cb9-11"></a>        unzip<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-12"><a href="#cb9-12"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The Python API uses the same <code>~/.kaggle/access_token</code> credentials automatically.</p>
 </section>
 <section id="using-from-r" class="level2">
 <h2 class="anchored" data-anchor-id="using-from-r">Using from R</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">readRenviron</span>(<span class="st">".env"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"DATA_DIR"</span>)</span>
-<span id="cb9-3"><a href="#cb9-3"></a>orders <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"olist"</span>, <span class="st">"olist_orders_dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">readRenviron</span>(<span class="st">".env"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">Sys.getenv</span>(<span class="st">"DATA_DIR"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>orders <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">file.path</span>(data_dir, <span class="st">"olist"</span>, <span class="st">"olist_orders_dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="checking-available-datasets" class="level2">
 <h2 class="anchored" data-anchor-id="checking-available-datasets">Checking available datasets</h2>
 <p>To search for datasets from the command line:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">kaggle</span> datasets list <span class="at">-s</span> <span class="st">"brazilian ecommerce"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">kaggle</span> datasets list <span class="at">-s</span> <span class="st">"brazilian ecommerce"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>To see all files in a dataset before downloading:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">kaggle</span> datasets files olistbr/brazilian-ecommerce</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">kaggle</span> datasets files olistbr/brazilian-ecommerce</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

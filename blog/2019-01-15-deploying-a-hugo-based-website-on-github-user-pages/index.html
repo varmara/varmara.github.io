@@ -75,14 +75,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d6a2ae2cb249da1580f0a11f71b8f854.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contents</h2>
    
   <ul>
   <li><a href="#solution-with-subtrees" id="toc-solution-with-subtrees" class="nav-link active" data-scroll-target="#solution-with-subtrees">1. Solution with subtrees</a>
@@ -240,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>To host a site on GitHub user pages, its contents should be located on <code>master</code> branch of the reposotory <code>username.github.io</code>. A convenient solution would be to store the source code and the site together. I’ve googled two schemes. The common starting point is a locally functionining website, created with <code>blogdown</code> in RStudio (Hugo, Academic theme).</p>
 <section id="solution-with-subtrees" class="level2">
 <h2 class="anchored" data-anchor-id="solution-with-subtrees">1. Solution with subtrees</h2>
-<p>The first <a href="https://tolikcode.github.io/post/hugoOnGitHub/">solution with subtrees</a> occurred simple enough for me, with my little knowledge of git. But later I’ve followed the second, more organized solution.</p>
+<p>The first <a href="https://tolikcode.github.io/post/hugoOnGitHub/" target="_blank" rel="nofollow noopener noreferrer">solution with subtrees</a> occurred simple enough for me, with my little knowledge of git. But later I’ve followed the second, more organized solution.</p>
 <p>One repository with two branches:</p>
 <ul>
 <li><code>username.github.io</code>:
@@ -251,7 +251,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Web version is pushed to remote repository with <code>git subtree push</code> command.</p>
 <p><strong>Main disadvantage</strong> of this solution — <code>source</code> branch contains <code>publiс</code> folder.</p>
-<p>In a blog by Anatoliy (<code>@tolikcode</code>) there is <a href="https://tolikcode.github.io/post/hugoOnGitHub/">an easy to follow setup description</a>. A deployment process can be automated with a script, <a href="https://www.hjdskes.nl/blog/update-deploying-hugo-on-personal-gh-pages/">suggested by Jente Hidskes</a>. Here I only outline the steps in case I will have to reproduce them later.</p>
+<p>In a blog by Anatoliy (<code>@tolikcode</code>) there is <a href="https://tolikcode.github.io/post/hugoOnGitHub/" target="_blank" rel="nofollow noopener noreferrer">an easy to follow setup description</a>. A deployment process can be automated with a script, <a href="https://www.hjdskes.nl/blog/update-deploying-hugo-on-personal-gh-pages/" target="_blank" rel="nofollow noopener noreferrer">suggested by Jente Hidskes</a>. Here I only outline the steps in case I will have to reproduce them later.</p>
 <section id="setup" class="level3">
 <h3 class="anchored" data-anchor-id="setup">Setup</h3>
 <ol type="1">
@@ -319,7 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="solution-based-on-submodules" class="level2">
 <h2 class="anchored" data-anchor-id="solution-based-on-submodules">2. Solution based on submodules</h2>
-<p>The second <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/">submodule-based solution</a> is described in Hugo documentation. At first I could not understand it, but after this <a href="https://www.youtube.com/watch?v=UQvXst5I41I">video about submodules</a> I worked out how to set up this.</p>
+<p>The second <a href="https://gohugo.io/hosting-and-deployment/hosting-on-github/" target="_blank" rel="nofollow noopener noreferrer">submodule-based solution</a> is described in Hugo documentation. At first I could not understand it, but after this <a href="https://www.youtube.com/watch?v=UQvXst5I41I" target="_blank" rel="nofollow noopener noreferrer">video about submodules</a> I worked out how to set up this.</p>
 <p>Two repositories:</p>
 <ul>
 <li><code>username-src</code>:

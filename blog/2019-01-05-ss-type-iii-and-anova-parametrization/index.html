@@ -40,14 +40,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d6a2ae2cb249da1580f0a11f71b8f854.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-3f93c023046517143692a4d808f01c80.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -167,7 +167,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Contents</h2>
    
   <ul>
   <li><a href="#types-of-sums-of-squares" id="toc-types-of-sums-of-squares" class="nav-link active" data-scroll-target="#types-of-sums-of-squares">Types of Sums of Squares</a></li>
@@ -238,7 +238,7 @@ window.Quarto = {
 <section id="how-is-parametrization-linked-to-ss-type" class="level2">
 <h2 class="anchored" data-anchor-id="how-is-parametrization-linked-to-ss-type">How is Parametrization Linked to SS Type?</h2>
 <p>In the vast majority of cases, both coding schemes will yield identical ANOVA results. However, the moment you decide to use SS Type III (perhaps remembering that it is the default in many other statistical packages), choosing <code>contr.sum</code> becomes critical.</p>
-<p>When using <code>contr.treatment</code>, the coefficients do not correspond to the classical definition of “main effects” (the effect of a factor averaged across all levels of other factors). This is explained thoroughly and clearly in <a href="https://methodology.psu.edu/media/techreports/12-120.pdf">this technical report</a>.</p>
+<p>When using <code>contr.treatment</code>, the coefficients do not correspond to the classical definition of “main effects” (the effect of a factor averaged across all levels of other factors). This is explained thoroughly and clearly in <a href="https://methodology.psu.edu/media/techreports/12-120.pdf" target="_blank" rel="nofollow noopener noreferrer">this technical report</a>.</p>
 <p>Under <code>contr.treatment</code>, coefficients actually represent “simple effects” (the effect of a factor at a specific level of another factor, rather than an average). As shown on page 14 of the linked report, a coefficient representing a simple effect simultaneously captures part of the interaction. This leads to two important consequences:</p>
 <ol type="1">
 <li>Collinearity: If an interaction is present, <code>contr.treatment</code> automatically introduces collinearity. Therefore, when checking a full model for collinearity, you should use <code>contr.sum</code> (or use the trick of checking a reduced model without the interaction).</li>

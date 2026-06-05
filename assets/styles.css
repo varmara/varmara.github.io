@@ -38,3 +38,11 @@ div.sourceCode {
 .quarto-title-meta-contents p {
   margin-bottom: 0;
 }
+
+div.cell-output-stdout,
+div.cell-output-stderr {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.25rem;
+}

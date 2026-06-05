@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marina Varfolomeeva">
-<meta name="dcterms.date" content="2026-05-31">
-<meta name="description" content="How I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.">
+<meta name="dcterms.date" content="2026-06-04">
+<meta name="description" content="Practice exercises for the Olist data setup post.">
 
-<title>Building a Personal Website with Quarto – Marina Varfolomeeva</title>
+<title>Customer Analytics with Olist, Part 1: Exercises (2–10) – Marina Varfolomeeva</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,41 +22,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -110,6 +75,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<meta name="quarto:status" content="draft">
 
 
 <link rel="stylesheet" href="../../assets/styles.css">
@@ -118,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -176,10 +142,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#initial-setup" id="toc-initial-setup" class="nav-link active" data-scroll-target="#initial-setup">Initial setup</a></li>
-  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure">Project structure</a></li>
-  <li><a href="#blog-with-r-and-python" id="toc-blog-with-r-and-python" class="nav-link" data-scroll-target="#blog-with-r-and-python">Blog with R and Python</a></li>
-  <li><a href="#deployment" id="toc-deployment" class="nav-link" data-scroll-target="#deployment">Deployment</a></li>
+  <li><a href="#items-per-order" id="toc-items-per-order" class="nav-link active" data-scroll-target="#items-per-order">Items per order</a></li>
+  <li><a href="#payment-methods" id="toc-payment-methods" class="nav-link" data-scroll-target="#payment-methods">Payment methods</a></li>
+  <li><a href="#sellers-by-state" id="toc-sellers-by-state" class="nav-link" data-scroll-target="#sellers-by-state">Sellers by state</a></li>
+  <li><a href="#top-product-categories" id="toc-top-product-categories" class="nav-link" data-scroll-target="#top-product-categories">Top product categories</a></li>
+  <li><a href="#review-coverage" id="toc-review-coverage" class="nav-link" data-scroll-target="#review-coverage">Review coverage</a></li>
+  <li><a href="#repeat-customers" id="toc-repeat-customers" class="nav-link" data-scroll-target="#repeat-customers">Repeat customers</a></li>
+  <li><a href="#order-value-distribution" id="toc-order-value-distribution" class="nav-link" data-scroll-target="#order-value-distribution">Order value distribution</a></li>
+  <li><a href="#top-lead-sources" id="toc-top-lead-sources" class="nav-link" data-scroll-target="#top-lead-sources">Top lead sources</a></li>
+  <li><a href="#null-patterns-in-closed-deals" id="toc-null-patterns-in-closed-deals" class="nav-link" data-scroll-target="#null-patterns-in-closed-deals">Null patterns in closed deals</a></li>
   </ul>
 </nav>
     </div>
@@ -188,16 +159,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Building a Personal Website with Quarto</h1>
+<h1 class="title">Customer Analytics with Olist, Part 1: Exercises (2–10)</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Quarto</div>
-    <div class="quarto-category">website</div>
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">PySpark</div>
+    <div class="quarto-category">Customer Analytics</div>
+    <div class="quarto-category">Olist</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    How I rebuilt my personal website using Quarto - project structure, blog setup, and deployment to GitHub Pages.
+    Practice exercises for the Olist data setup post.
   </div>
 </div>
 
@@ -214,7 +187,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 31, 2026</p>
+      <p class="date">June 4, 2026</p>
     </div>
   </div>
   
@@ -226,74 +199,185 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>For many years I <del>maintained</del> neglected a Hugo-based personal page using Academic framework (which is now became <a href="https://hugoblox.com/hugo-academic" target="_blank" rel="nofollow noopener noreferrer">HugoBlox</a>). It looked pretty-ish, but it was too complex to maintain and the framework was updated too often. It took some discipline to keep publication list up to date, and the only reason I kept the site alive was the list of courses I taught. But I never got around to writing blog posts, and the site felt more like a static CV than a dynamic hub for my work. Then I changed jobs and moved to a new country and stopped maintaining the site at all.</p>
-<p>This time I wanted something simpler, so I rebuilt the site from scratch using <a href="https://quarto.org/" target="_blank" rel="nofollow noopener noreferrer">Quarto</a>. The main reason for this choice is that Quarto handles both R and Python natively — no plugins, no workarounds.</p>
-<section id="initial-setup" class="level2">
-<h2 class="anchored" data-anchor-id="initial-setup">Initial setup</h2>
-<p>Creating a new Quarto website project:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">quarto</span> create project website .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This generates a minimal <code>_quarto.yml</code> and <code>index.qmd</code>. I configured the output directory, navigation, theme, and execution settings:</p>
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>_quarto.yml</strong></pre>
+<section id="items-per-order" class="level2">
+<h2 class="anchored" data-anchor-id="items-per-order">Items per order</h2>
+<p>What is the average number of items per order? Also find the minimum and maximum.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-filename="_quarto.yml"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">project</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="at">  </span><span class="fu">type</span><span class="kw">:</span><span class="at"> website</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="at">  </span><span class="fu">output-dir</span><span class="kw">:</span><span class="at"> docs</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">website</span><span class="kw">:</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="at">  </span><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"User Name"</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="at">  </span><span class="fu">navbar</span><span class="kw">:</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="at">    </span><span class="fu">left</span><span class="kw">:</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">href</span><span class="kw">:</span><span class="at"> index.qmd</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="at">        </span><span class="fu">text</span><span class="kw">:</span><span class="at"> About me</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fu">href</span><span class="kw">:</span><span class="at"> blog/index.qmd</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="at">        </span><span class="fu">text</span><span class="kw">:</span><span class="at"> Blog</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="fu">format</span><span class="kw">:</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="at">  </span><span class="fu">html</span><span class="kw">:</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="at">    </span><span class="fu">theme</span><span class="kw">:</span><span class="at"> lightly</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="fu">execute</span><span class="kw">:</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="at">  </span><span class="fu">freeze</span><span class="kw">:</span><span class="at"> auto</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
 </div>
-<p>Live preview while editing:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">quarto</span> preview</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
 </section>
-<section id="project-structure" class="level2">
-<h2 class="anchored" data-anchor-id="project-structure">Project structure</h2>
-<p>Top-level pages (<code>index.qmd</code>, <code>publications.qmd</code>, <code>teaching.qmd</code>) live at the root; blog posts each get their own directory under <code>blog/</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>blog/</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  2026-05-10-my-post/</span>
-<span id="cb4-3"><a href="#cb4-3"></a>    index.qmd</span>
-<span id="cb4-4"><a href="#cb4-4"></a>    data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>The publications and teaching pages are driven by YAML data files rendered through EJS templates, which keeps the content separate from the layout.</p>
+<section id="payment-methods" class="level2">
+<h2 class="anchored" data-anchor-id="payment-methods">Payment methods</h2>
+<p>Which payment type is most used, and what share of total revenue does it represent? An order can have multiple payment rows — aggregate by order first, then by type.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
 </section>
-<section id="blog-with-r-and-python" class="level2">
-<h2 class="anchored" data-anchor-id="blog-with-r-and-python">Blog with R and Python</h2>
-<p>Blog posts are plain <code>.qmd</code> files with a short YAML header:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="fu">title</span><span class="kw">:</span><span class="at"> </span><span class="st">"Post Title"</span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="fu">date</span><span class="kw">:</span><span class="at"> </span><span class="st">"2025-01-10"</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a><span class="fu">categories</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">R</span><span class="kw">,</span><span class="at"> Statistics</span><span class="kw">]</span></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="pp">---</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Quarto runs R chunks via knitr and Python chunks via Jupyter. The key setting that makes this practical is <code>freeze: auto</code> in <code>_quarto.yml</code> — code is only re-executed when the source file changes, so a Python post doesn’t re-run every time I touch a page written in R.</p>
-<p>Maybe I will have to rethink this approach if I actually start writing more, but for now it works.</p>
+<section id="sellers-by-state" class="level2">
+<h2 class="anchored" data-anchor-id="sellers-by-state">Sellers by state</h2>
+<p>How many sellers operate in each Brazilian state? Sort from most to fewest.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
 </section>
-<section id="deployment" class="level2">
-<h2 class="anchored" data-anchor-id="deployment">Deployment</h2>
-<p>The site is deployed to GitHub Pages using <code>quarto publish gh-pages</code>, which renders the project and force-pushes the output to a <code>gh-pages</code> branch. Source code lives in a separate private repository, so the public <code>username/username.github.io</code> repo contains only rendered HTML.</p>
-<p>Setting up the remotes:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">git</span> init</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">git</span> remote add origin git@github.com:username/username.github.io.git</span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">git</span> remote add src    git@github.com:username/username-src.git</span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="fu">git</span> config branch.master.pushRemote src</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Backing up source and publishing:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">git</span> add .</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"update"</span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="fu">git</span> push                 <span class="co"># goes to private source repo</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="ex">quarto</span> publish gh-pages  <span class="co"># renders and pushes HTML to public repo</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>In the public repository settings: Pages → branch <code>gh-pages</code>, folder <code>/</code>.</p>
+<section id="top-product-categories" class="level2">
+<h2 class="anchored" data-anchor-id="top-product-categories">Top product categories</h2>
+<p>What are the top 10 product categories by number of distinct products? Use the English category names from <code>category_translation</code>.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="review-coverage" class="level2">
+<h2 class="anchored" data-anchor-id="review-coverage">Review coverage</h2>
+<p>What percentage of delivered orders received a review? A delivered order with no matching row in <code>order_reviews</code> has no review.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="repeat-customers" class="level2">
+<h2 class="anchored" data-anchor-id="repeat-customers">Repeat customers</h2>
+<p>How many customers made more than one purchase? Remember to use <code>customer_unique_id</code>, not <code>customer_id</code>.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="order-value-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="order-value-distribution">Order value distribution</h2>
+<p>What is the distribution of total order value? Compute mean, median, and 90th percentile across all orders.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="top-lead-sources" class="level2">
+<h2 class="anchored" data-anchor-id="top-lead-sources">Top lead sources</h2>
+<p>Which lead origin brought the most MQLs, and which had the highest conversion rate to a closed deal? Conversion rate = closed deals / MQLs for that origin.</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
+</section>
+<section id="null-patterns-in-closed-deals" class="level2">
+<h2 class="anchored" data-anchor-id="null-patterns-in-closed-deals">Null patterns in closed deals</h2>
+<p>For <code>closed_deals</code>, which fields are most often null, and does the pattern vary by <code>lead_behaviour_profile</code>?</p>
+<div class="callout callout-style-default callout-tip callout-empty-content callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</div>
 
 
 </section>

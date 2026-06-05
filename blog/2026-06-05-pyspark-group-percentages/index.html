@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marina Varfolomeeva">
+<meta name="dcterms.date" content="2026-06-05">
+<meta name="description" content="Four ways to compute the share of a total within each group in PySpark — from the naive collect-to-driver pattern to a dangerously wrong window function and a broadcast cross-join.">
+
+<title>Computing Group Percentages in PySpark: Four Approaches – Marina Varfolomeeva</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-d6a2ae2cb249da1580f0a11f71b8f854.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-d640c705e8c17715bca3574aa719063f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-da8f640e84a892f841c1ab94422647f2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../assets/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Marina Varfolomeeva</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/varmara"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/marina-varfolomeeva"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#approach-1-collect-a-scalar-to-the-driver" id="toc-approach-1-collect-a-scalar-to-the-driver" class="nav-link" data-scroll-target="#approach-1-collect-a-scalar-to-the-driver">Approach 1: Collect a scalar to the driver</a></li>
+  <li><a href="#approach-2-window-over-the-whole-dataset" id="toc-approach-2-window-over-the-whole-dataset" class="nav-link" data-scroll-target="#approach-2-window-over-the-whole-dataset">Approach 2: Window over the whole dataset</a></li>
+  <li><a href="#approach-3-cross-join-with-a-single-row-dataframe" id="toc-approach-3-cross-join-with-a-single-row-dataframe" class="nav-link" data-scroll-target="#approach-3-cross-join-with-a-single-row-dataframe">Approach 3: Cross-join with a single-row DataFrame</a></li>
+  <li><a href="#approach-4-conditional-aggregation" id="toc-approach-4-conditional-aggregation" class="nav-link" data-scroll-target="#approach-4-conditional-aggregation">Approach 4: Conditional aggregation</a></li>
+  <li><a href="#benchmarking" id="toc-benchmarking" class="nav-link" data-scroll-target="#benchmarking">Benchmarking</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Computing Group Percentages in PySpark: Four Approaches</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">PySpark</div>
+    <div class="quarto-category">Data Engineering</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Four ways to compute the share of a total within each group in PySpark — from the naive collect-to-driver pattern to a dangerously wrong window function and a broadcast cross-join.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marina Varfolomeeva </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 5, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Computing the percentage of a total that each group is a common task. In pandas it is a one-liner: <code>df["count"] / df["count"].sum()</code>. In PySpark it is harder, because the total is not available locally — it lives across executor nodes — and different approaches have very different performance and safety characteristics.</p>
+<p>We use the Olist orders table as a running example: how many orders are in each status, and what percentage of all orders does each status represent? For dataset setup, see <a href="../../blog/2026-06-04-olist-01-intro/index.html">Customer Analytics with Olist, Part 1: Data Setup</a>.</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div id="setup" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> time</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">from</span> contextlib <span class="im">import</span> contextmanager</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> SparkSession</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> functions <span class="im">as</span> F</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">from</span> pyspark.sql.window <span class="im">import</span> Window</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a>load_dotenv()</span>
+<span id="cb1-10"><a href="#cb1-10"></a>OLIST_DIR <span class="op">=</span> os.path.join(os.environ[<span class="st">"DATA_DIR"</span>], <span class="st">"olist"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a>spark <span class="op">=</span> (</span>
+<span id="cb1-13"><a href="#cb1-13"></a>    SparkSession.builder</span>
+<span id="cb1-14"><a href="#cb1-14"></a>    .appName(<span class="st">"pyspark-group-percentages"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    .master(<span class="st">"local[*]"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    .config(<span class="st">"spark.sql.session.timeZone"</span>, <span class="st">"UTC"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17"></a>    .getOrCreate()</span>
+<span id="cb1-18"><a href="#cb1-18"></a>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a>orders <span class="op">=</span> spark.read.csv(</span>
+<span id="cb1-22"><a href="#cb1-22"></a>    os.path.join(OLIST_DIR, <span class="st">"olist_orders_dataset.csv"</span>),</span>
+<span id="cb1-23"><a href="#cb1-23"></a>    header<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-24"><a href="#cb1-24"></a>    inferSchema<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-25"><a href="#cb1-25"></a>)</span>
+<span id="cb1-26"><a href="#cb1-26"></a></span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="at">@contextmanager</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="kw">def</span> timer(label):</span>
+<span id="cb1-29"><a href="#cb1-29"></a>    t <span class="op">=</span> time.perf_counter()</span>
+<span id="cb1-30"><a href="#cb1-30"></a>    <span class="cf">yield</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>time<span class="sc">.</span>perf_counter() <span class="op">-</span> t<span class="sc">:.2f}</span><span class="ss">s"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="approach-1-collect-a-scalar-to-the-driver" class="level2">
+<h2 class="anchored" data-anchor-id="approach-1-collect-a-scalar-to-the-driver">Approach 1: Collect a scalar to the driver</h2>
+<p>The simplest approach: trigger one action to get the total as a Python integer, then use it as a literal in a subsequent transformation.</p>
+<div id="approach-1" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>n_orders <span class="op">=</span> orders.count()</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a>s1 <span class="op">=</span> (</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    orders</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    .groupBy(<span class="st">"order_status"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    .count()</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    .withColumn(<span class="st">"pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"count"</span>) <span class="op">/</span> n_orders) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a>s1.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------+-----+-----+
+|order_status|count|  pct|
++------------+-----+-----+
+|     shipped| 1107|1.113|
+|    canceled|  625|0.629|
+|    invoiced|  314|0.316|
+|     created|    5|0.005|
+|   delivered|96478|97.02|
+| unavailable|  609|0.612|
+|  processing|  301|0.303|
+|    approved|    2|0.002|
++------------+-----+-----+
+</code></pre>
+</div>
+</div>
+<p>The data remain distributed across the cluster throughout.</p>
+<ol type="1">
+<li><code>orders.count()</code> is an action — it computes the total across all nodes and sends one integer to the driver.</li>
+<li>The driver broadcasts that integer back to all worker nodes as a literal constant.</li>
+<li><code>.withColumn()</code> is a transformation — it adds the division step to the execution plan without running anything yet.</li>
+<li><code>.show()</code> is an action — it executes the plan in parallel across all partitions.</li>
+</ol>
+<p>This approach makes two full passes over the data. For Olist-sized data that is fine. For a multi-terabyte table, the first <code>count()</code> alone can be expensive.</p>
+<div id="approach-1-explain" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>s1.explain(mode<span class="op">=</span><span class="st">"formatted"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>== Physical Plan ==
+AdaptiveSparkPlan (6)
++- Project (5)
+   +- HashAggregate (4)
+      +- Exchange (3)
+         +- HashAggregate (2)
+            +- Scan csv  (1)
+
+
+(1) Scan csv 
+Output [1]: [order_status#19]
+Batched: false
+Location: InMemoryFileIndex [file:/home/varmara/80_websites/varmara-data/olist/olist_orders_dataset.csv]
+ReadSchema: struct&lt;order_status:string&gt;
+
+(2) HashAggregate
+Input [1]: [order_status#19]
+Keys [1]: [order_status#19]
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#52L]
+Results [2]: [order_status#19, count#53L]
+
+(3) Exchange
+Input [2]: [order_status#19, count#53L]
+Arguments: hashpartitioning(order_status#19, 200), ENSURE_REQUIREMENTS, [plan_id=122]
+
+(4) HashAggregate
+Input [2]: [order_status#19, count#53L]
+Keys [1]: [order_status#19]
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#46L]
+Results [2]: [order_status#19, count(1)#46L AS count#37L]
+
+(5) Project
+Output [3]: [order_status#19, count#37L, round(((cast(count#37L as double) / 99441.0) * 100.0), 3) AS pct#48]
+Input [2]: [order_status#19, count#37L]
+
+(6) AdaptiveSparkPlan
+Output [3]: [order_status#19, count#37L, pct#48]
+Arguments: isFinalPlan=false
+
+</code></pre>
+</div>
+</div>
+<p>The plan shows a two-stage <code>HashAggregate</code> with an intervening <code>Exchange</code> (shuffle) to compute the <code>groupBy</code> categories. However, because the divisor is evaluated upfront on the driver, it is baked into the final <code>Project</code> node as a literal constant. This means the percentage division itself adds zero additional shuffles and executes entirely locally on the post-shuffle partitions.</p>
+</section>
+<section id="approach-2-window-over-the-whole-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="approach-2-window-over-the-whole-dataset">Approach 2: Window over the whole dataset</h2>
+<p>A window function can compute the total without collecting to the driver. The intuition is appealing: define a window over the entire table, sum the counts within it, and divide. The entire chain up to <code>.withColumn()</code> is a sequence of transformations that build one execution plan. <code>.show()</code> is the action that triggers it.</p>
+<p><strong>Never use this pattern.</strong></p>
+<div id="approach-2" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>s2 <span class="op">=</span> (</span>
+<span id="cb6-2"><a href="#cb6-2"></a>    orders</span>
+<span id="cb6-3"><a href="#cb6-3"></a>    .groupBy(<span class="st">"order_status"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>    .count()</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    .withColumn(</span>
+<span id="cb6-6"><a href="#cb6-6"></a>        <span class="st">"pct"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>        F.<span class="bu">round</span>((F.col(<span class="st">"count"</span>) <span class="op">/</span> F.<span class="bu">sum</span>(<span class="st">"count"</span>).over(Window.partitionBy())) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>)</span>
+<span id="cb6-8"><a href="#cb6-8"></a>    )</span>
+<span id="cb6-9"><a href="#cb6-9"></a>)</span>
+<span id="cb6-10"><a href="#cb6-10"></a></span>
+<span id="cb6-11"><a href="#cb6-11"></a>s2.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------+-----+-----+
+|order_status|count|  pct|
++------------+-----+-----+
+|     shipped| 1107|1.113|
+|    canceled|  625|0.629|
+|    invoiced|  314|0.316|
+|     created|    5|0.005|
+|   delivered|96478|97.02|
+| unavailable|  609|0.612|
+|  processing|  301|0.303|
+|    approved|    2|0.002|
++------------+-----+-----+
+</code></pre>
+</div>
+</div>
+<div id="approach-2-explain" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>s2.explain(mode<span class="op">=</span><span class="st">"formatted"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>== Physical Plan ==
+AdaptiveSparkPlan (8)
++- Project (7)
+   +- Window (6)
+      +- Exchange (5)
+         +- HashAggregate (4)
+            +- Exchange (3)
+               +- HashAggregate (2)
+                  +- Scan csv  (1)
+
+
+(1) Scan csv 
+Output [1]: [order_status#19]
+Batched: false
+Location: InMemoryFileIndex [file:/home/varmara/80_websites/varmara-data/olist/olist_orders_dataset.csv]
+ReadSchema: struct&lt;order_status:string&gt;
+
+(2) HashAggregate
+Input [1]: [order_status#19]
+Keys [1]: [order_status#19]
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#78L]
+Results [2]: [order_status#19, count#79L]
+
+(3) Exchange
+Input [2]: [order_status#19, count#79L]
+Arguments: hashpartitioning(order_status#19, 200), ENSURE_REQUIREMENTS, [plan_id=241]
+
+(4) HashAggregate
+Input [2]: [order_status#19, count#79L]
+Keys [1]: [order_status#19]
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#71L]
+Results [2]: [order_status#19, count(1)#71L AS count#62L]
+
+(5) Exchange
+Input [2]: [order_status#19, count#62L]
+Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=244]
+
+(6) Window
+Input [2]: [order_status#19, count#62L]
+Arguments: [sum(count#62L) windowspecdefinition(specifiedwindowframe(RowFrame, unboundedpreceding$(), unboundedfollowing$())) AS _we0#74L]
+
+(7) Project
+Output [3]: [order_status#19, count#62L, round(((cast(count#62L as double) / cast(_we0#74L as double)) * 100.0), 3) AS pct#72]
+Input [3]: [order_status#19, count#62L, _we0#74L]
+
+(8) AdaptiveSparkPlan
+Output [3]: [order_status#19, count#62L, pct#72]
+Arguments: isFinalPlan=false
+
+</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:54 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.</code></pre>
+</div>
+</div>
+<p>The <code>groupBy</code> Shuffle: Spark reads the data, computes local partial counts, and shuffles the rows across the network (<code>Exchange</code>) to group identical statuses together on different nodes, calculating the final count for each status.</p>
+<p>The Single-Partition Shuffle: Because the window function is empty (<code>Window.partitionBy()</code>), Spark triggers a second network shuffle to pull all those status counts off their distributed nodes and force them onto a single worker node (<code>SinglePartition</code>).</p>
+<p>Finally, the local sum &amp; division happen: That single node calculates the grand total sequentially, appends it as a new column, and runs the final percentage division.</p>
+<p>Forcing all data onto one node destroys parallelism and frequently causes Out-Of-Memory (OOM) errors on large datasets. On a small table this produces a correct result, which is what makes it a trap.</p>
+</section>
+<section id="approach-3-cross-join-with-a-single-row-dataframe" class="level2">
+<h2 class="anchored" data-anchor-id="approach-3-cross-join-with-a-single-row-dataframe">Approach 3: Cross-join with a single-row DataFrame</h2>
+<p>This is the Aggregate Cross-Join Pattern, also known as the Scalar Join. We keep everything as DataFrames and avoid collecting to the driver.</p>
+<p>Three steps:</p>
+<ol type="1">
+<li>Compute a one-row DataFrame holding the total. <code>orders.count()</code> returns a Python scalar — we use <code>orders.select(F.count("*"))</code> to stay in the DataFrame world.</li>
+<li>Compute the per-group counts with <code>groupBy</code>.</li>
+<li>Cross-join the two DataFrames together.</li>
+</ol>
+<div id="approach-3" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>n_orders_sdf <span class="op">=</span> orders.select(F.count(<span class="st">"*"</span>).alias(<span class="st">"total_count"</span>))</span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>counts_by_cat <span class="op">=</span> (</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    orders</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    .groupBy(<span class="st">"order_status"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a>    .count()</span>
+<span id="cb12-7"><a href="#cb12-7"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8"></a></span>
+<span id="cb12-9"><a href="#cb12-9"></a>s3 <span class="op">=</span> (</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    counts_by_cat</span>
+<span id="cb12-11"><a href="#cb12-11"></a>    .crossJoin(n_orders_sdf)</span>
+<span id="cb12-12"><a href="#cb12-12"></a>    .withColumn(<span class="st">"pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb12-13"><a href="#cb12-13"></a>)</span>
+<span id="cb12-14"><a href="#cb12-14"></a></span>
+<span id="cb12-15"><a href="#cb12-15"></a>s3.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------+-----+-----------+-----+
+|order_status|count|total_count|  pct|
++------------+-----+-----------+-----+
+|     shipped| 1107|      99441|1.113|
+|    canceled|  625|      99441|0.629|
+|    invoiced|  314|      99441|0.316|
+|     created|    5|      99441|0.005|
+|   delivered|96478|      99441|97.02|
+| unavailable|  609|      99441|0.612|
+|  processing|  301|      99441|0.303|
+|    approved|    2|      99441|0.002|
++------------+-----+-----------+-----+
+</code></pre>
+</div>
+</div>
+<div id="approach-3-explain" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>s3.explain(mode<span class="op">=</span><span class="st">"formatted"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>== Physical Plan ==
+AdaptiveSparkPlan (12)
++- Project (11)
+   +- BroadcastNestedLoopJoin Cross BuildRight (10)
+      :- HashAggregate (4)
+      :  +- Exchange (3)
+      :     +- HashAggregate (2)
+      :        +- Scan csv  (1)
+      +- BroadcastExchange (9)
+         +- HashAggregate (8)
+            +- Exchange (7)
+               +- HashAggregate (6)
+                  +- Scan csv  (5)
+
+
+(1) Scan csv 
+Output [1]: [order_status#19]
+Batched: false
+Location: InMemoryFileIndex [file:/home/varmara/80_websites/varmara-data/olist/olist_orders_dataset.csv]
+ReadSchema: struct&lt;order_status:string&gt;
+
+(2) HashAggregate
+Input [1]: [order_status#19]
+Keys [1]: [order_status#19]
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#114L]
+Results [2]: [order_status#19, count#115L]
+
+(3) Exchange
+Input [2]: [order_status#19, count#115L]
+Arguments: hashpartitioning(order_status#19, 200), ENSURE_REQUIREMENTS, [plan_id=439]
+
+(4) HashAggregate
+Input [2]: [order_status#19, count#115L]
+Keys [1]: [order_status#19]
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#100L]
+Results [2]: [order_status#19, count(1)#100L AS count#91L]
+
+(5) Scan csv 
+Output: []
+Batched: false
+Location: InMemoryFileIndex [file:/home/varmara/80_websites/varmara-data/olist/olist_orders_dataset.csv]
+ReadSchema: struct&lt;&gt;
+
+(6) HashAggregate
+Input: []
+Keys: []
+Functions [1]: [partial_count(1)]
+Aggregate Attributes [1]: [count#116L]
+Results [1]: [count#117L]
+
+(7) Exchange
+Input [1]: [count#117L]
+Arguments: SinglePartition, ENSURE_REQUIREMENTS, [plan_id=441]
+
+(8) HashAggregate
+Input [1]: [count#117L]
+Keys: []
+Functions [1]: [count(1)]
+Aggregate Attributes [1]: [count(1)#90L]
+Results [1]: [count(1)#90L AS total_count#89L]
+
+(9) BroadcastExchange
+Input [1]: [total_count#89L]
+Arguments: IdentityBroadcastMode, [plan_id=444]
+
+(10) BroadcastNestedLoopJoin
+Join type: Cross
+Join condition: None
+
+(11) Project
+Output [4]: [order_status#19, count#91L, total_count#89L, round(((cast(count#91L as double) / cast(total_count#89L as double)) * 100.0), 3) AS pct#109]
+Input [3]: [order_status#19, count#91L, total_count#89L]
+
+(12) AdaptiveSparkPlan
+Output [4]: [order_status#19, count#91L, total_count#89L, pct#109]
+Arguments: isFinalPlan=false
+
+</code></pre>
+</div>
+</div>
+<p>The plan shows <code>BroadcastNestedLoopJoin</code>. Spark recognises that <code>n_orders_sdf</code> produces exactly one row and automatically broadcasts it to every executor. Each node receives the total and completes the division locally — no data moves between executors.</p>
+<p>This is the recommended pattern for large data: the computation stays fully distributed, and Spark’s optimiser handles the broadcast without explicit hints.</p>
+</section>
+<section id="approach-4-conditional-aggregation" class="level2">
+<h2 class="anchored" data-anchor-id="approach-4-conditional-aggregation">Approach 4: Conditional aggregation</h2>
+<p>This is the Conditional Aggregation Pattern, also known as Pivoted Aggregation. We avoid the <code>groupBy</code> entirely by scanning the dataset once and using conditional logic to increment a counter for each status type in parallel.</p>
+<div id="approach-4-static" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>s4_static <span class="op">=</span> (</span>
+<span id="cb16-2"><a href="#cb16-2"></a>    orders</span>
+<span id="cb16-3"><a href="#cb16-3"></a>    .agg(</span>
+<span id="cb16-4"><a href="#cb16-4"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"shipped"</span>, <span class="dv">1</span>)).alias(<span class="st">"shipped_count"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"canceled"</span>, <span class="dv">1</span>)).alias(<span class="st">"canceled_count"</span>),</span>
+<span id="cb16-6"><a href="#cb16-6"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"invoiced"</span>, <span class="dv">1</span>)).alias(<span class="st">"invoiced_count"</span>),</span>
+<span id="cb16-7"><a href="#cb16-7"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"created"</span>, <span class="dv">1</span>)).alias(<span class="st">"created_count"</span>),</span>
+<span id="cb16-8"><a href="#cb16-8"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"delivered"</span>, <span class="dv">1</span>)).alias(<span class="st">"delivered_count"</span>),</span>
+<span id="cb16-9"><a href="#cb16-9"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"unavailable"</span>, <span class="dv">1</span>)).alias(<span class="st">"unavailable_count"</span>),</span>
+<span id="cb16-10"><a href="#cb16-10"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"processing"</span>, <span class="dv">1</span>)).alias(<span class="st">"processing_count"</span>),</span>
+<span id="cb16-11"><a href="#cb16-11"></a>        F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> <span class="st">"approved"</span>, <span class="dv">1</span>)).alias(<span class="st">"approved_count"</span>),</span>
+<span id="cb16-12"><a href="#cb16-12"></a>        F.count(<span class="st">"*"</span>).alias(<span class="st">"total_count"</span>),</span>
+<span id="cb16-13"><a href="#cb16-13"></a>    )</span>
+<span id="cb16-14"><a href="#cb16-14"></a>    .withColumn(<span class="st">"shipped_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"shipped_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-15"><a href="#cb16-15"></a>    .withColumn(<span class="st">"canceled_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"canceled_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-16"><a href="#cb16-16"></a>    .withColumn(<span class="st">"invoiced_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"invoiced_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-17"><a href="#cb16-17"></a>    .withColumn(<span class="st">"created_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"created_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-18"><a href="#cb16-18"></a>    .withColumn(<span class="st">"delivered_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"delivered_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-19"><a href="#cb16-19"></a>    .withColumn(<span class="st">"unavailable_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"unavailable_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-20"><a href="#cb16-20"></a>    .withColumn(<span class="st">"processing_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"processing_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-21"><a href="#cb16-21"></a>    .withColumn(<span class="st">"approved_pct"</span>, F.<span class="bu">round</span>((F.col(<span class="st">"approved_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>))</span>
+<span id="cb16-22"><a href="#cb16-22"></a></span>
+<span id="cb16-23"><a href="#cb16-23"></a>)</span>
+<span id="cb16-24"><a href="#cb16-24"></a></span>
+<span id="cb16-25"><a href="#cb16-25"></a>s4_static.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|shipped_count|canceled_count|invoiced_count|created_count|delivered_count|unavailable_count|processing_count|approved_count|total_count|shipped_pct|canceled_pct|invoiced_pct|created_pct|delivered_pct|unavailable_pct|processing_pct|approved_pct|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|         1107|           625|           314|            5|          96478|              609|             301|             2|      99441|      1.113|       0.629|       0.316|      0.005|        97.02|          0.612|         0.303|       0.002|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+</code></pre>
+</div>
+</div>
+<p>One scan, no <code>groupBy</code>, no shuffle. However it is ugly and wordy. It produces one wide dataframe. What if new statuses are added? It simply won’t scale.</p>
+<p>We can make the status list dynamic by collecting the distinct values first, but the naïve version doesn’t handle nulls gracefully:</p>
+<div id="approach-4-dynamic-buggy" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>statuses <span class="op">=</span> [row[<span class="dv">0</span>] <span class="cf">for</span> row <span class="kw">in</span> orders.select(<span class="st">"order_status"</span>).distinct().collect()]</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a>agg_exprs <span class="op">=</span> [</span>
+<span id="cb18-4"><a href="#cb18-4"></a>    F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> status, <span class="dv">1</span>)).alias(<span class="ss">f"</span><span class="sc">{</span>status<span class="sc">}</span><span class="ss">_count"</span>)</span>
+<span id="cb18-5"><a href="#cb18-5"></a>    <span class="cf">for</span> status <span class="kw">in</span> statuses</span>
+<span id="cb18-6"><a href="#cb18-6"></a>]</span>
+<span id="cb18-7"><a href="#cb18-7"></a>agg_exprs.append(F.count(<span class="st">"*"</span>).alias(<span class="st">"total_count"</span>))</span>
+<span id="cb18-8"><a href="#cb18-8"></a></span>
+<span id="cb18-9"><a href="#cb18-9"></a>s4_dynamic_buggy <span class="op">=</span> orders.agg(<span class="op">*</span>agg_exprs)</span>
+<span id="cb18-10"><a href="#cb18-10"></a></span>
+<span id="cb18-11"><a href="#cb18-11"></a><span class="cf">for</span> status <span class="kw">in</span> statuses:</span>
+<span id="cb18-12"><a href="#cb18-12"></a>    s4_dynamic_buggy <span class="op">=</span> s4_dynamic_buggy.withColumn(</span>
+<span id="cb18-13"><a href="#cb18-13"></a>        <span class="ss">f"</span><span class="sc">{</span>status<span class="sc">}</span><span class="ss">_pct"</span>,</span>
+<span id="cb18-14"><a href="#cb18-14"></a>        F.<span class="bu">round</span>((F.col(<span class="ss">f"</span><span class="sc">{</span>status<span class="sc">}</span><span class="ss">_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>),</span>
+<span id="cb18-15"><a href="#cb18-15"></a>    )</span>
+<span id="cb18-16"><a href="#cb18-16"></a></span>
+<span id="cb18-17"><a href="#cb18-17"></a>s4_dynamic_buggy.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>If any <code>order_status</code> value is null, <code>row[0]</code> returns <code>None</code>. The list comprehension builds the alias <code>f"None_count"</code> and the aggregation expression <code>F.col("order_status") == None</code>. In Spark’s three-valued logic, <code>== None</code> evaluates to null rather than <code>True</code>, so that group is silently undercounted. The <code>withColumn</code> loop then tries to reference <code>f"None_count"</code> as a column name, which fails at runtime.</p>
+<p>We fix this with an explicit null check:</p>
+<div id="approach-4-dynamic" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a>statuses <span class="op">=</span> [row[<span class="dv">0</span>] <span class="cf">for</span> row <span class="kw">in</span> orders.select(<span class="st">"order_status"</span>).distinct().collect()]</span>
+<span id="cb19-2"><a href="#cb19-2"></a></span>
+<span id="cb19-3"><a href="#cb19-3"></a>agg_exprs <span class="op">=</span> [</span>
+<span id="cb19-4"><a href="#cb19-4"></a>    F.count(F.when(F.col(<span class="st">"order_status"</span>) <span class="op">==</span> s, <span class="dv">1</span>)).alias(<span class="ss">f"</span><span class="sc">{</span>s<span class="sc">}</span><span class="ss">_count"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5"></a>    <span class="cf">for</span> s <span class="kw">in</span> statuses</span>
+<span id="cb19-6"><a href="#cb19-6"></a>    <span class="cf">if</span> s <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a>]</span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="cf">if</span> <span class="va">None</span> <span class="kw">in</span> statuses:</span>
+<span id="cb19-9"><a href="#cb19-9"></a>    agg_exprs.append(F.count(F.when(F.col(<span class="st">"order_status"</span>).isNull(), <span class="dv">1</span>)).alias(<span class="st">"null_count"</span>))</span>
+<span id="cb19-10"><a href="#cb19-10"></a>agg_exprs.append(F.count(<span class="st">"*"</span>).alias(<span class="st">"total_count"</span>))</span>
+<span id="cb19-11"><a href="#cb19-11"></a></span>
+<span id="cb19-12"><a href="#cb19-12"></a>s4_dynamic <span class="op">=</span> orders.agg(<span class="op">*</span>agg_exprs)</span>
+<span id="cb19-13"><a href="#cb19-13"></a></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="cf">for</span> s <span class="kw">in</span> statuses:</span>
+<span id="cb19-15"><a href="#cb19-15"></a>    col_name <span class="op">=</span> <span class="st">"null"</span> <span class="cf">if</span> s <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> s</span>
+<span id="cb19-16"><a href="#cb19-16"></a>    s4_dynamic <span class="op">=</span> s4_dynamic.withColumn(</span>
+<span id="cb19-17"><a href="#cb19-17"></a>        <span class="ss">f"</span><span class="sc">{</span>col_name<span class="sc">}</span><span class="ss">_pct"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18"></a>        F.<span class="bu">round</span>((F.col(<span class="ss">f"</span><span class="sc">{</span>col_name<span class="sc">}</span><span class="ss">_count"</span>) <span class="op">/</span> F.col(<span class="st">"total_count"</span>)) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">3</span>),</span>
+<span id="cb19-19"><a href="#cb19-19"></a>    )</span>
+<span id="cb19-20"><a href="#cb19-20"></a></span>
+<span id="cb19-21"><a href="#cb19-21"></a>s4_dynamic.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|shipped_count|canceled_count|invoiced_count|created_count|delivered_count|unavailable_count|processing_count|approved_count|total_count|shipped_pct|canceled_pct|invoiced_pct|created_pct|delivered_pct|unavailable_pct|processing_pct|approved_pct|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|         1107|           625|           314|            5|          96478|              609|             301|             2|      99441|      1.113|       0.629|       0.316|      0.005|        97.02|          0.612|         0.303|       0.002|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+</code></pre>
+</div>
+</div>
+<p>The dynamic version still requires two passes — one <code>distinct().collect()</code> action to build the status list, then the aggregation — so the single-scan advantage of the static version is partially lost.</p>
+</section>
+<section id="benchmarking" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarking">Benchmarking</h2>
+<p>We cache <code>orders</code> first so I/O does not dominate the measurement.</p>
+<div id="benchmark" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>orders.cache()</span>
+<span id="cb21-2"><a href="#cb21-2"></a>orders.count()</span>
+<span id="cb21-3"><a href="#cb21-3"></a></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="cf">with</span> timer(<span class="st">"approach 1 — collect scalar"</span>):</span>
+<span id="cb21-5"><a href="#cb21-5"></a>    s1.show()</span>
+<span id="cb21-6"><a href="#cb21-6"></a></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="cf">with</span> timer(<span class="st">"approach 2 — empty window"</span>):</span>
+<span id="cb21-8"><a href="#cb21-8"></a>    s2.show()</span>
+<span id="cb21-9"><a href="#cb21-9"></a></span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="cf">with</span> timer(<span class="st">"approach 3 — cross-join"</span>):</span>
+<span id="cb21-11"><a href="#cb21-11"></a>    s3.show()</span>
+<span id="cb21-12"><a href="#cb21-12"></a></span>
+<span id="cb21-13"><a href="#cb21-13"></a><span class="cf">with</span> timer(<span class="st">"approach 4a — conditional aggregation"</span>):</span>
+<span id="cb21-14"><a href="#cb21-14"></a>    s4_static.show()</span>
+<span id="cb21-15"><a href="#cb21-15"></a></span>
+<span id="cb21-16"><a href="#cb21-16"></a><span class="cf">with</span> timer(<span class="st">"approach 4b — conditional aggregation"</span>):</span>
+<span id="cb21-17"><a href="#cb21-17"></a>    s4_dynamic.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>[Stage 29:===========&gt;                                              (1 + 4) / 5]                                                                                </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------+-----+-----+
+|order_status|count|  pct|
++------------+-----+-----+
+|     shipped| 1107|1.113|
+|    canceled|  625|0.629|
+|    invoiced|  314|0.316|
+|     created|    5|0.005|
+|   delivered|96478|97.02|
+| unavailable|  609|0.612|
+|  processing|  301|0.303|
+|    approved|    2|0.002|
++------------+-----+-----+
+
+approach 1 — collect scalar: 0.21s</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>26/06/05 15:54:58 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:58 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:58 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:58 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:58 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:59 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:59 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:59 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.
+26/06/05 15:54:59 WARN WindowExec: No Partition Defined for Window operation! Moving all data to a single partition, this can cause serious performance degradation.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>+------------+-----+-----+
+|order_status|count|  pct|
++------------+-----+-----+
+|     shipped| 1107|1.113|
+|    canceled|  625|0.629|
+|    invoiced|  314|0.316|
+|     created|    5|0.005|
+|   delivered|96478|97.02|
+| unavailable|  609|0.612|
+|  processing|  301|0.303|
+|    approved|    2|0.002|
++------------+-----+-----+
+
+approach 2 — empty window: 0.27s
++------------+-----+-----------+-----+
+|order_status|count|total_count|  pct|
++------------+-----+-----------+-----+
+|     shipped| 1107|      99441|1.113|
+|    canceled|  625|      99441|0.629|
+|    invoiced|  314|      99441|0.316|
+|     created|    5|      99441|0.005|
+|   delivered|96478|      99441|97.02|
+| unavailable|  609|      99441|0.612|
+|  processing|  301|      99441|0.303|
+|    approved|    2|      99441|0.002|
++------------+-----+-----------+-----+
+
+approach 3 — cross-join: 0.28s
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|shipped_count|canceled_count|invoiced_count|created_count|delivered_count|unavailable_count|processing_count|approved_count|total_count|shipped_pct|canceled_pct|invoiced_pct|created_pct|delivered_pct|unavailable_pct|processing_pct|approved_pct|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|         1107|           625|           314|            5|          96478|              609|             301|             2|      99441|      1.113|       0.629|       0.316|      0.005|        97.02|          0.612|         0.303|       0.002|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+
+approach 4a — conditional aggregation: 0.21s
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|shipped_count|canceled_count|invoiced_count|created_count|delivered_count|unavailable_count|processing_count|approved_count|total_count|shipped_pct|canceled_pct|invoiced_pct|created_pct|delivered_pct|unavailable_pct|processing_pct|approved_pct|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+|         1107|           625|           314|            5|          96478|              609|             301|             2|      99441|      1.113|       0.629|       0.316|      0.005|        97.02|          0.612|         0.303|       0.002|
++-------------+--------------+--------------+-------------+---------------+-----------------+----------------+--------------+-----------+-----------+------------+------------+-----------+-------------+---------------+--------------+------------+
+
+approach 4b — conditional aggregation: 0.15s</code></pre>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>For most workloads, <strong>approach 3</strong> is the right choice: it stays fully distributed, Spark handles the broadcast automatically, and the code reads clearly. <strong>Approach 1</strong> is simpler and works well when the table is small enough that the initial <code>count()</code> is cheap. <strong>Approach 2</strong> is a trap — destroys performance at scale.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/varmara\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
