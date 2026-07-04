@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marina Varfolomeeva">
+<meta name="dcterms.date" content="2026-07-04">
+<meta name="description" content="Deconstructing marketplace unit economics, average order value, and lifetime value using the public Olist dataset.">
+
+<title>Building a Metric Tree for E-commerce: Analyzing LTV and AOV in the Olist Dataset – Marina Varfolomeeva</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-60894e5ca26aaca91341ef9d74312a65.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../assets/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Marina Varfolomeeva</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/varmara"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/marina-varfolomeeva"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#the-metric-tree" id="toc-the-metric-tree" class="nav-link active" data-scroll-target="#the-metric-tree">The metric tree</a>
+  <ul class="collapse">
+  <li><a href="#decomposing-e-commerce-ltv" id="toc-decomposing-e-commerce-ltv" class="nav-link" data-scroll-target="#decomposing-e-commerce-ltv">Decomposing E-Commerce LTV</a></li>
+  <li><a href="#average-order-value" id="toc-average-order-value" class="nav-link" data-scroll-target="#average-order-value">Average Order Value</a></li>
+  </ul></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#cohort-definitions" id="toc-cohort-definitions" class="nav-link" data-scroll-target="#cohort-definitions">Cohort definitions</a></li>
+  <li><a href="#cohort-size-the-first-leaf" id="toc-cohort-size-the-first-leaf" class="nav-link" data-scroll-target="#cohort-size-the-first-leaf">Cohort size: the first leaf</a></li>
+  <li><a href="#purchase-frequency-and-lifespan" id="toc-purchase-frequency-and-lifespan" class="nav-link" data-scroll-target="#purchase-frequency-and-lifespan">Purchase frequency and lifespan</a></li>
+  <li><a href="#aov-and-its-components" id="toc-aov-and-its-components" class="nav-link" data-scroll-target="#aov-and-its-components">AOV and its components</a></li>
+  <li><a href="#freight" id="toc-freight" class="nav-link" data-scroll-target="#freight">Freight</a></li>
+  <li><a href="#rolling-up-the-tree" id="toc-rolling-up-the-tree" class="nav-link" data-scroll-target="#rolling-up-the-tree">Rolling up the tree</a></li>
+  <li><a href="#what-we-cannot-compute" id="toc-what-we-cannot-compute" class="nav-link" data-scroll-target="#what-we-cannot-compute">What we cannot compute</a></li>
+  <li><a href="#what-we-found" id="toc-what-we-found" class="nav-link" data-scroll-target="#what-we-found">What we found</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Building a Metric Tree for E-commerce: Analyzing LTV and AOV in the Olist Dataset</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Unit Economics</div>
+    <div class="quarto-category">Cohort Analysis</div>
+    <div class="quarto-category">Olist</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Deconstructing marketplace unit economics, average order value, and lifetime value using the public Olist dataset.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marina Varfolomeeva </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 4, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>A metric tree is a mathematical model of a business. It decomposes the primary business metric into the drivers and inputs that move it. The tree forces you to define the metrics you care about and understand their relationships. Once drawn, it reveals which lever to pull to achieve a specific effect. However, applying a metric tree to aggregate data can be misleading.</p>
+<p>A single-year snapshot would compress customers with very different histories into one average. A customer acquired in January has eleven months to place a second order before the year ends; one acquired in December has one. Averaging them together produces a number that describes neither group well.</p>
+<p>A cohort-based view fixes this by grouping customers by the time of their first purchase (or registration - depending on your definition) and tracking their lifetime behaviour together. Instead of asking, “What was total revenue in 2017?”, we can ask, “What has each acquisition cohort generated over its observed lifetime?” Cohort differences can also surface patterns masked by aggregate views, e.g., does a holiday-season cohort spend more per order? Do different quarters produce meaningfully different repeat rates?</p>
+<p>Let’s build up a metric tree for quarter-level cohorts using Olist dataset. For dataset setup and schema overview, see <a href="../../blog/2026-06-04-olist-01-intro/index.html">Customer Analytics with Olist, Part 1: Data Setup</a>.</p>
+<section id="the-metric-tree" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-metric-tree">The metric tree</h2>
+<p>We will decompose lifetime net contribution margin per cohort which is revenue after variable costs. The “lifetime” qualifier means we sum it across every order a customer places, not just their first. It can be decomposed into two branches: what a cohort generates over its lifetime (the LTV branch), and what it costs to acquire (the CAC branch).</p>
+<p><strong>Lifetime Net Contribution Margin per Cohort</strong> is the difference between the total <strong>Total Cohort Lifetime Value (LTV)</strong> (<span class="math inline">\(\text{LTV per customer} \times \text{Cohort Size}\)</span>) and the total cohort <strong>Customer Acquisition Cost (CAC)</strong>:</p>
+<p><span class="math display">\[\text{Lifetime Net Contribution Margin per Cohort} = \text{LTV per customer} \times \text{Cohort Size} - \text{total cohort CAC}\]</span></p>
+<p>In the Olist dataset, the CAC branch cannot be calculated because there’s no information on advertising costs. The LTV branch can be partially calculated.</p>
+<section id="decomposing-e-commerce-ltv" class="level3">
+<h3 class="anchored" data-anchor-id="decomposing-e-commerce-ltv">Decomposing E-Commerce LTV</h3>
+<p>The traditional way to calculate LTV relies on Customer Value (CV) and Gross Margin (GM) percentages <span class="math display">\[ \text{LTV per customer} = \underbrace{\text{AOV} \times \text{F}}_{\text{Customer Value (CV)}} \times \text{GM} \times \text{T} \]</span></p>
+<p>Although this approach is common, applying a flat gross margin percentage may be misleading.</p>
+<p>Instead, we will build the tree using absolute unit economics. We start by looking at the Gross Profit (GP) of a single order, multiplied by how often the customers buy, and how long they stick around:</p>
+<p><span class="math display">\[\text{LTV per customer} = \underbrace{\underbrace{\text{AOV} \times \text{GM}}_{\text{GP per Order}} \times \text{F}}_{\text{GP per customer}} \times \text{T}\]</span></p>
+<ul>
+<li><strong>GP (Gross Profit per Order)</strong> is what remains from a single order after the variable costs of fulfilling it:</li>
+</ul>
+<p><span class="math display">\[\text{GP per order} = \text{AOV} - \text{COGS} - \text{Freight Cost} - \text{Other Variable Costs}\]</span></p>
+<p>We cannot compute GP for Olist — AOV is observable, but the cost lines are not.</p>
+<ul>
+<li><p><strong>F (Purchase Frequency)</strong> is the number of orders an average customer places in a unit of time.</p></li>
+<li><p><strong>T (Average Customer Lifespan)</strong> is the average duration a customer continues to buy from you. It is typically calculated as <span class="math inline">\(1/C\)</span>, where <span class="math inline">\(C\)</span> is churn rate.</p></li>
+<li><p><strong>AOV (Avg Order Value)</strong> measures the average total amount of money spent every time a customer completes a transaction.</p></li>
+</ul>
+</section>
+<section id="average-order-value" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="average-order-value">Average Order Value</h3>
+<p>Finally, we can break down the revenue side of that GP equation.</p>
+<p>The <strong>AOV (Avg Order Value)</strong> is the average amount the customer pays at checkout. It is the sum of two revenue streams: <span class="math display">\[\underset{\text{At the checkout level}}{\text{AOV}} = \underbrace{\text{ASP} \times \text{UPT}}_{\text{Avg Product Value at the cart level}} + \underbrace{\text{FR}}_{\text{Freight Revenue}}\]</span></p>
+<ul>
+<li><p><strong>ASP (Avg Selling Price)</strong> is the realized price of the items.</p></li>
+<li><p><strong>UPT (Units per Transaction)</strong> is the number of items in the cart.</p></li>
+<li><p><strong>FR (Avg Freight Revenue)</strong> is the delivery charge paid by the customer.</p></li>
+</ul>
+<p><span class="math inline">\(T\)</span> (Avg Customer Lifespan) here is measured in months to match <span class="math inline">\(F\)</span>, so that <span class="math inline">\(F \times T\)</span> cancels to a pure lifetime order count. In this specific dataset, roughly 96% of Olist customers made only one purchase. As a result, calculating a standard monthly churn rate (<span class="math inline">\(C\)</span>) yields 100% making <span class="math inline">\(1/C\)</span> misleading without predictive models. We will return to <span class="math inline">\(T\)</span> with predictive models in a separate post. For now we will calculate the metrics the data supports.</p>
+<p>Node colours: <strong>teal</strong> = computable from Olist; <strong>yellow</strong> = some inputs missing; <strong>grey dashed</strong> = not in the dataset.</p>
+<div class="column-body-outset">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#e8f5f5", "primaryBorderColor": "#458d8f", "primaryTextColor": "#212529", "lineColor": "#888888", "fontSize": "14px"}}}%%
+flowchart TD
+    classDef ok fill:#e8f5f5,stroke:#458d8f,color:#212529
+    classDef partial fill:#fff8e1,stroke:#c9a227,color:#212529
+    classDef na fill:#f0f0f0,stroke:#bbb,color:#999,stroke-dasharray:4 2
+
+    NCM["Lifetime Net Contribution Margin"]:::partial
+
+    LTV["Total Cohort LTV"]:::partial
+    CAC["Total Cohort CAC"]:::na
+    NCM --&gt;|\+| LTV
+    NCM --&gt;|−| CAC
+
+    SIZE["Cohort Size"]:::ok
+    LTVPC["LTV per Customer"]:::partial
+    LTV --&gt;|×| SIZE
+    LTV --&gt;|×| LTVPC
+
+    ADSP["Ad Spend"]:::na
+    CAC --&gt; ADSP
+
+    AGPPC["Gross Profit per Customer"]:::partial
+    T["T (Avg Customer Lifespan)"]:::partial
+    LTVPC --&gt;|×| AGPPC
+    LTVPC --&gt;|×| T
+
+    GPO["Gross Profit / Order"]:::na
+    F["F (Purchase Frequency)"]:::ok
+    AGPPC --&gt;|×| GPO
+    AGPPC --&gt;|×| F
+
+    AOV["AOV (Avg Order Value)"]:::ok
+    COGS["COGS / Order"]:::na
+    FCOST["Freight Cost / Order"]:::na
+    VAR["Other Variable Costs / Order"]:::na
+    GPO --&gt;|\+| AOV
+    GPO --&gt;|−| COGS
+    GPO --&gt;|−| FCOST
+    GPO --&gt;|−| VAR
+
+    APV["Avg Product Value"]:::ok
+    FR["Avg Freight Revenue"]:::ok
+    AOV --&gt;|\+| APV
+    AOV --&gt;|\+| FR
+
+    ASP["ASP (Avg Selling Price)"]:::ok
+    UPT["UPT (Units per transaction)"]:::ok
+    APV --&gt;|×| ASP
+    APV --&gt;|×| UPT
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>Let’s load four tables and work with delivered orders aacross the full dataset with no year filters. We’ll restrict to <code>delivered</code> status: cancelled, in-transit, and pending orders carry incomplete or zero revenue.</p>
+<div id="setup" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> plotnine <span class="im">import</span> (</span>
+<span id="cb1-6"><a href="#cb1-6"></a>    ggplot, aes, geom_col, geom_text, geom_hline, facet_wrap,</span>
+<span id="cb1-7"><a href="#cb1-7"></a>    scale_fill_manual, scale_y_continuous, labs,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>    theme, theme_classic, element_text, element_blank,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>load_dotenv()</span>
+<span id="cb1-12"><a href="#cb1-12"></a>OLIST_DIR <span class="op">=</span> Path(os.environ[<span class="st">"DATA_DIR"</span>]) <span class="op">/</span> <span class="st">"olist"</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>orders <span class="op">=</span> pd.read_csv(</span>
+<span id="cb1-15"><a href="#cb1-15"></a>    OLIST_DIR <span class="op">/</span> <span class="st">"olist_orders_dataset.csv"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16"></a>    parse_dates<span class="op">=</span>[<span class="st">"order_purchase_timestamp"</span>],</span>
+<span id="cb1-17"><a href="#cb1-17"></a>)</span>
+<span id="cb1-18"><a href="#cb1-18"></a>order_payments <span class="op">=</span> pd.read_csv(OLIST_DIR <span class="op">/</span> <span class="st">"olist_order_payments_dataset.csv"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>order_items <span class="op">=</span> pd.read_csv(OLIST_DIR <span class="op">/</span> <span class="st">"olist_order_items_dataset.csv"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a>customers <span class="op">=</span> pd.read_csv(OLIST_DIR <span class="op">/</span> <span class="st">"olist_customers_dataset.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="filter-delivered" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>delivered <span class="op">=</span> (</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    orders[orders[<span class="st">"order_status"</span>] <span class="op">==</span> <span class="st">"delivered"</span>]</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    .merge(customers[[<span class="st">"customer_id"</span>, <span class="st">"customer_unique_id"</span>]], on<span class="op">=</span><span class="st">"customer_id"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    .copy()</span>
+<span id="cb2-5"><a href="#cb2-5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="cohort-definitions" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="cohort-definitions">Cohort definitions</h2>
+<p>A quarterly cohort groups all customers whose first delivered order falls in the same calendar quarter (Q1 = Jan–Mar, Q2 = Apr–Jun, Q3 = Jul–Sep, Q4 = Oct–Dec). We will assign cohort from <code>customer_unique_id</code>, not <code>customer_id</code> (a person can appear under multiple <code>customer_id</code> values across different orders).</p>
+<p>The dataset covers September 2016 through October 2018. The very first quarter, 2016-Q3, contains a single customer with a single delivered order, so we drop it. A cohort of one is an anecdote, not a statistic.</p>
+<p>That leaves eight quarterly cohorts. Each is observed for a different stretch of time before the dataset ends: the oldest 2016-Q4 cohort has roughly 24 months of follow-up; the 2018-Q3 cohort has about four. With the near-zero repeat rates at Olist, this difference in observation window has little practical effect on purchase frequency estimates.</p>
+<div id="cohort-def" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>DATASET_END <span class="op">=</span> orders[<span class="st">"order_purchase_timestamp"</span>].<span class="bu">max</span>()</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>first_ts <span class="op">=</span> (</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    delivered.groupby(<span class="st">"customer_unique_id"</span>)[<span class="st">"order_purchase_timestamp"</span>]</span>
+<span id="cb3-5"><a href="#cb3-5"></a>    .<span class="bu">min</span>()</span>
+<span id="cb3-6"><a href="#cb3-6"></a>    .rename(<span class="st">"first_ts"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>    .reset_index()</span>
+<span id="cb3-8"><a href="#cb3-8"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9"></a>first_ts[<span class="st">"cohort"</span>] <span class="op">=</span> first_ts[<span class="st">"first_ts"</span>].dt.to_period(<span class="st">"Q"</span>).astype(<span class="bu">str</span>).<span class="bu">str</span>.replace(<span class="st">'Q'</span>, <span class="st">'-Q'</span>)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co"># 2016-Q3 contains a single customer; a cohort of one is dropped</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>first_ts <span class="op">=</span> first_ts[first_ts[<span class="st">"cohort"</span>] <span class="op">!=</span> <span class="st">"2016-Q3"</span>]</span>
+<span id="cb3-13"><a href="#cb3-13"></a></span>
+<span id="cb3-14"><a href="#cb3-14"></a>cohort_start <span class="op">=</span> (</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    first_ts.groupby(<span class="st">"cohort"</span>)[<span class="st">"first_ts"</span>]</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    .<span class="bu">min</span>()</span>
+<span id="cb3-17"><a href="#cb3-17"></a>    .rename(<span class="st">"cohort_first_order"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18"></a>    .reset_index()</span>
+<span id="cb3-19"><a href="#cb3-19"></a>)</span>
+<span id="cb3-20"><a href="#cb3-20"></a>cohort_start[<span class="st">"obs_months"</span>] <span class="op">=</span> (</span>
+<span id="cb3-21"><a href="#cb3-21"></a>    (DATASET_END <span class="op">-</span> cohort_start[<span class="st">"cohort_first_order"</span>]).dt.days <span class="op">/</span> <span class="fl">30.44</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>).<span class="bu">round</span>(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb3-23"><a href="#cb3-23"></a></span>
+<span id="cb3-24"><a href="#cb3-24"></a>order_cohort <span class="op">=</span> (</span>
+<span id="cb3-25"><a href="#cb3-25"></a>    delivered[[<span class="st">"order_id"</span>, <span class="st">"customer_unique_id"</span>]].drop_duplicates(<span class="st">"order_id"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26"></a>    .merge(first_ts[[<span class="st">"customer_unique_id"</span>, <span class="st">"cohort"</span>]], on<span class="op">=</span><span class="st">"customer_unique_id"</span>)</span>
+<span id="cb3-27"><a href="#cb3-27"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="cohort-metrics" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>order_stats <span class="op">=</span> (</span>
+<span id="cb4-2"><a href="#cb4-2"></a>    order_items</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    .groupby(<span class="st">"order_id"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    .agg(</span>
+<span id="cb4-5"><a href="#cb4-5"></a>        gmv<span class="op">=</span>(<span class="st">"price"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-6"><a href="#cb4-6"></a>        freight<span class="op">=</span>(<span class="st">"freight_value"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-7"><a href="#cb4-7"></a>        n_units<span class="op">=</span>(<span class="st">"order_item_id"</span>, <span class="st">"count"</span>),</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    )</span>
+<span id="cb4-9"><a href="#cb4-9"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a>enriched <span class="op">=</span> (</span>
+<span id="cb4-12"><a href="#cb4-12"></a>    order_cohort</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    .merge(order_stats, on<span class="op">=</span><span class="st">"order_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14"></a>)</span>
+<span id="cb4-15"><a href="#cb4-15"></a></span>
+<span id="cb4-16"><a href="#cb4-16"></a>cohorts <span class="op">=</span> (</span>
+<span id="cb4-17"><a href="#cb4-17"></a>    enriched.groupby(<span class="st">"cohort"</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a>    .agg(</span>
+<span id="cb4-19"><a href="#cb4-19"></a>        cohort_size<span class="op">=</span>(<span class="st">"customer_unique_id"</span>, <span class="st">"nunique"</span>),</span>
+<span id="cb4-20"><a href="#cb4-20"></a>        total_orders<span class="op">=</span>(<span class="st">"order_id"</span>, <span class="st">"count"</span>),</span>
+<span id="cb4-21"><a href="#cb4-21"></a>        total_gmv<span class="op">=</span>(<span class="st">"gmv"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-22"><a href="#cb4-22"></a>        total_freight<span class="op">=</span>(<span class="st">"freight"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-23"><a href="#cb4-23"></a>        total_units<span class="op">=</span>(<span class="st">"n_units"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-24"><a href="#cb4-24"></a>    )</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    .reset_index()</span>
+<span id="cb4-26"><a href="#cb4-26"></a>    .sort_values(<span class="st">"cohort"</span>)</span>
+<span id="cb4-27"><a href="#cb4-27"></a>    .reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-28"><a href="#cb4-28"></a>)</span>
+<span id="cb4-29"><a href="#cb4-29"></a></span>
+<span id="cb4-30"><a href="#cb4-30"></a>cohorts[<span class="st">"lifetime_purchase_freq"</span>] <span class="op">=</span> cohorts[<span class="st">"total_orders"</span>] <span class="op">/</span> cohorts[<span class="st">"cohort_size"</span>]</span>
+<span id="cb4-31"><a href="#cb4-31"></a>cohorts[<span class="st">"aov"</span>] <span class="op">=</span> (cohorts[<span class="st">"total_gmv"</span>] <span class="op">+</span> cohorts[<span class="st">"total_freight"</span>]) <span class="op">/</span> cohorts[<span class="st">"total_orders"</span>]</span>
+<span id="cb4-32"><a href="#cb4-32"></a>cohorts[<span class="st">"avg_product_value"</span>] <span class="op">=</span> cohorts[<span class="st">"total_gmv"</span>] <span class="op">/</span> cohorts[<span class="st">"total_orders"</span>]</span>
+<span id="cb4-33"><a href="#cb4-33"></a>cohorts[<span class="st">"freight_per_order"</span>] <span class="op">=</span> cohorts[<span class="st">"total_freight"</span>] <span class="op">/</span> cohorts[<span class="st">"total_orders"</span>]</span>
+<span id="cb4-34"><a href="#cb4-34"></a>cohorts[<span class="st">"units_per_transaction"</span>] <span class="op">=</span> cohorts[<span class="st">"total_units"</span>] <span class="op">/</span> cohorts[<span class="st">"total_orders"</span>]</span>
+<span id="cb4-35"><a href="#cb4-35"></a>cohorts[<span class="st">"avg_selling_price"</span>] <span class="op">=</span> cohorts[<span class="st">"total_gmv"</span>] <span class="op">/</span> cohorts[<span class="st">"total_units"</span>]</span>
+<span id="cb4-36"><a href="#cb4-36"></a>cohorts[<span class="st">"lifetime_revenue_per_customer"</span>] <span class="op">=</span> (</span>
+<span id="cb4-37"><a href="#cb4-37"></a>    (cohorts[<span class="st">"total_gmv"</span>] <span class="op">+</span> cohorts[<span class="st">"total_freight"</span>]) <span class="op">/</span> cohorts[<span class="st">"cohort_size"</span>]</span>
+<span id="cb4-38"><a href="#cb4-38"></a>)</span>
+<span id="cb4-39"><a href="#cb4-39"></a>cohorts[<span class="st">"freight_share"</span>] <span class="op">=</span> cohorts[<span class="st">"total_freight"</span>] <span class="op">/</span> cohorts[<span class="st">"total_gmv"</span>]</span>
+<span id="cb4-40"><a href="#cb4-40"></a></span>
+<span id="cb4-41"><a href="#cb4-41"></a>cohorts <span class="op">=</span> cohorts.merge(cohort_start[[<span class="st">"cohort"</span>, <span class="st">"obs_months"</span>]], on<span class="op">=</span><span class="st">"cohort"</span>)</span>
+<span id="cb4-42"><a href="#cb4-42"></a>cohorts[<span class="st">"monthly_purchase_freq"</span>] <span class="op">=</span> cohorts[<span class="st">"lifetime_purchase_freq"</span>] <span class="op">/</span> cohorts[<span class="st">"obs_months"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>pd.DataFrame({</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    <span class="st">"Cohort"</span>: cohorts[<span class="st">"cohort"</span>],</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="st">"Size"</span>: cohorts[<span class="st">"cohort_size"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    <span class="st">"Obs (months)"</span>: cohorts[<span class="st">"obs_months"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:d}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    <span class="st">"Monthly F"</span>: cohorts[<span class="st">"monthly_purchase_freq"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:.3f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    <span class="st">"Lifetime orders"</span>: cohorts[<span class="st">"lifetime_purchase_freq"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:.3f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-7"><a href="#cb5-7"></a>    <span class="st">"AOV"</span>: cohorts[<span class="st">"aov"</span>].<span class="bu">map</span>(<span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="st">"Product value / order"</span>: cohorts[<span class="st">"avg_product_value"</span>].<span class="bu">map</span>(<span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="st">"UPT"</span>: cohorts[<span class="st">"units_per_transaction"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:.2f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    <span class="st">"ASP"</span>: cohorts[<span class="st">"avg_selling_price"</span>].<span class="bu">map</span>(<span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    <span class="st">"Freight / order"</span>: cohorts[<span class="st">"freight_per_order"</span>].<span class="bu">map</span>(<span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="st">"Freight share"</span>: cohorts[<span class="st">"freight_share"</span>].<span class="bu">map</span>(<span class="st">"</span><span class="sc">{:.1%}</span><span class="st">"</span>.<span class="bu">format</span>),</span>
+<span id="cb5-13"><a href="#cb5-13"></a>}).style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-cohorts" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-cohorts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Cohort summary: size, observation window, and computed leaf metrics.
+</figcaption>
+<div aria-describedby="tbl-cohorts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display" data-execution_count="29">
+<style type="text/css">
+</style>
+
+<table id="T_a97e5" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_a97e5_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">Cohort</th>
+<th id="T_a97e5_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">Size</th>
+<th id="T_a97e5_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">Obs (months)</th>
+<th id="T_a97e5_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">Monthly F</th>
+<th id="T_a97e5_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">Lifetime orders</th>
+<th id="T_a97e5_level0_col5" class="col_heading level0 col5" data-quarto-table-cell-role="th">AOV</th>
+<th id="T_a97e5_level0_col6" class="col_heading level0 col6" data-quarto-table-cell-role="th">Product value / order</th>
+<th id="T_a97e5_level0_col7" class="col_heading level0 col7" data-quarto-table-cell-role="th">UPT</th>
+<th id="T_a97e5_level0_col8" class="col_heading level0 col8" data-quarto-table-cell-role="th">ASP</th>
+<th id="T_a97e5_level0_col9" class="col_heading level0 col9" data-quarto-table-cell-role="th">Freight / order</th>
+<th id="T_a97e5_level0_col10" class="col_heading level0 col10" data-quarto-table-cell-role="th">Freight share</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_a97e5_row0_col0" class="data row0 col0">2016-Q4</td>
+<td id="T_a97e5_row0_col1" class="data row0 col1">263</td>
+<td id="T_a97e5_row0_col2" class="data row0 col2">24</td>
+<td id="T_a97e5_row0_col3" class="data row0 col3">0.044</td>
+<td id="T_a97e5_row0_col4" class="data row0 col4">1.053</td>
+<td id="T_a97e5_row0_col5" class="data row0 col5">R$ 174</td>
+<td id="T_a97e5_row0_col6" class="data row0 col6">R$ 151</td>
+<td id="T_a97e5_row0_col7" class="data row0 col7">1.18</td>
+<td id="T_a97e5_row0_col8" class="data row0 col8">R$ 128</td>
+<td id="T_a97e5_row0_col9" class="data row0 col9">R$ 23</td>
+<td id="T_a97e5_row0_col10" class="data row0 col10">15.5%</td>
+</tr>
+<tr class="even">
+<td id="T_a97e5_row1_col0" class="data row1 col0">2017-Q1</td>
+<td id="T_a97e5_row1_col1" class="data row1 col1">4,848</td>
+<td id="T_a97e5_row1_col2" class="data row1 col2">21</td>
+<td id="T_a97e5_row1_col3" class="data row1 col3">0.050</td>
+<td id="T_a97e5_row1_col4" class="data row1 col4">1.058</td>
+<td id="T_a97e5_row1_col5" class="data row1 col5">R$ 163</td>
+<td id="T_a97e5_row1_col6" class="data row1 col6">R$ 142</td>
+<td id="T_a97e5_row1_col7" class="data row1 col7">1.15</td>
+<td id="T_a97e5_row1_col8" class="data row1 col8">R$ 124</td>
+<td id="T_a97e5_row1_col9" class="data row1 col9">R$ 22</td>
+<td id="T_a97e5_row1_col10" class="data row1 col10">15.4%</td>
+</tr>
+<tr class="odd">
+<td id="T_a97e5_row2_col0" class="data row2 col0">2017-Q2</td>
+<td id="T_a97e5_row2_col1" class="data row2 col1">8,744</td>
+<td id="T_a97e5_row2_col2" class="data row2 col2">19</td>
+<td id="T_a97e5_row2_col3" class="data row2 col3">0.056</td>
+<td id="T_a97e5_row2_col4" class="data row2 col4">1.059</td>
+<td id="T_a97e5_row2_col5" class="data row2 col5">R$ 161</td>
+<td id="T_a97e5_row2_col6" class="data row2 col6">R$ 139</td>
+<td id="T_a97e5_row2_col7" class="data row2 col7">1.12</td>
+<td id="T_a97e5_row2_col8" class="data row2 col8">R$ 124</td>
+<td id="T_a97e5_row2_col9" class="data row2 col9">R$ 22</td>
+<td id="T_a97e5_row2_col10" class="data row2 col10">15.7%</td>
+</tr>
+<tr class="even">
+<td id="T_a97e5_row3_col0" class="data row3 col0">2017-Q3</td>
+<td id="T_a97e5_row3_col1" class="data row3 col1">11,813</td>
+<td id="T_a97e5_row3_col2" class="data row3 col2">16</td>
+<td id="T_a97e5_row3_col3" class="data row3 col3">0.066</td>
+<td id="T_a97e5_row3_col4" class="data row3 col4">1.054</td>
+<td id="T_a97e5_row3_col5" class="data row3 col5">R$ 156</td>
+<td id="T_a97e5_row3_col6" class="data row3 col6">R$ 134</td>
+<td id="T_a97e5_row3_col7" class="data row3 col7">1.14</td>
+<td id="T_a97e5_row3_col8" class="data row3 col8">R$ 117</td>
+<td id="T_a97e5_row3_col9" class="data row3 col9">R$ 22</td>
+<td id="T_a97e5_row3_col10" class="data row3 col10">16.4%</td>
+</tr>
+<tr class="odd">
+<td id="T_a97e5_row4_col0" class="data row4 col0">2017-Q4</td>
+<td id="T_a97e5_row4_col1" class="data row4 col1">16,726</td>
+<td id="T_a97e5_row4_col2" class="data row4 col2">13</td>
+<td id="T_a97e5_row4_col3" class="data row4 col3">0.080</td>
+<td id="T_a97e5_row4_col4" class="data row4 col4">1.034</td>
+<td id="T_a97e5_row4_col5" class="data row4 col5">R$ 159</td>
+<td id="T_a97e5_row4_col6" class="data row4 col6">R$ 137</td>
+<td id="T_a97e5_row4_col7" class="data row4 col7">1.15</td>
+<td id="T_a97e5_row4_col8" class="data row4 col8">R$ 119</td>
+<td id="T_a97e5_row4_col9" class="data row4 col9">R$ 22</td>
+<td id="T_a97e5_row4_col10" class="data row4 col10">16.3%</td>
+</tr>
+<tr class="even">
+<td id="T_a97e5_row5_col0" class="data row5 col0">2018-Q1</td>
+<td id="T_a97e5_row5_col1" class="data row5 col1">19,904</td>
+<td id="T_a97e5_row5_col2" class="data row5 col2">9</td>
+<td id="T_a97e5_row5_col3" class="data row5 col3">0.115</td>
+<td id="T_a97e5_row5_col4" class="data row5 col4">1.033</td>
+<td id="T_a97e5_row5_col5" class="data row5 col5">R$ 154</td>
+<td id="T_a97e5_row5_col6" class="data row5 col6">R$ 131</td>
+<td id="T_a97e5_row5_col7" class="data row5 col7">1.14</td>
+<td id="T_a97e5_row5_col8" class="data row5 col8">R$ 115</td>
+<td id="T_a97e5_row5_col9" class="data row5 col9">R$ 22</td>
+<td id="T_a97e5_row5_col10" class="data row5 col10">17.0%</td>
+</tr>
+<tr class="odd">
+<td id="T_a97e5_row6_col0" class="data row6 col0">2018-Q2</td>
+<td id="T_a97e5_row6_col1" class="data row6 col1">18,966</td>
+<td id="T_a97e5_row6_col2" class="data row6 col2">7</td>
+<td id="T_a97e5_row6_col3" class="data row6 col3">0.145</td>
+<td id="T_a97e5_row6_col4" class="data row6 col4">1.017</td>
+<td id="T_a97e5_row6_col5" class="data row6 col5">R$ 167</td>
+<td id="T_a97e5_row6_col6" class="data row6 col6">R$ 143</td>
+<td id="T_a97e5_row6_col7" class="data row6 col7">1.15</td>
+<td id="T_a97e5_row6_col8" class="data row6 col8">R$ 124</td>
+<td id="T_a97e5_row6_col9" class="data row6 col9">R$ 24</td>
+<td id="T_a97e5_row6_col10" class="data row6 col10">16.6%</td>
+</tr>
+<tr class="even">
+<td id="T_a97e5_row7_col0" class="data row7 col0">2018-Q3</td>
+<td id="T_a97e5_row7_col1" class="data row7 col1">12,093</td>
+<td id="T_a97e5_row7_col2" class="data row7 col2">4</td>
+<td id="T_a97e5_row7_col3" class="data row7 col3">0.253</td>
+<td id="T_a97e5_row7_col4" class="data row7 col4">1.010</td>
+<td id="T_a97e5_row7_col5" class="data row7 col5">R$ 161</td>
+<td id="T_a97e5_row7_col6" class="data row7 col6">R$ 137</td>
+<td id="T_a97e5_row7_col7" class="data row7 col7">1.13</td>
+<td id="T_a97e5_row7_col8" class="data row7 col8">R$ 122</td>
+<td id="T_a97e5_row7_col9" class="data row7 col9">R$ 25</td>
+<td id="T_a97e5_row7_col10" class="data row7 col10">17.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div id="plot-helpers" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>YEAR_COLORS <span class="op">=</span> {<span class="st">"2016"</span>: <span class="st">"#c5dfe0"</span>, <span class="st">"2017"</span>: <span class="st">"#458d8f"</span>, <span class="st">"2018"</span>: <span class="st">"#2a5d5f"</span>}</span>
+<span id="cb6-2"><a href="#cb6-2"></a>cohorts[<span class="st">"year"</span>] <span class="op">=</span> cohorts[<span class="st">"cohort"</span>].<span class="bu">str</span>[:<span class="dv">4</span>]</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a>theme_bars <span class="op">=</span> (</span>
+<span id="cb6-5"><a href="#cb6-5"></a>    theme_classic()</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="op">+</span> theme(</span>
+<span id="cb6-7"><a href="#cb6-7"></a>        axis_text_x<span class="op">=</span>element_text(rotation<span class="op">=</span><span class="dv">40</span>, ha<span class="op">=</span><span class="st">"right"</span>, size<span class="op">=</span><span class="dv">7</span>),</span>
+<span id="cb6-8"><a href="#cb6-8"></a>        axis_title_x<span class="op">=</span>element_blank(),</span>
+<span id="cb6-9"><a href="#cb6-9"></a>        legend_position<span class="op">=</span><span class="st">"none"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10"></a>        strip_background<span class="op">=</span>element_blank(),</span>
+<span id="cb6-11"><a href="#cb6-11"></a>    )</span>
+<span id="cb6-12"><a href="#cb6-12"></a>)</span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="kw">def</span> panel_data(panels):</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    frames <span class="op">=</span> []</span>
+<span id="cb6-16"><a href="#cb6-16"></a>    <span class="cf">for</span> title, col, fmt <span class="kw">in</span> panels:</span>
+<span id="cb6-17"><a href="#cb6-17"></a>        d <span class="op">=</span> cohorts[[<span class="st">"cohort"</span>, <span class="st">"year"</span>]].copy()</span>
+<span id="cb6-18"><a href="#cb6-18"></a>        d[<span class="st">"metric"</span>] <span class="op">=</span> title</span>
+<span id="cb6-19"><a href="#cb6-19"></a>        d[<span class="st">"value"</span>] <span class="op">=</span> cohorts[col].to_numpy()</span>
+<span id="cb6-20"><a href="#cb6-20"></a>        d[<span class="st">"label"</span>] <span class="op">=</span> d[<span class="st">"value"</span>].<span class="bu">map</span>(fmt.<span class="bu">format</span>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a>        frames.append(d)</span>
+<span id="cb6-22"><a href="#cb6-22"></a>    <span class="bu">long</span> <span class="op">=</span> pd.concat(frames, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-23"><a href="#cb6-23"></a>    <span class="bu">long</span>[<span class="st">"metric"</span>] <span class="op">=</span> pd.Categorical(<span class="bu">long</span>[<span class="st">"metric"</span>], categories<span class="op">=</span>[p[<span class="dv">0</span>] <span class="cf">for</span> p <span class="kw">in</span> panels])</span>
+<span id="cb6-24"><a href="#cb6-24"></a>    <span class="cf">return</span> <span class="bu">long</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="kw">def</span> panel_bars(panels, figsize):</span>
+<span id="cb6-27"><a href="#cb6-27"></a>    <span class="cf">return</span> (</span>
+<span id="cb6-28"><a href="#cb6-28"></a>        ggplot(panel_data(panels), aes(<span class="st">"cohort"</span>, <span class="st">"value"</span>, fill<span class="op">=</span><span class="st">"year"</span>))</span>
+<span id="cb6-29"><a href="#cb6-29"></a>        <span class="op">+</span> geom_col(width<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb6-30"><a href="#cb6-30"></a>        <span class="op">+</span> geom_text(aes(label<span class="op">=</span><span class="st">"label"</span>), va<span class="op">=</span><span class="st">"bottom"</span>, size<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb6-31"><a href="#cb6-31"></a>        <span class="op">+</span> facet_wrap(<span class="st">"metric"</span>, scales<span class="op">=</span><span class="st">"free_y"</span>, nrow<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-32"><a href="#cb6-32"></a>        <span class="op">+</span> scale_fill_manual(values<span class="op">=</span>YEAR_COLORS)</span>
+<span id="cb6-33"><a href="#cb6-33"></a>        <span class="op">+</span> scale_y_continuous(expand<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.15</span>, <span class="dv">0</span>))</span>
+<span id="cb6-34"><a href="#cb6-34"></a>        <span class="op">+</span> theme_bars</span>
+<span id="cb6-35"><a href="#cb6-35"></a>        <span class="op">+</span> theme(</span>
+<span id="cb6-36"><a href="#cb6-36"></a>            figure_size<span class="op">=</span>figsize,</span>
+<span id="cb6-37"><a href="#cb6-37"></a>            axis_title_y<span class="op">=</span>element_blank(),</span>
+<span id="cb6-38"><a href="#cb6-38"></a>        )</span>
+<span id="cb6-39"><a href="#cb6-39"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div id="cell-fig-cohort-sizes" class="cell page-columns page-full" data-execution_count="7">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>cohorts[<span class="st">"obs_label"</span>] <span class="op">=</span> cohorts[<span class="st">"obs_months"</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">"m"</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a></span>
+<span id="cb7-3"><a href="#cb7-3"></a>(</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    ggplot(cohorts, aes(<span class="st">"cohort"</span>, <span class="st">"cohort_size"</span>, fill<span class="op">=</span><span class="st">"year"</span>))</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="op">+</span> geom_col(width<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="op">+</span> geom_text(aes(label<span class="op">=</span><span class="st">"obs_label"</span>), va<span class="op">=</span><span class="st">"bottom"</span>, size<span class="op">=</span><span class="dv">7</span>, color<span class="op">=</span><span class="st">"#555555"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="op">+</span> scale_fill_manual(values<span class="op">=</span>YEAR_COLORS, name<span class="op">=</span><span class="st">"Year"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8"></a>    <span class="op">+</span> scale_y_continuous(</span>
+<span id="cb7-9"><a href="#cb7-9"></a>        labels<span class="op">=</span><span class="kw">lambda</span> ls: [<span class="ss">f"</span><span class="sc">{</span>v <span class="op">/</span> <span class="dv">1000</span><span class="sc">:.0f}</span><span class="ss">k"</span> <span class="cf">if</span> v <span class="op">&gt;=</span> <span class="dv">1000</span> <span class="cf">else</span> <span class="ss">f"</span><span class="sc">{</span>v<span class="sc">:.0f}</span><span class="ss">"</span> <span class="cf">for</span> v <span class="kw">in</span> ls],</span>
+<span id="cb7-10"><a href="#cb7-10"></a>        expand<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.08</span>, <span class="dv">0</span>),</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    )</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="op">+</span> labs(y<span class="op">=</span><span class="st">"Unique customers"</span>)</span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="op">+</span> theme_classic()</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="op">+</span> theme(</span>
+<span id="cb7-15"><a href="#cb7-15"></a>        figure_size<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>),</span>
+<span id="cb7-16"><a href="#cb7-16"></a>        axis_text_x<span class="op">=</span>element_text(rotation<span class="op">=</span><span class="dv">30</span>, ha<span class="op">=</span><span class="st">"right"</span>),</span>
+<span id="cb7-17"><a href="#cb7-17"></a>        axis_title_x<span class="op">=</span>element_blank(),</span>
+<span id="cb7-18"><a href="#cb7-18"></a>        legend_position<span class="op">=</span>(<span class="fl">0.12</span>, <span class="fl">0.75</span>),</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    )</span>
+<span id="cb7-20"><a href="#cb7-20"></a>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-cohort-sizes" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-cohort-sizes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="index_files/figure-html/fig-cohort-sizes-output-1.png" width="960" height="384" class="figure-img column-body-outset">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cohort-sizes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Customers acquired per quarterly cohort. Numbers above bars show the observation window — how many months each cohort was followed before the dataset ends.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The 2016-Q4 cohort is small because Olist only launched in September 2016. The 2018-Q3 cohort’s lifetime metrics should be read cautiously due to its short observation window.</p>
+</section>
+<section id="cohort-size-the-first-leaf" class="level2">
+<h2 class="anchored" data-anchor-id="cohort-size-the-first-leaf">Cohort size: the first leaf</h2>
+<p>Cohort size is the simplest leaf in the LTV branch: it scales Total Cohort LTV. A large cohort generates more total revenue at any given LTV per customer.</p>
+<p>However, size alone tells us nothing about profitability unless we also know LTV per customer and CAC. A Q4 cohort that costs three times as much to acquire as a Q1 cohort may still be unprofitable even if it is twice as large.</p>
+</section>
+<section id="purchase-frequency-and-lifespan" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="purchase-frequency-and-lifespan">Purchase frequency and lifespan</h2>
+<p>In the tree, Monthly Purchase Frequency (F) and Avg Customer Lifespan (T) are separate nodes, but only their product is directly observable: lifetime orders per customer. Monthly F normalises each cohort by its observation window putting the 4-month 2018-Q3 cohort and the 24-month 2016-Q4 cohort on the same scale.</p>
+<div id="cell-fig-purchase-freq" class="cell page-columns page-full" data-execution_count="8">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>panels <span class="op">=</span> [</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    (<span class="st">"Monthly purchase frequency (F)"</span>, <span class="st">"monthly_purchase_freq"</span>, <span class="st">"</span><span class="sc">{:.3f}</span><span class="st">"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    (<span class="st">"Lifetime orders per customer (F × T)"</span>, <span class="st">"lifetime_purchase_freq"</span>, <span class="st">"</span><span class="sc">{:.3f}</span><span class="st">"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>]</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a>hline <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    <span class="st">"metric"</span>: pd.Categorical([panels[<span class="dv">1</span>][<span class="dv">0</span>]], categories<span class="op">=</span>[p[<span class="dv">0</span>] <span class="cf">for</span> p <span class="kw">in</span> panels]),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    <span class="st">"yintercept"</span>: [<span class="fl">1.0</span>],</span>
+<span id="cb8-9"><a href="#cb8-9"></a>})</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a>(</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    panel_bars(panels, (<span class="dv">11</span>, <span class="fl">3.5</span>))</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    <span class="op">+</span> geom_hline(aes(yintercept<span class="op">=</span><span class="st">"yintercept"</span>), data<span class="op">=</span>hline, linetype<span class="op">=</span><span class="st">"dashed"</span>, color<span class="op">=</span><span class="st">"#aaaaaa"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-purchase-freq" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-purchase-freq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="index_files/figure-html/fig-purchase-freq-output-1.png" width="1056" height="336" class="figure-img column-body-outset">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-purchase-freq-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Monthly purchase frequency (F) and lifetime orders per customer (F × T) by cohort. The dashed line marks 1.0 lifetime orders. All cohorts cluster close to it, confirming that near-zero repeat purchase is a structural feature, not a single-year artefact.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>With almost no repeat purchases, each customer’s single first order is spread over the observation window, so monthly F mostly reflects how long a cohort has been observed — younger cohorts look “more frequent” purely mechanically.</p>
+<p>Every cohort has near 1.0 lifetime orders, including the 2016-Q4 customers who had up to 24 months to return. As a result, LTV per customer approximately equals Gross Profit per Order from a single transaction. The lifespan factor that amplifies LTV in subscription or FMCG businesses is effectively absent here.</p>
+</section>
+<section id="aov-and-its-components" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="aov-and-its-components">AOV and its components</h2>
+<p>In the tree, AOV (Avg Order Value) is the sum of two revenue streams per order: Avg Product Value — the sum of <code>order_items.price</code> across all units in an order — and Avg Freight Revenue, what the customer pays for delivery. Avg Product Value decomposes further into UPT (Units per Transaction) and ASP (Avg Selling Price). All four leaves come from <code>order_items</code> and together answer what drives revenue per order?</p>
+<div id="cell-fig-aov-leaves" class="cell page-columns page-full" data-execution_count="9">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>panels <span class="op">=</span> [</span>
+<span id="cb9-2"><a href="#cb9-2"></a>    (<span class="st">"AOV (product + freight)"</span>, <span class="st">"aov"</span>, <span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>),</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    (<span class="st">"Avg product value"</span>, <span class="st">"avg_product_value"</span>, <span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    (<span class="st">"UPT (units / transaction)"</span>, <span class="st">"units_per_transaction"</span>, <span class="st">"</span><span class="sc">{:.2f}</span><span class="st">"</span>),</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    (<span class="st">"ASP (avg selling price)"</span>, <span class="st">"avg_selling_price"</span>, <span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>),</span>
+<span id="cb9-6"><a href="#cb9-6"></a>]</span>
+<span id="cb9-7"><a href="#cb9-7"></a></span>
+<span id="cb9-8"><a href="#cb9-8"></a>panel_bars(panels, (<span class="dv">13</span>, <span class="fl">3.6</span>)).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-aov-leaves" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-aov-leaves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="index_files/figure-html/fig-aov-leaves-output-1.png" width="1248" height="346" class="figure-img column-body-outset">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-aov-leaves-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: AOV and its components — avg product value, UPT, and ASP — by cohort. The identities AOV = product value + freight revenue and product value = ASP × UPT hold by construction; showing the leaves reveals which lever drives revenue per order.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As a sanity check, AOV built from the item side matches what customers actually paid to within a few centavos, likely due to rounding.</p>
+<div id="aov-check" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>payment_per_order <span class="op">=</span> (</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    order_payments.groupby(<span class="st">"order_id"</span>)[<span class="st">"payment_value"</span>].<span class="bu">sum</span>().rename(<span class="st">"payment_value"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>paid <span class="op">=</span> order_cohort.merge(payment_per_order, on<span class="op">=</span><span class="st">"order_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a>aov_items <span class="op">=</span> (</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    (cohorts[<span class="st">"total_gmv"</span>].<span class="bu">sum</span>() <span class="op">+</span> cohorts[<span class="st">"total_freight"</span>].<span class="bu">sum</span>())</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    <span class="op">/</span> cohorts[<span class="st">"total_orders"</span>].<span class="bu">sum</span>()</span>
+<span id="cb10-9"><a href="#cb10-9"></a>)</span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="bu">print</span>(<span class="ss">f"AOV from items + freight: R$ </span><span class="sc">{</span>aov_items<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="bu">print</span>(<span class="ss">f"Avg payment per order: R$ </span><span class="sc">{</span>paid[<span class="st">'payment_value'</span>]<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>AOV from items + freight: R$ 159.83
+Avg payment per order: R$ 159.86</code></pre>
+</div>
+</div>
+<p>AOV, avg product value, and ASP are stable across cohorts. UPT is close to 1.0. The path to higher revenue per order therefore runs through selling price (product mix, category composition) rather than cart size. Any strategy aimed at increasing cart size has a near-zero baseline to work from.</p>
+</section>
+<section id="freight" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="freight">Freight</h2>
+<p>Freight appears twice in the tree: as Avg Freight Revenue and as Freight Cost per Order. The dataset records what the customer pays for delivery (<code>freight_value</code>), but we don’t know what the carrier actually charges. If we assume that carrier takes everything (cost ≈ revenue) the two cancel inside Gross Profit per Order. However, freight still matters. Shipping physical goods is expensive, and Olist makes zero profit on it.</p>
+<p>Because shipping costs are so high, they are a massive chunk of the money changing hands. In addition, if Olist ever tries to offer “free shipping,” they would have to pay that out of their own pocket.</p>
+<div id="cell-fig-freight" class="cell page-columns page-full" data-execution_count="11">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>cohorts[<span class="st">"freight_share_pct"</span>] <span class="op">=</span> cohorts[<span class="st">"freight_share"</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a></span>
+<span id="cb12-3"><a href="#cb12-3"></a>panels <span class="op">=</span> [</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    (<span class="st">"Freight revenue per order"</span>, <span class="st">"freight_per_order"</span>, <span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>),</span>
+<span id="cb12-5"><a href="#cb12-5"></a>    (<span class="st">"Freight share of product value (%)"</span>, <span class="st">"freight_share_pct"</span>, <span class="st">"</span><span class="sc">{:.1f}</span><span class="st">"</span>),</span>
+<span id="cb12-6"><a href="#cb12-6"></a>]</span>
+<span id="cb12-7"><a href="#cb12-7"></a></span>
+<span id="cb12-8"><a href="#cb12-8"></a>panel_bars(panels, (<span class="dv">11</span>, <span class="dv">4</span>)).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-freight" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-freight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="index_files/figure-html/fig-freight-output-1.png" width="1056" height="384" class="figure-img column-body-outset">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-freight-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Freight revenue per order and freight as a share of product value by cohort. The share shows how much of item revenue is matched by logistics charges before any platform margin is considered.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Freight revenue per order and its share of product value are nearly constant across cohorts. The logistics costs don’t depend on when a customer first purchased. As a result, if the platform’s take rate is comparable to the freight share, a significant fraction of every order’s revenue would be absorbed before any other costs.</p>
+</section>
+<section id="rolling-up-the-tree" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="rolling-up-the-tree">Rolling up the tree</h2>
+<p>Lifetime revenue per customer — AOV × F × T — is the observable proxy for LTV per Customer, though it is missing the cost subtractions of Gross Profit per Order. Multiplying by cohort size gives the proxy for Total Cohort LTV. A cross check would be: lifetime revenue per customer = AOV × lifetime orders per customer.</p>
+<div id="cell-fig-rollup" class="cell page-columns page-full" data-execution_count="12">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>cohorts[<span class="st">"total_revenue_m"</span>] <span class="op">=</span> (cohorts[<span class="st">"total_gmv"</span>] <span class="op">+</span> cohorts[<span class="st">"total_freight"</span>]) <span class="op">/</span> <span class="fl">1e6</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a>panels <span class="op">=</span> [</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    (<span class="st">"Lifetime revenue per customer"</span>, <span class="st">"lifetime_revenue_per_customer"</span>, <span class="st">"R$ </span><span class="sc">{:.0f}</span><span class="st">"</span>),</span>
+<span id="cb13-5"><a href="#cb13-5"></a>    (<span class="st">"Total cohort revenue"</span>, <span class="st">"total_revenue_m"</span>, <span class="st">"R$ </span><span class="sc">{:.1f}</span><span class="st">M"</span>),</span>
+<span id="cb13-6"><a href="#cb13-6"></a>]</span>
+<span id="cb13-7"><a href="#cb13-7"></a></span>
+<span id="cb13-8"><a href="#cb13-8"></a>panel_bars(panels, (<span class="dv">11</span>, <span class="dv">4</span>)).show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-rollup" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-rollup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca" class="page-columns page-full">
+<img src="index_files/figure-html/fig-rollup-output-1.png" width="1056" height="384" class="figure-img column-body-outset">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rollup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Rolling the teal leaves up into the yellow nodes: lifetime revenue per customer (the proxy for LTV per Customer) and total cohort revenue (the proxy for Total Cohort LTV). Both overstate true LTV because no cost leaf is subtracted.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Because AOV and lifetime orders per customer are both flat across cohorts, lifetime revenue per customer is flat too. Total cohort revenue therefore tracks cohort size almost exactly — acquisition volume, not customer quality, is what separates the cohorts. These proxies overstate true LTV because cost leaves are missing.</p>
+</section>
+<section id="what-we-cannot-compute" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-cannot-compute">What we cannot compute</h2>
+<p>The grey leaves of the tree are the ones absent from the public dataset, and all of them sit on the cost side.</p>
+<p><strong>COGS per Order.</strong> The tree treats Olist like the merchant of record: AOV comes in, the cost of goods goes out. In reality Olist is a marketplace — sellers own the goods, and the platform earns a commission (take rate) on each transaction. Either framing needs a number we lack: the seller’s product cost, or the platform’s take rate. Marketplace take rates typically range from 10 to 30%. The gap is large enough to entirely change the unit economics.</p>
+<p><strong>Freight Cost per Order.</strong> The public data only shows what the customer paid for delivery. We have no idea what the delivery company actually billed Olist. A pass-through assumption (cost ≈ revenue) makes freight margin-neutral. However, if Olist introduces shipping discounts to make sale look more appealing (a “subsidy”) they have to pay it from their profit per order.</p>
+<p><strong>Other Variable Costs per Order.</strong> Payment processing fees, fraud losses, and seller support are absent from the public dataset. For scale: a marketplace with a 15% take rate and 4 percentage points of variable costs keeps only about 80% of its commission revenue as gross margin.</p>
+<p><strong>Ad Spend.</strong> The Olist public dataset includes a marketing funnel for <em>seller</em> acquisition (MQL → closed deals), not for customer acquisition. We have no record of advertising spend or promotional discounts directed at buyers, so the CAC branch stays empty.</p>
+<p>The tree gives us the structure: once these cost lines are available from internal data or seller agreements, every remaining node follows from what we have computed here by cohort.</p>
+</section>
+<section id="what-we-found" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-found">What we found</h2>
+<p><strong>Near-zero repeat rates across cohorts.</strong> Even the 2016-Q4 customers, with up to 24 months of follow-up, show close to 1.0 lifetime orders per customer. This is not a data truncation artefact - it is how Olist customers behave. With F × T ≈ 1, LTV per customer collapses to Gross Profit per Order from a single transaction. Growing Total Cohort LTV therefore requires either a larger cohort or higher per-order profitability.</p>
+<p>With near-zero repeat rates, Olist should focus on optimizing top-of-funnel conversion rates and lowering Customer Acquisition Cost (CAC) to ensure the first purchase is immediately profitable.</p>
+<p><strong>Delivery cost is one of the bottlenecks for the model.</strong> Freight revenue per order and its share of product value are nearly constant across all cohorts. If the freight the platform pays carriers becomes greater than the freight revenue customers are charged, the platform would absorb a logistics loss on every order.</p>
+<p><strong>Growth requires shifting focus to seller monetization.</strong> Since buyer Lifetime Value (LTV) is flat and capped at the first order, the platform cannot rely on buyer retention to scale. To counteract the single-order constraint and freight costs, the platform should grow its revenue by increasing the effective take rate on the seller side, for example by introducing premium B2B features or sponsored placements.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/varmara\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

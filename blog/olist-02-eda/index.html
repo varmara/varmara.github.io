@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marina Varfolomeeva">
+<meta name="description" content="A first look at the Olist e-commerce dataset through two lenses: year-of-order trends and customer acquisition cohorts. We look at product categories, geography, and delivery times — and find that aggregates regularly hide more than they reveal.">
+
+<title>DRAFT Customer Analytics with Olist, Part 2: Exploratory Data Analysis – Marina Varfolomeeva</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-60894e5ca26aaca91341ef9d74312a65.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<meta name="quarto:status" content="draft">
+
+
+<link rel="stylesheet" href="../../assets/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Marina Varfolomeeva</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/varmara"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/marina-varfolomeeva"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#order-volume-and-revenue-over-time" id="toc-order-volume-and-revenue-over-time" class="nav-link" data-scroll-target="#order-volume-and-revenue-over-time">Order volume and revenue over time</a></li>
+  <li><a href="#orders-by-cohort-over-time" id="toc-orders-by-cohort-over-time" class="nav-link" data-scroll-target="#orders-by-cohort-over-time">Orders by cohort over time</a></li>
+  <li><a href="#top-product-categories" id="toc-top-product-categories" class="nav-link" data-scroll-target="#top-product-categories">Top product categories</a>
+  <ul class="collapse">
+  <li><a href="#top-15-per-year" id="toc-top-15-per-year" class="nav-link" data-scroll-target="#top-15-per-year">Top 15 per year</a></li>
+  <li><a href="#category-composition-across-years" id="toc-category-composition-across-years" class="nav-link" data-scroll-target="#category-composition-across-years">Category composition across years</a></li>
+  <li><a href="#by-customer-acquisition-cohort" id="toc-by-customer-acquisition-cohort" class="nav-link" data-scroll-target="#by-customer-acquisition-cohort">By customer acquisition cohort</a></li>
+  </ul></li>
+  <li><a href="#geographic-distribution" id="toc-geographic-distribution" class="nav-link" data-scroll-target="#geographic-distribution">Geographic distribution</a>
+  <ul class="collapse">
+  <li><a href="#by-year" id="toc-by-year" class="nav-link" data-scroll-target="#by-year">By year</a></li>
+  <li><a href="#by-customer-acquisition-cohort-1" id="toc-by-customer-acquisition-cohort-1" class="nav-link" data-scroll-target="#by-customer-acquisition-cohort-1">By customer acquisition cohort</a></li>
+  </ul></li>
+  <li><a href="#delivery-time-distribution" id="toc-delivery-time-distribution" class="nav-link" data-scroll-target="#delivery-time-distribution">Delivery time distribution</a>
+  <ul class="collapse">
+  <li><a href="#by-year-1" id="toc-by-year-1" class="nav-link" data-scroll-target="#by-year-1">By year</a></li>
+  <li><a href="#by-customer-acquisition-cohort-2" id="toc-by-customer-acquisition-cohort-2" class="nav-link" data-scroll-target="#by-customer-acquisition-cohort-2">By customer acquisition cohort</a></li>
+  </ul></li>
+  <li><a href="#category-composition-by-cohort-over-time" id="toc-category-composition-by-cohort-over-time" class="nav-link" data-scroll-target="#category-composition-by-cohort-over-time">Category composition by cohort over time</a></li>
+  <li><a href="#seasonality" id="toc-seasonality" class="nav-link" data-scroll-target="#seasonality">Seasonality</a></li>
+  <li><a href="#what-well-explore-next" id="toc-what-well-explore-next" class="nav-link" data-scroll-target="#what-well-explore-next">What we’ll explore next</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">DRAFT Customer Analytics with Olist, Part 2: Exploratory Data Analysis</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Customer Analytics</div>
+    <div class="quarto-category">Olist</div>
+    <div class="quarto-category">Visualisation</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A first look at the Olist e-commerce dataset through two lenses: year-of-order trends and customer acquisition cohorts. We look at product categories, geography, and delivery times — and find that aggregates regularly hide more than they reveal.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marina Varfolomeeva </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Before building models or computing metrics, we need to understand what the data actually looks like. In this post we explore the Olist e-commerce dataset — but with a deliberate methodological stance.</p>
+<p>Aggregate statistics are seductive: a single number, a single bar, a clean answer. The problem is that they collapse time. A two-year dataset like Olist is a snapshot of a business that was changing rapidly. An average delivery time or a top-category ranking computed across all 100k orders tells us what was <em>typical</em> — it says nothing about whether things were getting better, worse, or shifting in composition.</p>
+<p>We use two complementary lenses throughout:</p>
+<ul>
+<li><strong>Year of order</strong> — the calendar year in which an order was placed. Useful for spotting operational trends (did delivery times improve?) and structural changes (did category mix shift?).</li>
+<li><strong>Customer acquisition cohort</strong> — the year in which a customer made their <em>first purchase</em>. Useful for understanding what kind of customers Olist was acquiring over time and whether their behaviour differed.</li>
+</ul>
+<p>In a business with meaningful repeat purchases these two lenses diverge: a 2016 cohort customer might place orders in 2017 and 2018, so their orders would appear in both the 2017 and 2018 year-of-order slices but belong to the 2016 cohort. Olist has a near-zero repeat purchase rate (explored further in post 4), so in practice cohort year and order year are almost identical here. We compute both properly and note where they differ.</p>
+<p>For dataset setup and an introduction to all eleven tables, see <a href="../../blog/2026-06-04-olist-01-intro/index.html">Customer Analytics with Olist, Part 1: Data Setup</a>.</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div id="setup" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">import</span> matplotlib.ticker <span class="im">as</span> mticker</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="im">import</span> matplotlib.dates <span class="im">as</span> mdates</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="im">import</span> matplotlib.cm <span class="im">as</span> cm</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="im">from</span> scipy.stats <span class="im">import</span> gaussian_kde</span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>load_dotenv()</span>
+<span id="cb1-12"><a href="#cb1-12"></a>OLIST_DIR <span class="op">=</span> os.path.join(os.environ[<span class="st">"DATA_DIR"</span>], <span class="st">"olist"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13"></a></span>
+<span id="cb1-14"><a href="#cb1-14"></a>TEAL <span class="op">=</span> <span class="st">"#458d8f"</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a>TEAL_LIGHT <span class="op">=</span> <span class="st">"#c5dfe0"</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a>YEAR_COLORS <span class="op">=</span> {<span class="dv">2016</span>: <span class="st">"#b0c4c4"</span>, <span class="dv">2017</span>: <span class="st">"#458d8f"</span>, <span class="dv">2018</span>: <span class="st">"#e8c84d"</span>}</span>
+<span id="cb1-17"><a href="#cb1-17"></a>YEARS <span class="op">=</span> [<span class="dv">2016</span>, <span class="dv">2017</span>, <span class="dv">2018</span>]</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a>DELIVERED_ONLY <span class="op">=</span> <span class="va">False</span>  <span class="co"># True → restrict to delivered orders; False → all statuses</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="load-data" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>orders <span class="op">=</span> pd.read_csv(</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    os.path.join(OLIST_DIR, <span class="st">"olist_orders_dataset.csv"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    parse_dates<span class="op">=</span>[</span>
+<span id="cb2-4"><a href="#cb2-4"></a>        <span class="st">"order_purchase_timestamp"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5"></a>        <span class="st">"order_delivered_customer_date"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>        <span class="st">"order_estimated_delivery_date"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    ],</span>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a>order_payments <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_order_payments_dataset.csv"</span>))</span>
+<span id="cb2-10"><a href="#cb2-10"></a>order_items <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_order_items_dataset.csv"</span>))</span>
+<span id="cb2-11"><a href="#cb2-11"></a>customers <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_customers_dataset.csv"</span>))</span>
+<span id="cb2-12"><a href="#cb2-12"></a>products <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_products_dataset.csv"</span>))</span>
+<span id="cb2-13"><a href="#cb2-13"></a>sellers <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_sellers_dataset.csv"</span>))</span>
+<span id="cb2-14"><a href="#cb2-14"></a>category_translation <span class="op">=</span> pd.read_csv(</span>
+<span id="cb2-15"><a href="#cb2-15"></a>    os.path.join(OLIST_DIR, <span class="st">"product_category_name_translation.csv"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>We build the base order set and cohort labels. <code>DELIVERED_ONLY</code> at the top of the setup chunk controls whether to restrict to delivered orders or include all statuses (default: all). The delivery time section always filters to orders with a recorded delivery date regardless of this flag.</p>
+<div id="build-base" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># --- base order set (all statuses, or delivered-only) ---</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>delivered <span class="op">=</span> (</span>
+<span id="cb3-3"><a href="#cb3-3"></a>    orders[orders[<span class="st">"order_status"</span>] <span class="op">==</span> <span class="st">"delivered"</span>].copy()</span>
+<span id="cb3-4"><a href="#cb3-4"></a>    <span class="cf">if</span> DELIVERED_ONLY <span class="cf">else</span> orders.copy()</span>
+<span id="cb3-5"><a href="#cb3-5"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6"></a>delivered[<span class="st">"year"</span>] <span class="op">=</span> delivered[<span class="st">"order_purchase_timestamp"</span>].dt.year</span>
+<span id="cb3-7"><a href="#cb3-7"></a>delivered[<span class="st">"month"</span>] <span class="op">=</span> delivered[<span class="st">"order_purchase_timestamp"</span>].dt.to_period(<span class="st">"M"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8"></a></span>
+<span id="cb3-9"><a href="#cb3-9"></a>revenue_per_order <span class="op">=</span> (</span>
+<span id="cb3-10"><a href="#cb3-10"></a>    order_payments[order_payments[<span class="st">"order_id"</span>].isin(delivered[<span class="st">"order_id"</span>])]</span>
+<span id="cb3-11"><a href="#cb3-11"></a>    .groupby(<span class="st">"order_id"</span>)[<span class="st">"payment_value"</span>].<span class="bu">sum</span>()</span>
+<span id="cb3-12"><a href="#cb3-12"></a>    .reset_index().rename(columns<span class="op">=</span>{<span class="st">"payment_value"</span>: <span class="st">"revenue"</span>})</span>
+<span id="cb3-13"><a href="#cb3-13"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14"></a>delivered <span class="op">=</span> delivered.merge(revenue_per_order, on<span class="op">=</span><span class="st">"order_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15"></a></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co"># --- customer acquisition cohort ---</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co"># cohort_year = year of a customer's first delivered order</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>delivered_cust <span class="op">=</span> delivered.merge(</span>
+<span id="cb3-19"><a href="#cb3-19"></a>    customers[[<span class="st">"customer_id"</span>, <span class="st">"customer_unique_id"</span>]], on<span class="op">=</span><span class="st">"customer_id"</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>)</span>
+<span id="cb3-21"><a href="#cb3-21"></a>first_purchase_year <span class="op">=</span> (</span>
+<span id="cb3-22"><a href="#cb3-22"></a>    delivered_cust</span>
+<span id="cb3-23"><a href="#cb3-23"></a>    .groupby(<span class="st">"customer_unique_id"</span>)[<span class="st">"order_purchase_timestamp"</span>]</span>
+<span id="cb3-24"><a href="#cb3-24"></a>    .<span class="bu">min</span>().dt.year.rename(<span class="st">"cohort_year"</span>).reset_index()</span>
+<span id="cb3-25"><a href="#cb3-25"></a>)</span>
+<span id="cb3-26"><a href="#cb3-26"></a>delivered_cust <span class="op">=</span> delivered_cust.merge(first_purchase_year, on<span class="op">=</span><span class="st">"customer_unique_id"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="products-en" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>products_en <span class="op">=</span> products.merge(category_translation, on<span class="op">=</span><span class="st">"product_category_name"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2"></a>products_en[<span class="st">"category_en"</span>] <span class="op">=</span> (</span>
+<span id="cb4-3"><a href="#cb4-3"></a>    products_en[<span class="st">"product_category_name_english"</span>]</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    .fillna(products_en[<span class="st">"product_category_name"</span>])</span>
+<span id="cb4-5"><a href="#cb4-5"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="order-volume-and-revenue-over-time" class="level2">
+<h2 class="anchored" data-anchor-id="order-volume-and-revenue-over-time">Order volume and revenue over time</h2>
+<p>The monthly time series shows the shape of the business before we aggregate anything.</p>
+<div id="monthly-agg" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>monthly <span class="op">=</span> (</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    delivered</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    .groupby(<span class="st">"month"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>    .agg(orders<span class="op">=</span>(<span class="st">"order_id"</span>, <span class="st">"count"</span>), revenue<span class="op">=</span>(<span class="st">"revenue"</span>, <span class="st">"sum"</span>))</span>
+<span id="cb5-5"><a href="#cb5-5"></a>    .reset_index()</span>
+<span id="cb5-6"><a href="#cb5-6"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7"></a>monthly[<span class="st">"month_dt"</span>] <span class="op">=</span> monthly[<span class="st">"month"</span>].dt.to_timestamp()</span>
+<span id="cb5-8"><a href="#cb5-8"></a></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># Drop partial last month</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="cf">if</span> monthly.iloc[<span class="op">-</span><span class="dv">1</span>][<span class="st">"orders"</span>] <span class="op">&lt;</span> monthly[<span class="st">"orders"</span>].median() <span class="op">*</span> <span class="fl">0.5</span>:</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    monthly <span class="op">=</span> monthly.iloc[:<span class="op">-</span><span class="dv">1</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fig-orders-revenue" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>fig, ax1 <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2"></a>ax2 <span class="op">=</span> ax1.twinx()</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a>ax1.bar(monthly[<span class="st">"month_dt"</span>], monthly[<span class="st">"orders"</span>], width<span class="op">=</span><span class="dv">20</span>, color<span class="op">=</span>TEAL_LIGHT, label<span class="op">=</span><span class="st">"Orders"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5"></a>ax2.plot(</span>
+<span id="cb6-6"><a href="#cb6-6"></a>    monthly[<span class="st">"month_dt"</span>], monthly[<span class="st">"revenue"</span>] <span class="op">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>    color<span class="op">=</span>TEAL, linewidth<span class="op">=</span><span class="fl">2.5</span>, marker<span class="op">=</span><span class="st">"o"</span>, markersize<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">"Revenue (R$ M)"</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9"></a></span>
+<span id="cb6-10"><a href="#cb6-10"></a>ax1.set_ylabel(<span class="st">"Orders per month"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11"></a>ax2.set_ylabel(<span class="st">"Revenue (R$ million)"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12"></a>ax1.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">"%b %Y"</span>))</span>
+<span id="cb6-13"><a href="#cb6-13"></a>ax1.xaxis.set_major_locator(mdates.MonthLocator(interval<span class="op">=</span><span class="dv">2</span>))</span>
+<span id="cb6-14"><a href="#cb6-14"></a>plt.setp(ax1.xaxis.get_majorticklabels(), rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb6-15"><a href="#cb6-15"></a>ax1.spines[[<span class="st">"top"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-16"><a href="#cb6-16"></a>ax2.spines[[<span class="st">"top"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-17"><a href="#cb6-17"></a></span>
+<span id="cb6-18"><a href="#cb6-18"></a>lines1, labels1 <span class="op">=</span> ax1.get_legend_handles_labels()</span>
+<span id="cb6-19"><a href="#cb6-19"></a>lines2, labels2 <span class="op">=</span> ax2.get_legend_handles_labels()</span>
+<span id="cb6-20"><a href="#cb6-20"></a>ax1.legend(lines1 <span class="op">+</span> lines2, labels1 <span class="op">+</span> labels2, loc<span class="op">=</span><span class="st">"upper left"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a>plt.tight_layout()</span>
+<span id="cb6-22"><a href="#cb6-22"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-orders-revenue" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-orders-revenue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-orders-revenue-output-1.png" width="1142" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-orders-revenue-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Monthly order volume (bars) and revenue (line). Growth was rapid through 2017, with a clear Black Friday spike in November 2017 followed by a plateau.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Volume and revenue track each other closely, as we would expect when AOV is stable. The 2016 data is thin — Olist was still ramping up. This means aggregates that pool all years are heavily weighted towards 2017 behaviour.</p>
+</section>
+<section id="orders-by-cohort-over-time" class="level2">
+<h2 class="anchored" data-anchor-id="orders-by-cohort-over-time">Orders by cohort over time</h2>
+<p>The monthly time series above pools all customers together. Splitting it by acquisition cohort shows which cohort drove the growth in each period and how long each cohort remained active.</p>
+<div id="cell-fig-orders-by-cohort" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>cohort_month <span class="op">=</span> (</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    delivered_cust</span>
+<span id="cb7-3"><a href="#cb7-3"></a>    .groupby([<span class="st">"cohort_year"</span>, <span class="st">"month"</span>])[<span class="st">"order_id"</span>].count()</span>
+<span id="cb7-4"><a href="#cb7-4"></a>    .reset_index(name<span class="op">=</span><span class="st">"orders"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>cohort_month[<span class="st">"month_dt"</span>] <span class="op">=</span> cohort_month[<span class="st">"month"</span>].dt.to_timestamp()</span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="fl">4.5</span>))</span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="cf">for</span> year <span class="kw">in</span> YEARS:</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    grp <span class="op">=</span> cohort_month[cohort_month[<span class="st">"cohort_year"</span>] <span class="op">==</span> year]</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    ax.plot(</span>
+<span id="cb7-13"><a href="#cb7-13"></a>        grp[<span class="st">"month_dt"</span>], grp[<span class="st">"orders"</span>],</span>
+<span id="cb7-14"><a href="#cb7-14"></a>        color<span class="op">=</span>YEAR_COLORS[year], linewidth<span class="op">=</span><span class="dv">2</span>, marker<span class="op">=</span><span class="st">"o"</span>, markersize<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb7-15"><a href="#cb7-15"></a>        label<span class="op">=</span><span class="ss">f"Cohort </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16"></a>    )</span>
+<span id="cb7-17"><a href="#cb7-17"></a></span>
+<span id="cb7-18"><a href="#cb7-18"></a>ax.yaxis.set_major_formatter(mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>))</span>
+<span id="cb7-19"><a href="#cb7-19"></a>ax.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">"%b %Y"</span>))</span>
+<span id="cb7-20"><a href="#cb7-20"></a>ax.xaxis.set_major_locator(mdates.MonthLocator(interval<span class="op">=</span><span class="dv">2</span>))</span>
+<span id="cb7-21"><a href="#cb7-21"></a>plt.setp(ax.xaxis.get_majorticklabels(), rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb7-22"><a href="#cb7-22"></a>ax.set_ylabel(<span class="st">"Orders per month"</span>)</span>
+<span id="cb7-23"><a href="#cb7-23"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb7-24"><a href="#cb7-24"></a>ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb7-25"><a href="#cb7-25"></a>plt.tight_layout()</span>
+<span id="cb7-26"><a href="#cb7-26"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-orders-by-cohort" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-orders-by-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-orders-by-cohort-output-1.png" width="1142" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-orders-by-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Monthly order count by customer acquisition cohort. Each cohort’s activity is almost entirely confined to its acquisition year, confirming the near-zero repeat rate.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The 2016 cohort is small and active only in late 2016. The 2017 cohort dominates — it is the largest cohort and its acquisition window covers the Black Friday spike. The 2018 cohort was on a similar growth trajectory to 2017 but the dataset ends before its full year is observable. All three lines drop to near-zero immediately after the acquisition year, which is the repeat-rate picture expressed as a time series rather than a single percentage.</p>
+</section>
+<section id="top-product-categories" class="level2">
+<h2 class="anchored" data-anchor-id="top-product-categories">Top product categories</h2>
+<section id="top-15-per-year" class="level3">
+<h3 class="anchored" data-anchor-id="top-15-per-year">Top 15 per year</h3>
+<p>We compute the top 15 categories separately for each year so the ranking is not distorted by the unequal year sizes. <code>top15</code> across years is the variable from the previous version of this post; replacing it with per-year rankings reveals what actually changed.</p>
+<div id="category-prep" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>items_base <span class="op">=</span> (</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    order_items[order_items[<span class="st">"order_id"</span>].isin(delivered[<span class="st">"order_id"</span>])]</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    .merge(products_en[[<span class="st">"product_id"</span>, <span class="st">"category_en"</span>]], on<span class="op">=</span><span class="st">"product_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    .merge(delivered_cust[[<span class="st">"order_id"</span>, <span class="st">"year"</span>, <span class="st">"cohort_year"</span>]], on<span class="op">=</span><span class="st">"order_id"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    .dropna(subset<span class="op">=</span>[<span class="st">"category_en"</span>])</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    .drop_duplicates(subset<span class="op">=</span>[<span class="st">"order_id"</span>, <span class="st">"category_en"</span>])</span>
+<span id="cb8-7"><a href="#cb8-7"></a>)</span>
+<span id="cb8-8"><a href="#cb8-8"></a></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co"># Top 15 per year (by order count)</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>top15_per_year <span class="op">=</span> {}</span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="cf">for</span> year <span class="kw">in</span> YEARS:</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    top15_per_year[year] <span class="op">=</span> (</span>
+<span id="cb8-13"><a href="#cb8-13"></a>        items_base[items_base[<span class="st">"year"</span>] <span class="op">==</span> year]</span>
+<span id="cb8-14"><a href="#cb8-14"></a>        .groupby(<span class="st">"category_en"</span>)[<span class="st">"order_id"</span>].count()</span>
+<span id="cb8-15"><a href="#cb8-15"></a>        .nlargest(<span class="dv">15</span>).sort_values(ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb8-16"><a href="#cb8-16"></a>    )</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co"># Union of all top-15 categories (for the comparison chart)</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a>top15_union <span class="op">=</span> <span class="bu">sorted</span>(</span>
+<span id="cb8-20"><a href="#cb8-20"></a>    <span class="bu">set</span>().union(<span class="op">*</span>[s.index <span class="cf">for</span> s <span class="kw">in</span> top15_per_year.values()])</span>
+<span id="cb8-21"><a href="#cb8-21"></a>)</span>
+<span id="cb8-22"><a href="#cb8-22"></a></span>
+<span id="cb8-23"><a href="#cb8-23"></a><span class="co"># Fixed color per category in the union</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>_cmap <span class="op">=</span> cm.get_cmap(<span class="st">"tab20"</span>, <span class="bu">len</span>(top15_union))</span>
+<span id="cb8-25"><a href="#cb8-25"></a>cat_colors <span class="op">=</span> {cat: _cmap(i) <span class="cf">for</span> i, cat <span class="kw">in</span> <span class="bu">enumerate</span>(top15_union)}</span>
+<span id="cb8-26"><a href="#cb8-26"></a>cat_colors[<span class="st">"Other"</span>] <span class="op">=</span> <span class="st">"#cccccc"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fig-top15-by-year" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">6</span>))</span>
+<span id="cb9-2"><a href="#cb9-2"></a></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    series <span class="op">=</span> top15_per_year[year]</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    bars <span class="op">=</span> ax.barh(series.index, series.values, color<span class="op">=</span>TEAL)</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    ax.set_title(<span class="bu">str</span>(year), fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    ax.xaxis.set_major_formatter(mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>))</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb9-9"><a href="#cb9-9"></a>    <span class="cf">if</span> ax <span class="op">!=</span> axes[<span class="dv">0</span>]:</span>
+<span id="cb9-10"><a href="#cb9-10"></a>        ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-11"><a href="#cb9-11"></a></span>
+<span id="cb9-12"><a href="#cb9-12"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Orders"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13"></a>fig.suptitle(<span class="st">"Top 15 categories by year"</span>, y<span class="op">=</span><span class="fl">1.01</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb9-14"><a href="#cb9-14"></a>plt.tight_layout()</span>
+<span id="cb9-15"><a href="#cb9-15"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-top15-by-year" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-top15-by-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-top15-by-year-output-1.png" width="1429" height="587" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-top15-by-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Top 15 product categories per year (order count). The y-axis differs between panels — panels are not directly comparable in scale, but the ranking within each year is correct.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The top categories are broadly consistent across years — bed/bath/table, health/beauty, and sports/leisure appear in all three — but the ranking shifts and some categories enter or leave the top 15.</p>
+</section>
+<section id="category-composition-across-years" class="level3">
+<h3 class="anchored" data-anchor-id="category-composition-across-years">Category composition across years</h3>
+<p>A stacked bar chart makes the composition comparison explicit. Each bar represents one year; each colour is a category from the union of all three years’ top-15 lists; grey is everything else. Categories that grew their share push their colour wider; those that shrank hand share to other categories or to grey.</p>
+<div id="cell-fig-category-stacked" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">def</span> category_stacked_bar(df, dim_col, union_cats, cat_colors, ax):</span>
+<span id="cb10-2"><a href="#cb10-2"></a>    df2 <span class="op">=</span> df.assign(</span>
+<span id="cb10-3"><a href="#cb10-3"></a>        cat_g<span class="op">=</span>df[<span class="st">"category_en"</span>].where(df[<span class="st">"category_en"</span>].isin(union_cats), <span class="st">"Other"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>    )</span>
+<span id="cb10-5"><a href="#cb10-5"></a>    counts <span class="op">=</span> (</span>
+<span id="cb10-6"><a href="#cb10-6"></a>        df2.groupby([dim_col, <span class="st">"cat_g"</span>])[<span class="st">"order_id"</span>].count()</span>
+<span id="cb10-7"><a href="#cb10-7"></a>        .reset_index(name<span class="op">=</span><span class="st">"n"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    )</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    totals <span class="op">=</span> counts.groupby(dim_col)[<span class="st">"n"</span>].<span class="bu">sum</span>().rename(<span class="st">"total"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    counts <span class="op">=</span> counts.merge(totals, on<span class="op">=</span>dim_col)</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    counts[<span class="st">"share"</span>] <span class="op">=</span> counts[<span class="st">"n"</span>] <span class="op">/</span> counts[<span class="st">"total"</span>]</span>
+<span id="cb10-12"><a href="#cb10-12"></a></span>
+<span id="cb10-13"><a href="#cb10-13"></a>    pivot <span class="op">=</span> counts.pivot(index<span class="op">=</span>dim_col, columns<span class="op">=</span><span class="st">"cat_g"</span>, values<span class="op">=</span><span class="st">"share"</span>).fillna(<span class="dv">0</span>)</span>
+<span id="cb10-14"><a href="#cb10-14"></a>    other <span class="op">=</span> pivot.pop(<span class="st">"Other"</span>) <span class="cf">if</span> <span class="st">"Other"</span> <span class="kw">in</span> pivot <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a>    pivot <span class="op">=</span> pivot[pivot.<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).index]</span>
+<span id="cb10-16"><a href="#cb10-16"></a>    <span class="cf">if</span> other <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb10-17"><a href="#cb10-17"></a>        pivot[<span class="st">"Other"</span>] <span class="op">=</span> other</span>
+<span id="cb10-18"><a href="#cb10-18"></a></span>
+<span id="cb10-19"><a href="#cb10-19"></a>    lefts <span class="op">=</span> np.zeros(<span class="bu">len</span>(pivot))</span>
+<span id="cb10-20"><a href="#cb10-20"></a>    <span class="cf">for</span> cat <span class="kw">in</span> pivot.columns:</span>
+<span id="cb10-21"><a href="#cb10-21"></a>        ax.barh(</span>
+<span id="cb10-22"><a href="#cb10-22"></a>            pivot.index.astype(<span class="bu">str</span>), pivot[cat], left<span class="op">=</span>lefts,</span>
+<span id="cb10-23"><a href="#cb10-23"></a>            color<span class="op">=</span>cat_colors.get(cat, <span class="st">"#cccccc"</span>), label<span class="op">=</span>cat, height<span class="op">=</span><span class="fl">0.5</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a>        )</span>
+<span id="cb10-25"><a href="#cb10-25"></a>        lefts <span class="op">+=</span> pivot[cat].values</span>
+<span id="cb10-26"><a href="#cb10-26"></a>    ax.xaxis.set_major_formatter(mticker.PercentFormatter(xmax<span class="op">=</span><span class="dv">1</span>, decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb10-27"><a href="#cb10-27"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb10-28"><a href="#cb10-28"></a>    <span class="cf">return</span> pivot.columns.tolist()</span>
+<span id="cb10-29"><a href="#cb10-29"></a></span>
+<span id="cb10-30"><a href="#cb10-30"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="fl">2.5</span>))</span>
+<span id="cb10-31"><a href="#cb10-31"></a>cols <span class="op">=</span> category_stacked_bar(items_base, <span class="st">"year"</span>, top15_union, cat_colors, ax)</span>
+<span id="cb10-32"><a href="#cb10-32"></a>ax.set_xlabel(<span class="st">"Share of orders"</span>)</span>
+<span id="cb10-33"><a href="#cb10-33"></a></span>
+<span id="cb10-34"><a href="#cb10-34"></a><span class="co"># Legend outside, two columns</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a>handles <span class="op">=</span> [</span>
+<span id="cb10-36"><a href="#cb10-36"></a>    plt.Rectangle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">1</span>, color<span class="op">=</span>cat_colors.get(c, <span class="st">"#cccccc"</span>))</span>
+<span id="cb10-37"><a href="#cb10-37"></a>    <span class="cf">for</span> c <span class="kw">in</span> cols</span>
+<span id="cb10-38"><a href="#cb10-38"></a>]</span>
+<span id="cb10-39"><a href="#cb10-39"></a>ax.legend(</span>
+<span id="cb10-40"><a href="#cb10-40"></a>    handles, cols, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.01</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">"upper left"</span>,</span>
+<span id="cb10-41"><a href="#cb10-41"></a>    fontsize<span class="op">=</span><span class="dv">7</span>, ncol<span class="op">=</span><span class="dv">1</span>, frameon<span class="op">=</span><span class="va">False</span></span>
+<span id="cb10-42"><a href="#cb10-42"></a>)</span>
+<span id="cb10-43"><a href="#cb10-43"></a>plt.tight_layout()</span>
+<span id="cb10-44"><a href="#cb10-44"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-category-stacked" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-category-stacked-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-category-stacked-output-1.png" width="1046" height="316" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-category-stacked-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Share of orders by category across years. Each colour is one of the categories that appeared in any year’s top 15; grey is all other categories.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The “Other” (grey) slice is small and stable — the top-15 union accounts for the majority of orders in every year. Health/beauty and bed/bath/table are the widest slices across all years. Watch/gift categories grew noticeably from 2016 to 2017.</p>
+</section>
+<section id="by-customer-acquisition-cohort" class="level3">
+<h3 class="anchored" data-anchor-id="by-customer-acquisition-cohort">By customer acquisition cohort</h3>
+<p>We repeat the composition chart using cohort year (year of each customer’s first purchase) instead of order year.</p>
+<div id="cell-fig-category-stacked-cohort" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="fl">2.5</span>))</span>
+<span id="cb11-2"><a href="#cb11-2"></a>category_stacked_bar(items_base, <span class="st">"cohort_year"</span>, top15_union, cat_colors, ax)</span>
+<span id="cb11-3"><a href="#cb11-3"></a>ax.set_xlabel(<span class="st">"Share of orders"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4"></a>ax.set_ylabel(<span class="st">"Cohort year"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5"></a></span>
+<span id="cb11-6"><a href="#cb11-6"></a>handles <span class="op">=</span> [</span>
+<span id="cb11-7"><a href="#cb11-7"></a>    plt.Rectangle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">1</span>, color<span class="op">=</span>cat_colors.get(c, <span class="st">"#cccccc"</span>))</span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="cf">for</span> c <span class="kw">in</span> cols</span>
+<span id="cb11-9"><a href="#cb11-9"></a>]</span>
+<span id="cb11-10"><a href="#cb11-10"></a>ax.legend(</span>
+<span id="cb11-11"><a href="#cb11-11"></a>    handles, cols, bbox_to_anchor<span class="op">=</span>(<span class="fl">1.01</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">"upper left"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12"></a>    fontsize<span class="op">=</span><span class="dv">7</span>, ncol<span class="op">=</span><span class="dv">1</span>, frameon<span class="op">=</span><span class="va">False</span></span>
+<span id="cb11-13"><a href="#cb11-13"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14"></a>plt.tight_layout()</span>
+<span id="cb11-15"><a href="#cb11-15"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-category-stacked-cohort" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-category-stacked-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-category-stacked-cohort-output-1.png" width="1045" height="316" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-category-stacked-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Category share by customer acquisition cohort. Given the near-zero repeat rate, the pattern closely mirrors the order-year view — confirming that cohort composition reflects when customers joined, not what they later bought.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two charts are near-identical, which is the expected consequence of a near-zero repeat rate: cohort year = order year for almost every customer. In a business with meaningful retention, the two charts would diverge — a 2016 cohort buying health/beauty in 2017 would shift category shares across years. Here they don’t, which confirms that what we observe reflects <em>acquisition</em> patterns, not changing preferences of existing customers.</p>
+</section>
+</section>
+<section id="geographic-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="geographic-distribution">Geographic distribution</h2>
+<section id="by-year" class="level3">
+<h3 class="anchored" data-anchor-id="by-year">By year</h3>
+<div id="geo-prep" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a>cust_state <span class="op">=</span> (</span>
+<span id="cb12-2"><a href="#cb12-2"></a>    delivered_cust</span>
+<span id="cb12-3"><a href="#cb12-3"></a>    .merge(customers[[<span class="st">"customer_id"</span>, <span class="st">"customer_state"</span>]].drop_duplicates(), on<span class="op">=</span><span class="st">"customer_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4"></a>    [[<span class="st">"order_id"</span>, <span class="st">"year"</span>, <span class="st">"cohort_year"</span>, <span class="st">"customer_state"</span>]]</span>
+<span id="cb12-5"><a href="#cb12-5"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a>top_states_per_year <span class="op">=</span> {}</span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="cf">for</span> year <span class="kw">in</span> YEARS:</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    top_states_per_year[year] <span class="op">=</span> (</span>
+<span id="cb12-10"><a href="#cb12-10"></a>        cust_state[cust_state[<span class="st">"year"</span>] <span class="op">==</span> year]</span>
+<span id="cb12-11"><a href="#cb12-11"></a>        .groupby(<span class="st">"customer_state"</span>)[<span class="st">"order_id"</span>].count()</span>
+<span id="cb12-12"><a href="#cb12-12"></a>        .nlargest(<span class="dv">12</span>).sort_values(ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-13"><a href="#cb12-13"></a>    )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fig-geo-by-year" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb13-2"><a href="#cb13-2"></a></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb13-4"><a href="#cb13-4"></a>    series <span class="op">=</span> top_states_per_year[year]</span>
+<span id="cb13-5"><a href="#cb13-5"></a>    ax.barh(series.index, series.values, color<span class="op">=</span>TEAL)</span>
+<span id="cb13-6"><a href="#cb13-6"></a>    ax.set_title(<span class="bu">str</span>(year), fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb13-7"><a href="#cb13-7"></a>    ax.xaxis.set_major_formatter(mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>))</span>
+<span id="cb13-8"><a href="#cb13-8"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="cf">if</span> ax <span class="op">!=</span> axes[<span class="dv">0</span>]:</span>
+<span id="cb13-10"><a href="#cb13-10"></a>        ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-11"><a href="#cb13-11"></a></span>
+<span id="cb13-12"><a href="#cb13-12"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Orders"</span>)</span>
+<span id="cb13-13"><a href="#cb13-13"></a>fig.suptitle(<span class="st">"Top 12 customer states by year"</span>, y<span class="op">=</span><span class="fl">1.01</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb13-14"><a href="#cb13-14"></a>plt.tight_layout()</span>
+<span id="cb13-15"><a href="#cb13-15"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-geo-by-year" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-geo-by-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-geo-by-year-output-1.png" width="1430" height="490" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geo-by-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Top 12 customer states by order count per year. São Paulo (SP) dominates in all years but its lead narrows as Olist reaches other states.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In 2016 only a handful of states generated meaningful volume — the platform was still São Paulo-centric. By 2017 Rio de Janeiro, Minas Gerais, and Rio Grande do Sul all grew substantially. By 2018 states such as Paraná and Santa Catarina had also entered the picture. A single geographic bar chart across the full dataset would make Olist look concentrated; the per-year view shows it was expanding geographically throughout the observation window.</p>
+</section>
+<section id="by-customer-acquisition-cohort-1" class="level3">
+<h3 class="anchored" data-anchor-id="by-customer-acquisition-cohort-1">By customer acquisition cohort</h3>
+<div id="cell-fig-geo-by-cohort" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1"></a>top_states_by_cohort <span class="op">=</span> {}</span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="cf">for</span> year <span class="kw">in</span> YEARS:</span>
+<span id="cb14-3"><a href="#cb14-3"></a>    top_states_by_cohort[year] <span class="op">=</span> (</span>
+<span id="cb14-4"><a href="#cb14-4"></a>        cust_state[cust_state[<span class="st">"cohort_year"</span>] <span class="op">==</span> year]</span>
+<span id="cb14-5"><a href="#cb14-5"></a>        .groupby(<span class="st">"customer_state"</span>)[<span class="st">"order_id"</span>].count()</span>
+<span id="cb14-6"><a href="#cb14-6"></a>        .nlargest(<span class="dv">12</span>).sort_values(ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-7"><a href="#cb14-7"></a>    )</span>
+<span id="cb14-8"><a href="#cb14-8"></a></span>
+<span id="cb14-9"><a href="#cb14-9"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">5</span>))</span>
+<span id="cb14-10"><a href="#cb14-10"></a></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb14-12"><a href="#cb14-12"></a>    series <span class="op">=</span> top_states_by_cohort[year]</span>
+<span id="cb14-13"><a href="#cb14-13"></a>    ax.barh(series.index, series.values, color<span class="op">=</span>YEAR_COLORS[year])</span>
+<span id="cb14-14"><a href="#cb14-14"></a>    ax.set_title(<span class="ss">f"Cohort </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb14-15"><a href="#cb14-15"></a>    ax.xaxis.set_major_formatter(mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>))</span>
+<span id="cb14-16"><a href="#cb14-16"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    <span class="cf">if</span> ax <span class="op">!=</span> axes[<span class="dv">0</span>]:</span>
+<span id="cb14-18"><a href="#cb14-18"></a>        ax.tick_params(axis<span class="op">=</span><span class="st">"y"</span>, which<span class="op">=</span><span class="st">"both"</span>, left<span class="op">=</span><span class="va">False</span>, labelleft<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-19"><a href="#cb14-19"></a></span>
+<span id="cb14-20"><a href="#cb14-20"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"Orders"</span>)</span>
+<span id="cb14-21"><a href="#cb14-21"></a>fig.suptitle(<span class="st">"Top 12 customer states by acquisition cohort"</span>, y<span class="op">=</span><span class="fl">1.01</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb14-22"><a href="#cb14-22"></a>plt.tight_layout()</span>
+<span id="cb14-23"><a href="#cb14-23"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-geo-by-cohort" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-geo-by-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-geo-by-cohort-output-1.png" width="1430" height="490" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geo-by-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Top 12 customer states by cohort year. The pattern mirrors the order-year view, confirming that geographic expansion reflects where new customers came from, not where existing customers moved.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The cohort and order-year views are again nearly identical. In a business with higher repeat rates, cohort geography would be fixed at acquisition time — a 2016 São Paulo customer stays a São Paulo customer even if they reorder in 2018. Here there is almost no reordering, so the distinction collapses.</p>
+</section>
+</section>
+<section id="delivery-time-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="delivery-time-distribution">Delivery time distribution</h2>
+<section id="by-year-1" class="level3">
+<h3 class="anchored" data-anchor-id="by-year-1">By year</h3>
+<p>We use a kernel density estimate (KDE) rather than a histogram, and stack the three years vertically so the shape of each distribution is legible. The shared x-axis makes the comparison direct.</p>
+<div id="delivery-prep" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1"></a>deliv <span class="op">=</span> delivered_cust.dropna(</span>
+<span id="cb15-2"><a href="#cb15-2"></a>    subset<span class="op">=</span>[<span class="st">"order_delivered_customer_date"</span>, <span class="st">"order_estimated_delivery_date"</span>]</span>
+<span id="cb15-3"><a href="#cb15-3"></a>).copy()</span>
+<span id="cb15-4"><a href="#cb15-4"></a></span>
+<span id="cb15-5"><a href="#cb15-5"></a>deliv[<span class="st">"delivery_days"</span>] <span class="op">=</span> (</span>
+<span id="cb15-6"><a href="#cb15-6"></a>    (deliv[<span class="st">"order_delivered_customer_date"</span>] <span class="op">-</span> deliv[<span class="st">"order_purchase_timestamp"</span>])</span>
+<span id="cb15-7"><a href="#cb15-7"></a>    .dt.total_seconds() <span class="op">/</span> <span class="dv">86400</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9"></a>deliv[<span class="st">"days_vs_estimate"</span>] <span class="op">=</span> (</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    (deliv[<span class="st">"order_delivered_customer_date"</span>] <span class="op">-</span> deliv[<span class="st">"order_estimated_delivery_date"</span>])</span>
+<span id="cb15-11"><a href="#cb15-11"></a>    .dt.total_seconds() <span class="op">/</span> <span class="dv">86400</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a>)</span>
+<span id="cb15-13"><a href="#cb15-13"></a>deliv[<span class="st">"on_time"</span>] <span class="op">=</span> deliv[<span class="st">"days_vs_estimate"</span>] <span class="op">&lt;=</span> <span class="dv">0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fig-delivery-density-year" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1"></a>x_range <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">65</span>, <span class="dv">400</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb16-5"><a href="#cb16-5"></a>    data <span class="op">=</span> deliv[deliv[<span class="st">"year"</span>] <span class="op">==</span> year][<span class="st">"delivery_days"</span>].dropna().clip(<span class="dv">0</span>, <span class="dv">65</span>).values</span>
+<span id="cb16-6"><a href="#cb16-6"></a>    <span class="cf">if</span> <span class="bu">len</span>(data) <span class="op">&lt;</span> <span class="dv">10</span>:</span>
+<span id="cb16-7"><a href="#cb16-7"></a>        ax.set_ylabel(<span class="bu">str</span>(year), rotation<span class="op">=</span><span class="dv">0</span>, labelpad<span class="op">=</span><span class="dv">35</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb16-8"><a href="#cb16-8"></a>        <span class="cf">continue</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>    kde <span class="op">=</span> gaussian_kde(data, bw_method<span class="op">=</span><span class="fl">0.12</span>)</span>
+<span id="cb16-10"><a href="#cb16-10"></a>    y <span class="op">=</span> kde(x_range)</span>
+<span id="cb16-11"><a href="#cb16-11"></a>    color <span class="op">=</span> YEAR_COLORS[year]</span>
+<span id="cb16-12"><a href="#cb16-12"></a>    ax.fill_between(x_range, y, alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span>color)</span>
+<span id="cb16-13"><a href="#cb16-13"></a>    ax.plot(x_range, y, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb16-14"><a href="#cb16-14"></a>    median <span class="op">=</span> np.median(data)</span>
+<span id="cb16-15"><a href="#cb16-15"></a>    p90 <span class="op">=</span> np.percentile(data, <span class="dv">90</span>)</span>
+<span id="cb16-16"><a href="#cb16-16"></a>    ax.axvline(median, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb16-17"><a href="#cb16-17"></a>    ax.axvline(p90, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb16-18"><a href="#cb16-18"></a>    ax.text(median <span class="op">+</span> <span class="fl">0.5</span>, ax.get_ylim()[<span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.85</span> <span class="cf">if</span> ax.get_ylim()[<span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.05</span>,</span>
+<span id="cb16-19"><a href="#cb16-19"></a>            <span class="ss">f"p50=</span><span class="sc">{</span>median<span class="sc">:.0f}</span><span class="ss">d"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb16-20"><a href="#cb16-20"></a>    ax.text(p90 <span class="op">+</span> <span class="fl">0.5</span>, ax.get_ylim()[<span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.6</span> <span class="cf">if</span> ax.get_ylim()[<span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.03</span>,</span>
+<span id="cb16-21"><a href="#cb16-21"></a>            <span class="ss">f"p90=</span><span class="sc">{</span>p90<span class="sc">:.0f}</span><span class="ss">d"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb16-22"><a href="#cb16-22"></a>    ax.set_ylabel(<span class="bu">str</span>(year), rotation<span class="op">=</span><span class="dv">0</span>, labelpad<span class="op">=</span><span class="dv">35</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb16-23"><a href="#cb16-23"></a>    ax.set_yticks([])</span>
+<span id="cb16-24"><a href="#cb16-24"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>, <span class="st">"left"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb16-25"><a href="#cb16-25"></a></span>
+<span id="cb16-26"><a href="#cb16-26"></a>axes[<span class="op">-</span><span class="dv">1</span>].set_xlabel(<span class="st">"Days from purchase to delivery"</span>)</span>
+<span id="cb16-27"><a href="#cb16-27"></a>fig.suptitle(<span class="st">"Delivery time distribution by order year"</span>, y<span class="op">=</span><span class="fl">1.01</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb16-28"><a href="#cb16-28"></a>plt.tight_layout()</span>
+<span id="cb16-29"><a href="#cb16-29"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-delivery-density-year" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-delivery-density-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-delivery-density-year-output-1.png" width="854" height="684" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-delivery-density-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Delivery time density by year. The median (dashed line) is stable; the right tail shrinks from 2016 to 2018, meaning fewer customers experienced very long waits as logistics matured.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The median delivery time is nearly flat across years — roughly two weeks. The improvement shows in the tails: the 90th-percentile line shifts left from 2016 to 2017 to 2018, meaning the worst-served customers received their orders faster as the platform scaled its logistics network.</p>
+<div id="cell-delivery-stats-table" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a>stats <span class="op">=</span> (</span>
+<span id="cb17-2"><a href="#cb17-2"></a>    deliv</span>
+<span id="cb17-3"><a href="#cb17-3"></a>    .groupby(<span class="st">"year"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a>    .agg(</span>
+<span id="cb17-5"><a href="#cb17-5"></a>        orders<span class="op">=</span>(<span class="st">"order_id"</span>, <span class="st">"count"</span>),</span>
+<span id="cb17-6"><a href="#cb17-6"></a>        median_days<span class="op">=</span>(<span class="st">"delivery_days"</span>, <span class="st">"median"</span>),</span>
+<span id="cb17-7"><a href="#cb17-7"></a>        p90_days<span class="op">=</span>(<span class="st">"delivery_days"</span>, <span class="kw">lambda</span> x: x.quantile(<span class="fl">0.90</span>)),</span>
+<span id="cb17-8"><a href="#cb17-8"></a>        on_time_rate<span class="op">=</span>(<span class="st">"on_time"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb17-9"><a href="#cb17-9"></a>    )</span>
+<span id="cb17-10"><a href="#cb17-10"></a>    .reset_index()</span>
+<span id="cb17-11"><a href="#cb17-11"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12"></a></span>
+<span id="cb17-13"><a href="#cb17-13"></a>stats.style.<span class="bu">format</span>({</span>
+<span id="cb17-14"><a href="#cb17-14"></a>    <span class="st">"orders"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>,</span>
+<span id="cb17-15"><a href="#cb17-15"></a>    <span class="st">"median_days"</span>: <span class="st">"</span><span class="sc">{:.1f}</span><span class="st">"</span>,</span>
+<span id="cb17-16"><a href="#cb17-16"></a>    <span class="st">"p90_days"</span>: <span class="st">"</span><span class="sc">{:.1f}</span><span class="st">"</span>,</span>
+<span id="cb17-17"><a href="#cb17-17"></a>    <span class="st">"on_time_rate"</span>: <span class="st">"</span><span class="sc">{:.1%}</span><span class="st">"</span>,</span>
+<span id="cb17-18"><a href="#cb17-18"></a>}).hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="delivery-stats-table" class="cell-output cell-output-display" data-execution_count="17">
+<style type="text/css">
+</style>
+
+<table id="T_5985c" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_5985c_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">year</th>
+<th id="T_5985c_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">orders</th>
+<th id="T_5985c_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">median_days</th>
+<th id="T_5985c_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">p90_days</th>
+<th id="T_5985c_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">on_time_rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_5985c_row0_col0" class="data row0 col0">2016</td>
+<td id="T_5985c_row0_col1" class="data row0 col1">272</td>
+<td id="T_5985c_row0_col2" class="data row0 col2">17.9</td>
+<td id="T_5985c_row0_col3" class="data row0 col3">35.0</td>
+<td id="T_5985c_row0_col4" class="data row0 col4">98.5%</td>
+</tr>
+<tr class="even">
+<td id="T_5985c_row1_col0" class="data row1 col0">2017</td>
+<td id="T_5985c_row1_col1" class="data row1 col1">43,426</td>
+<td id="T_5985c_row1_col2" class="data row1 col2">11.0</td>
+<td id="T_5985c_row1_col3" class="data row1 col3">22.9</td>
+<td id="T_5985c_row1_col4" class="data row1 col4">93.4%</td>
+</tr>
+<tr class="odd">
+<td id="T_5985c_row2_col0" class="data row2 col0">2018</td>
+<td id="T_5985c_row2_col1" class="data row2 col1">52,778</td>
+<td id="T_5985c_row2_col2" class="data row2 col2">9.5</td>
+<td id="T_5985c_row2_col3" class="data row2 col3">23.2</td>
+<td id="T_5985c_row2_col4" class="data row2 col4">90.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="by-customer-acquisition-cohort-2" class="level3">
+<h3 class="anchored" data-anchor-id="by-customer-acquisition-cohort-2">By customer acquisition cohort</h3>
+<p>The cohort view answers a different question: did <em>customers who joined in different years</em> experience systematically different delivery quality? A 2016 cohort customer who reordered in 2018 would experience 2018 logistics, not 2016 logistics. Given the near-zero repeat rate, nearly all cohort members have exactly one order, placed in the year they joined — so cohort and order-year views converge.</p>
+<div id="cell-fig-delivery-density-cohort" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb18-4"><a href="#cb18-4"></a>    data <span class="op">=</span> deliv[deliv[<span class="st">"cohort_year"</span>] <span class="op">==</span> year][<span class="st">"delivery_days"</span>].dropna().clip(<span class="dv">0</span>, <span class="dv">65</span>).values</span>
+<span id="cb18-5"><a href="#cb18-5"></a>    <span class="cf">if</span> <span class="bu">len</span>(data) <span class="op">&lt;</span> <span class="dv">10</span>:</span>
+<span id="cb18-6"><a href="#cb18-6"></a>        ax.set_ylabel(<span class="ss">f"Cohort </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>, rotation<span class="op">=</span><span class="dv">0</span>, labelpad<span class="op">=</span><span class="dv">50</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb18-7"><a href="#cb18-7"></a>        <span class="cf">continue</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a>    kde <span class="op">=</span> gaussian_kde(data, bw_method<span class="op">=</span><span class="fl">0.12</span>)</span>
+<span id="cb18-9"><a href="#cb18-9"></a>    y <span class="op">=</span> kde(x_range)</span>
+<span id="cb18-10"><a href="#cb18-10"></a>    color <span class="op">=</span> YEAR_COLORS[year]</span>
+<span id="cb18-11"><a href="#cb18-11"></a>    ax.fill_between(x_range, y, alpha<span class="op">=</span><span class="fl">0.4</span>, color<span class="op">=</span>color)</span>
+<span id="cb18-12"><a href="#cb18-12"></a>    ax.plot(x_range, y, color<span class="op">=</span>color, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb18-13"><a href="#cb18-13"></a>    median <span class="op">=</span> np.median(data)</span>
+<span id="cb18-14"><a href="#cb18-14"></a>    p90 <span class="op">=</span> np.percentile(data, <span class="dv">90</span>)</span>
+<span id="cb18-15"><a href="#cb18-15"></a>    ax.axvline(median, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="fl">1.2</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb18-16"><a href="#cb18-16"></a>    ax.axvline(p90, color<span class="op">=</span><span class="st">"black"</span>, linestyle<span class="op">=</span><span class="st">":"</span>, linewidth<span class="op">=</span><span class="dv">1</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb18-17"><a href="#cb18-17"></a>    ax.text(median <span class="op">+</span> <span class="fl">0.5</span>, ax.get_ylim()[<span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.85</span> <span class="cf">if</span> ax.get_ylim()[<span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.05</span>,</span>
+<span id="cb18-18"><a href="#cb18-18"></a>            <span class="ss">f"p50=</span><span class="sc">{</span>median<span class="sc">:.0f}</span><span class="ss">d"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb18-19"><a href="#cb18-19"></a>    ax.text(p90 <span class="op">+</span> <span class="fl">0.5</span>, ax.get_ylim()[<span class="dv">1</span>] <span class="op">*</span> <span class="fl">0.6</span> <span class="cf">if</span> ax.get_ylim()[<span class="dv">1</span>] <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.03</span>,</span>
+<span id="cb18-20"><a href="#cb18-20"></a>            <span class="ss">f"p90=</span><span class="sc">{</span>p90<span class="sc">:.0f}</span><span class="ss">d"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb18-21"><a href="#cb18-21"></a>    ax.set_ylabel(<span class="ss">f"Cohort</span><span class="ch">\n</span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>, rotation<span class="op">=</span><span class="dv">0</span>, labelpad<span class="op">=</span><span class="dv">50</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb18-22"><a href="#cb18-22"></a>    ax.set_yticks([])</span>
+<span id="cb18-23"><a href="#cb18-23"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>, <span class="st">"left"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb18-24"><a href="#cb18-24"></a></span>
+<span id="cb18-25"><a href="#cb18-25"></a>axes[<span class="op">-</span><span class="dv">1</span>].set_xlabel(<span class="st">"Days from purchase to delivery"</span>)</span>
+<span id="cb18-26"><a href="#cb18-26"></a>fig.suptitle(<span class="st">"Delivery time distribution by customer acquisition cohort"</span>, y<span class="op">=</span><span class="fl">1.01</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb18-27"><a href="#cb18-27"></a>plt.tight_layout()</span>
+<span id="cb18-28"><a href="#cb18-28"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-delivery-density-cohort" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-delivery-density-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-delivery-density-cohort-output-1.png" width="854" height="684" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-delivery-density-cohort-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Delivery time density by customer acquisition cohort. The shape is near-identical to the order-year view, confirming that each cohort made almost all their purchases in the year they first appeared.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The near-identical shape across both views reinforces a key structural point: in a near-zero repeat-purchase business, <em>cohort</em> and <em>period</em> are almost the same thing. The cohort lens only starts paying dividends once retention is meaningful — which is precisely what we will investigate in the cohort analysis post (post 4).</p>
+</section>
+</section>
+<section id="category-composition-by-cohort-over-time" class="level2">
+<h2 class="anchored" data-anchor-id="category-composition-by-cohort-over-time">Category composition by cohort over time</h2>
+<p>The stacked bar charts above show the composition of each cohort’s purchases in aggregate. A more informative view tracks each cohort’s buying pattern month by month, from their registration month through the end of the dataset. With near-zero repeat purchase rate we expect most of the signal to sit in the acquisition month — but the chart also reveals whether the rare repeat buyers chose different categories and whether category preferences shifted for customers who joined at different times.</p>
+<div id="cohort-cat-month-prep" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># items_base has order_id, category_en, year, cohort_year</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co"># we need the order month — merge from delivered_cust which inherited it from delivered</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>items_month <span class="op">=</span> items_base.merge(</span>
+<span id="cb19-4"><a href="#cb19-4"></a>    delivered_cust[[<span class="st">"order_id"</span>, <span class="st">"month"</span>]].drop_duplicates(), on<span class="op">=</span><span class="st">"order_id"</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6"></a>items_month[<span class="st">"cat_g"</span>] <span class="op">=</span> items_month[<span class="st">"category_en"</span>].where(</span>
+<span id="cb19-7"><a href="#cb19-7"></a>    items_month[<span class="st">"category_en"</span>].isin(top15_union), <span class="st">"Other"</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9"></a></span>
+<span id="cb19-10"><a href="#cb19-10"></a>cohort_cat_month <span class="op">=</span> (</span>
+<span id="cb19-11"><a href="#cb19-11"></a>    items_month</span>
+<span id="cb19-12"><a href="#cb19-12"></a>    .groupby([<span class="st">"cohort_year"</span>, <span class="st">"month"</span>, <span class="st">"cat_g"</span>])[<span class="st">"order_id"</span>].count()</span>
+<span id="cb19-13"><a href="#cb19-13"></a>    .reset_index(name<span class="op">=</span><span class="st">"n"</span>)</span>
+<span id="cb19-14"><a href="#cb19-14"></a>)</span>
+<span id="cb19-15"><a href="#cb19-15"></a></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co"># Compute shares within each cohort-month</span></span>
+<span id="cb19-17"><a href="#cb19-17"></a>month_totals <span class="op">=</span> (</span>
+<span id="cb19-18"><a href="#cb19-18"></a>    cohort_cat_month.groupby([<span class="st">"cohort_year"</span>, <span class="st">"month"</span>])[<span class="st">"n"</span>].<span class="bu">sum</span>()</span>
+<span id="cb19-19"><a href="#cb19-19"></a>    .rename(<span class="st">"total"</span>).reset_index()</span>
+<span id="cb19-20"><a href="#cb19-20"></a>)</span>
+<span id="cb19-21"><a href="#cb19-21"></a>cohort_cat_month <span class="op">=</span> cohort_cat_month.merge(month_totals, on<span class="op">=</span>[<span class="st">"cohort_year"</span>, <span class="st">"month"</span>])</span>
+<span id="cb19-22"><a href="#cb19-22"></a>cohort_cat_month[<span class="st">"share"</span>] <span class="op">=</span> cohort_cat_month[<span class="st">"n"</span>] <span class="op">/</span> cohort_cat_month[<span class="st">"total"</span>]</span>
+<span id="cb19-23"><a href="#cb19-23"></a>cohort_cat_month[<span class="st">"month_dt"</span>] <span class="op">=</span> cohort_cat_month[<span class="st">"month"</span>].dt.to_timestamp()</span>
+<span id="cb19-24"><a href="#cb19-24"></a></span>
+<span id="cb19-25"><a href="#cb19-25"></a><span class="co"># Build category order: most prevalent first across all data, Other last</span></span>
+<span id="cb19-26"><a href="#cb19-26"></a>cat_order <span class="op">=</span> (</span>
+<span id="cb19-27"><a href="#cb19-27"></a>    cohort_cat_month[cohort_cat_month[<span class="st">"cat_g"</span>] <span class="op">!=</span> <span class="st">"Other"</span>]</span>
+<span id="cb19-28"><a href="#cb19-28"></a>    .groupby(<span class="st">"cat_g"</span>)[<span class="st">"n"</span>].<span class="bu">sum</span>()</span>
+<span id="cb19-29"><a href="#cb19-29"></a>    .sort_values(ascending<span class="op">=</span><span class="va">False</span>).index.tolist()</span>
+<span id="cb19-30"><a href="#cb19-30"></a>) <span class="op">+</span> [<span class="st">"Other"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="cell-fig-cohort-cat-month" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">3</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">11</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a></span>
+<span id="cb20-3"><a href="#cb20-3"></a>all_months <span class="op">=</span> <span class="bu">sorted</span>(cohort_cat_month[<span class="st">"month_dt"</span>].unique())</span>
+<span id="cb20-4"><a href="#cb20-4"></a></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="cf">for</span> ax, year <span class="kw">in</span> <span class="bu">zip</span>(axes, YEARS):</span>
+<span id="cb20-6"><a href="#cb20-6"></a>    data <span class="op">=</span> cohort_cat_month[cohort_cat_month[<span class="st">"cohort_year"</span>] <span class="op">==</span> year].copy()</span>
+<span id="cb20-7"><a href="#cb20-7"></a></span>
+<span id="cb20-8"><a href="#cb20-8"></a>    <span class="co"># Pivot to months × categories, fill missing months with 0</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a>    pivot <span class="op">=</span> (</span>
+<span id="cb20-10"><a href="#cb20-10"></a>        data.pivot_table(</span>
+<span id="cb20-11"><a href="#cb20-11"></a>            index<span class="op">=</span><span class="st">"month_dt"</span>, columns<span class="op">=</span><span class="st">"cat_g"</span>, values<span class="op">=</span><span class="st">"share"</span>, fill_value<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb20-12"><a href="#cb20-12"></a>        )</span>
+<span id="cb20-13"><a href="#cb20-13"></a>        .reindex(all_months, fill_value<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb20-14"><a href="#cb20-14"></a>    )</span>
+<span id="cb20-15"><a href="#cb20-15"></a>    <span class="co"># Reorder columns</span></span>
+<span id="cb20-16"><a href="#cb20-16"></a>    ordered_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> cat_order <span class="cf">if</span> c <span class="kw">in</span> pivot.columns]</span>
+<span id="cb20-17"><a href="#cb20-17"></a>    pivot <span class="op">=</span> pivot[ordered_cols]</span>
+<span id="cb20-18"><a href="#cb20-18"></a></span>
+<span id="cb20-19"><a href="#cb20-19"></a>    <span class="co"># Stacked area</span></span>
+<span id="cb20-20"><a href="#cb20-20"></a>    bottom <span class="op">=</span> np.zeros(<span class="bu">len</span>(pivot))</span>
+<span id="cb20-21"><a href="#cb20-21"></a>    <span class="cf">for</span> cat <span class="kw">in</span> pivot.columns:</span>
+<span id="cb20-22"><a href="#cb20-22"></a>        vals <span class="op">=</span> pivot[cat].values</span>
+<span id="cb20-23"><a href="#cb20-23"></a>        ax.fill_between(</span>
+<span id="cb20-24"><a href="#cb20-24"></a>            pivot.index, bottom, bottom <span class="op">+</span> vals,</span>
+<span id="cb20-25"><a href="#cb20-25"></a>            color<span class="op">=</span>cat_colors.get(cat, <span class="st">"#cccccc"</span>), alpha<span class="op">=</span><span class="fl">0.85</span>, linewidth<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb20-26"><a href="#cb20-26"></a>        )</span>
+<span id="cb20-27"><a href="#cb20-27"></a>        bottom <span class="op">+=</span> vals</span>
+<span id="cb20-28"><a href="#cb20-28"></a></span>
+<span id="cb20-29"><a href="#cb20-29"></a>    <span class="co"># Order volume on secondary axis</span></span>
+<span id="cb20-30"><a href="#cb20-30"></a>    vol <span class="op">=</span> (</span>
+<span id="cb20-31"><a href="#cb20-31"></a>        data.groupby(<span class="st">"month_dt"</span>)[<span class="st">"n"</span>].<span class="bu">sum</span>()</span>
+<span id="cb20-32"><a href="#cb20-32"></a>        .reindex(all_months, fill_value<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb20-33"><a href="#cb20-33"></a>    )</span>
+<span id="cb20-34"><a href="#cb20-34"></a>    ax2 <span class="op">=</span> ax.twinx()</span>
+<span id="cb20-35"><a href="#cb20-35"></a>    ax2.plot(vol.index, vol.values, color<span class="op">=</span><span class="st">"black"</span>, linewidth<span class="op">=</span><span class="fl">1.5</span>, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb20-36"><a href="#cb20-36"></a>    ax2.set_ylabel(<span class="st">"Orders"</span>, fontsize<span class="op">=</span><span class="dv">8</span>, color<span class="op">=</span><span class="st">"#555"</span>)</span>
+<span id="cb20-37"><a href="#cb20-37"></a>    ax2.tick_params(labelsize<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb20-38"><a href="#cb20-38"></a>    ax2.spines[[<span class="st">"top"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb20-39"><a href="#cb20-39"></a></span>
+<span id="cb20-40"><a href="#cb20-40"></a>    ax.set_title(<span class="ss">f"Cohort </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">11</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>, loc<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb20-41"><a href="#cb20-41"></a>    ax.set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb20-42"><a href="#cb20-42"></a>    ax.yaxis.set_major_formatter(mticker.PercentFormatter(xmax<span class="op">=</span><span class="dv">1</span>, decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb20-43"><a href="#cb20-43"></a>    ax.set_ylabel(<span class="st">"Category share"</span>)</span>
+<span id="cb20-44"><a href="#cb20-44"></a>    ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb20-45"><a href="#cb20-45"></a></span>
+<span id="cb20-46"><a href="#cb20-46"></a>axes[<span class="op">-</span><span class="dv">1</span>].xaxis.set_major_formatter(mdates.DateFormatter(<span class="st">"%b %Y"</span>))</span>
+<span id="cb20-47"><a href="#cb20-47"></a>axes[<span class="op">-</span><span class="dv">1</span>].xaxis.set_major_locator(mdates.MonthLocator(interval<span class="op">=</span><span class="dv">2</span>))</span>
+<span id="cb20-48"><a href="#cb20-48"></a>plt.setp(axes[<span class="op">-</span><span class="dv">1</span>].xaxis.get_majorticklabels(), rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb20-49"><a href="#cb20-49"></a></span>
+<span id="cb20-50"><a href="#cb20-50"></a><span class="co"># Shared legend below all panels</span></span>
+<span id="cb20-51"><a href="#cb20-51"></a>handles <span class="op">=</span> [</span>
+<span id="cb20-52"><a href="#cb20-52"></a>    plt.Rectangle((<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">1</span>, color<span class="op">=</span>cat_colors.get(c, <span class="st">"#cccccc"</span>))</span>
+<span id="cb20-53"><a href="#cb20-53"></a>    <span class="cf">for</span> c <span class="kw">in</span> cat_order</span>
+<span id="cb20-54"><a href="#cb20-54"></a>]</span>
+<span id="cb20-55"><a href="#cb20-55"></a>fig.legend(</span>
+<span id="cb20-56"><a href="#cb20-56"></a>    handles, cat_order,</span>
+<span id="cb20-57"><a href="#cb20-57"></a>    loc<span class="op">=</span><span class="st">"lower center"</span>, ncol<span class="op">=</span><span class="dv">4</span>, fontsize<span class="op">=</span><span class="dv">7</span>,</span>
+<span id="cb20-58"><a href="#cb20-58"></a>    bbox_to_anchor<span class="op">=</span>(<span class="fl">0.45</span>, <span class="op">-</span><span class="fl">0.12</span>), frameon<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb20-59"><a href="#cb20-59"></a>)</span>
+<span id="cb20-60"><a href="#cb20-60"></a>plt.tight_layout()</span>
+<span id="cb20-61"><a href="#cb20-61"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-cohort-cat-month" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cohort-cat-month-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-cohort-cat-month-output-1.png" width="1334" height="1182" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cohort-cat-month-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10: Category composition of purchases over calendar time, by customer acquisition cohort. Each panel covers the full dataset window (Sep 2016–Aug 2018). The black line (right axis) shows order volume, making clear that each cohort is almost entirely active in the year they joined.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The order volume line (black) makes the near-zero repeat rate visible directly: each cohort’s purchases are almost entirely concentrated in their acquisition year. The coloured composition changes across months within that active window reveal which categories customers chose in different months of the year — health/beauty and bed/bath/table are consistently present, while some categories show seasonal variation. The rare orders that appear in later years (tiny volume ticks outside the main active window) show largely the same category mix, suggesting that repeat buyers are not systematically different in their product preferences.</p>
+</section>
+<section id="seasonality" class="level2">
+<h2 class="anchored" data-anchor-id="seasonality">Seasonality</h2>
+<p>We close with seasonality, keeping it brief: the weekday pattern is the one dimension where the aggregate is trustworthy because it holds consistently across all three years.</p>
+<div id="cell-fig-seasonality" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a>weekday_order <span class="op">=</span> [<span class="st">"Monday"</span>, <span class="st">"Tuesday"</span>, <span class="st">"Wednesday"</span>, <span class="st">"Thursday"</span>, <span class="st">"Friday"</span>, <span class="st">"Saturday"</span>, <span class="st">"Sunday"</span>]</span>
+<span id="cb21-2"><a href="#cb21-2"></a></span>
+<span id="cb21-3"><a href="#cb21-3"></a>wd <span class="op">=</span> (</span>
+<span id="cb21-4"><a href="#cb21-4"></a>    delivered</span>
+<span id="cb21-5"><a href="#cb21-5"></a>    .assign(weekday<span class="op">=</span>delivered[<span class="st">"order_purchase_timestamp"</span>].dt.day_name())</span>
+<span id="cb21-6"><a href="#cb21-6"></a>    .groupby([<span class="st">"year"</span>, <span class="st">"weekday"</span>])</span>
+<span id="cb21-7"><a href="#cb21-7"></a>    .size()</span>
+<span id="cb21-8"><a href="#cb21-8"></a>    .reset_index(name<span class="op">=</span><span class="st">"orders"</span>)</span>
+<span id="cb21-9"><a href="#cb21-9"></a>)</span>
+<span id="cb21-10"><a href="#cb21-10"></a>year_totals <span class="op">=</span> wd.groupby(<span class="st">"year"</span>)[<span class="st">"orders"</span>].<span class="bu">sum</span>().rename(<span class="st">"year_total"</span>)</span>
+<span id="cb21-11"><a href="#cb21-11"></a>wd <span class="op">=</span> wd.merge(year_totals, on<span class="op">=</span><span class="st">"year"</span>)</span>
+<span id="cb21-12"><a href="#cb21-12"></a>wd[<span class="st">"share"</span>] <span class="op">=</span> wd[<span class="st">"orders"</span>] <span class="op">/</span> wd[<span class="st">"year_total"</span>]</span>
+<span id="cb21-13"><a href="#cb21-13"></a>wd[<span class="st">"weekday"</span>] <span class="op">=</span> pd.Categorical(wd[<span class="st">"weekday"</span>], categories<span class="op">=</span>weekday_order, ordered<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-14"><a href="#cb21-14"></a>wd <span class="op">=</span> wd.sort_values([<span class="st">"year"</span>, <span class="st">"weekday"</span>])</span>
+<span id="cb21-15"><a href="#cb21-15"></a></span>
+<span id="cb21-16"><a href="#cb21-16"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb21-17"><a href="#cb21-17"></a><span class="cf">for</span> year, grp <span class="kw">in</span> wd.groupby(<span class="st">"year"</span>):</span>
+<span id="cb21-18"><a href="#cb21-18"></a>    ax.plot(</span>
+<span id="cb21-19"><a href="#cb21-19"></a>        grp[<span class="st">"weekday"</span>].astype(<span class="bu">str</span>), grp[<span class="st">"share"</span>],</span>
+<span id="cb21-20"><a href="#cb21-20"></a>        marker<span class="op">=</span><span class="st">"o"</span>, markersize<span class="op">=</span><span class="dv">5</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb21-21"><a href="#cb21-21"></a>        color<span class="op">=</span>YEAR_COLORS[year], label<span class="op">=</span><span class="bu">str</span>(year)</span>
+<span id="cb21-22"><a href="#cb21-22"></a>    )</span>
+<span id="cb21-23"><a href="#cb21-23"></a>ax.yaxis.set_major_formatter(mticker.PercentFormatter(xmax<span class="op">=</span><span class="dv">1</span>, decimals<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb21-24"><a href="#cb21-24"></a>ax.set_ylabel(<span class="st">"Share of weekly orders"</span>)</span>
+<span id="cb21-25"><a href="#cb21-25"></a>plt.setp(ax.xaxis.get_majorticklabels(), rotation<span class="op">=</span><span class="dv">15</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb21-26"><a href="#cb21-26"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb21-27"><a href="#cb21-27"></a>ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb21-28"><a href="#cb21-28"></a>plt.tight_layout()</span>
+<span id="cb21-29"><a href="#cb21-29"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-seasonality" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-seasonality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-seasonality-output-1.png" width="854" height="374" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seasonality-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;11: Daily order share within each year’s total, by day of week. The Monday–Tuesday peak is stable across all years — one of the few aggregate patterns that is not distorted by the changing business size.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When a pattern holds across cohorts and across years — as the weekday rhythm does here — aggregating it is safe. When it does not (category mix, geography, delivery tails), aggregating destroys information. The question to ask before presenting any aggregate is: <em>does this pattern hold within each year, or am I hiding a trend?</em></p>
+</section>
+<section id="what-well-explore-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-well-explore-next">What we’ll explore next</h2>
+<p>This exploration has established the key structural facts:</p>
+<ul>
+<li><strong>Category mix is stable</strong> across years — the aggregate top-15 is reliable, but growth trajectories differ.</li>
+<li><strong>Geographic reach expanded</strong> year on year — state-level aggregates mask this expansion.</li>
+<li><strong>Delivery tail shrank</strong> from 2016 to 2018 — the median hides the improvement; the p90 reveals it.</li>
+<li><strong>Cohort ≈ order year</strong> in Olist — the cohort lens adds explanatory value only when retention is meaningful, which it is not here.</li>
+</ul>
+<p>Next we’ll trace the full order pipeline stage by stage, measuring conversion and drop-off at each step: <a href="../olist-03-funnel/index.qmd">Purchase Funnel: From Order to Delivery (post 3)</a>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/varmara\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

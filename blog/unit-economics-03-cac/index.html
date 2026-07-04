@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marina Varfolomeeva">
+<meta name="description" content="CAC is the cost to acquire one customer. The LTV:CAC ratio tells you whether the unit economics are sustainable. We compute a seller-side proxy from Olist’s marketing funnel and learn what makes this ratio meaningful — and when it is not.">
+
+<title>DRAFT Acquisition Economics: CAC, Payback Period, and the LTV:CAC Ratio – Marina Varfolomeeva</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-60894e5ca26aaca91341ef9d74312a65.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-af17009a09fe2fb59a7bf5ed299726c9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-e87126920ed5fdeb20a395e531420096.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<meta name="quarto:status" content="draft">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../assets/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Marina Varfolomeeva</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../blog/index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../publications.html"> 
+<span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../teaching.html"> 
+<span class="menu-text">Teaching</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/varmara"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/marina-varfolomeeva"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#the-data-available" id="toc-the-data-available" class="nav-link active" data-scroll-target="#the-data-available">The data available</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#step-1-conversion-rate-by-channel" id="toc-step-1-conversion-rate-by-channel" class="nav-link" data-scroll-target="#step-1-conversion-rate-by-channel">Step 1: Conversion rate by channel</a></li>
+  <li><a href="#step-2-revenue-per-seller-by-channel" id="toc-step-2-revenue-per-seller-by-channel" class="nav-link" data-scroll-target="#step-2-revenue-per-seller-by-channel">Step 2: Revenue per seller by channel</a></li>
+  <li><a href="#step-3-efficiency-by-channel" id="toc-step-3-efficiency-by-channel" class="nav-link" data-scroll-target="#step-3-efficiency-by-channel">Step 3: Efficiency by channel</a></li>
+  <li><a href="#the-ltvcac-ratio" id="toc-the-ltvcac-ratio" class="nav-link" data-scroll-target="#the-ltvcac-ratio">The LTV:CAC ratio</a></li>
+  <li><a href="#payback-period" id="toc-payback-period" class="nav-link" data-scroll-target="#payback-period">Payback period</a></li>
+  <li><a href="#what-we-learned" id="toc-what-we-learned" class="nav-link" data-scroll-target="#what-we-learned">What we learned</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">DRAFT Acquisition Economics: CAC, Payback Period, and the LTV:CAC Ratio</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Python</div>
+    <div class="quarto-category">Analytics</div>
+    <div class="quarto-category">Business Metrics</div>
+    <div class="quarto-category">Olist</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    CAC is the cost to acquire one customer. The LTV:CAC ratio tells you whether the unit economics are sustainable. We compute a seller-side proxy from Olist’s marketing funnel and learn what makes this ratio meaningful — and when it is not.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marina Varfolomeeva </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Revenue per customer tells us what a customer is worth. To know whether the business is sustainable, we also need to know what it costs to acquire that customer. The ratio of the two — LTV to CAC — is the fundamental unit economics sanity check.</p>
+<p>In this post we compute a seller-side proxy for the LTV:CAC ratio from Olist’s marketing funnel data. The customer-side LTV is covered in Customer Unit Economics: ARPU, Contribution Margin, and LTV. For dataset setup, see <a href="../../blog/2026-06-04-olist-01-intro/index.html">Customer Analytics with Olist, Part 1: Data Setup</a>.</p>
+<section id="the-data-available" class="level2">
+<h2 class="anchored" data-anchor-id="the-data-available">The data available</h2>
+<p>Olist provides two distinct datasets. The e-commerce dataset records customer transactions. The marketing funnel dataset records how sellers were acquired — from initial contact (MQL) through a sales consultancy to a signed deal.</p>
+<p>The funnel data does not contain marketing spend figures. What it contains is:</p>
+<ul>
+<li><code>mql</code>: one row per marketing qualified lead, with a lead <code>origin</code> (organic search, paid search, social, etc.)</li>
+<li><code>closed_deals</code>: one row per MQL that converted to a seller, with the <code>seller_id</code> that links to the e-commerce data</li>
+</ul>
+<p>This lets us measure two things: 1. <strong>Conversion rate</strong> by channel — what fraction of leads from each origin became sellers 2. <strong>Revenue per seller</strong> by channel — how much gross merchandise value sellers from each channel generated</p>
+<p>Neither is a true CAC (we have no spend data). Together they give a directional picture of which channels are most efficient.</p>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div id="setup" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="im">import</span> matplotlib.ticker <span class="im">as</span> mticker</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a>load_dotenv()</span>
+<span id="cb1-8"><a href="#cb1-8"></a>OLIST_DIR <span class="op">=</span> os.path.join(os.environ[<span class="st">"DATA_DIR"</span>], <span class="st">"olist"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a>mql <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_marketing_qualified_leads_dataset.csv"</span>))</span>
+<span id="cb1-11"><a href="#cb1-11"></a>closed_deals <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_closed_deals_dataset.csv"</span>))</span>
+<span id="cb1-12"><a href="#cb1-12"></a>order_items <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_order_items_dataset.csv"</span>))</span>
+<span id="cb1-13"><a href="#cb1-13"></a>orders <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_orders_dataset.csv"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="step-1-conversion-rate-by-channel" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-conversion-rate-by-channel">Step 1: Conversion rate by channel</h2>
+<p>Each MQL row represents a potential seller who filled in a contact form. <code>origin</code> is the channel that brought them to Olist. We count MQLs and closed deals per origin and compute the conversion rate.</p>
+<div id="cell-conversion-by-channel" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>mql_counts <span class="op">=</span> mql.groupby(<span class="st">"origin"</span>).size().rename(<span class="st">"mql_count"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># closed_deals has mql_id; join to get the origin</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>closed_with_origin <span class="op">=</span> closed_deals.merge(</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    mql[[<span class="st">"mql_id"</span>, <span class="st">"origin"</span>]], on<span class="op">=</span><span class="st">"mql_id"</span>, how<span class="op">=</span><span class="st">"left"</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7"></a>closed_counts <span class="op">=</span> closed_with_origin.groupby(<span class="st">"origin"</span>).size().rename(<span class="st">"closed_count"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a>funnel <span class="op">=</span> (</span>
+<span id="cb2-10"><a href="#cb2-10"></a>    pd.concat([mql_counts, closed_counts], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-11"><a href="#cb2-11"></a>    .fillna(<span class="dv">0</span>)</span>
+<span id="cb2-12"><a href="#cb2-12"></a>    .astype({<span class="st">"closed_count"</span>: <span class="bu">int</span>})</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    .reset_index()</span>
+<span id="cb2-14"><a href="#cb2-14"></a>)</span>
+<span id="cb2-15"><a href="#cb2-15"></a>funnel[<span class="st">"conversion_rate"</span>] <span class="op">=</span> funnel[<span class="st">"closed_count"</span>] <span class="op">/</span> funnel[<span class="st">"mql_count"</span>]</span>
+<span id="cb2-16"><a href="#cb2-16"></a>funnel <span class="op">=</span> funnel.sort_values(<span class="st">"conversion_rate"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-17"><a href="#cb2-17"></a></span>
+<span id="cb2-18"><a href="#cb2-18"></a>funnel.style.<span class="bu">format</span>({</span>
+<span id="cb2-19"><a href="#cb2-19"></a>    <span class="st">"mql_count"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>,</span>
+<span id="cb2-20"><a href="#cb2-20"></a>    <span class="st">"closed_count"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="st">"conversion_rate"</span>: <span class="st">"</span><span class="sc">{:.1%}</span><span class="st">"</span>,</span>
+<span id="cb2-22"><a href="#cb2-22"></a>}).hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="conversion-by-channel" class="cell-output cell-output-display" data-execution_count="2">
+<style type="text/css">
+</style>
+
+<table id="T_de206" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_de206_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">origin</th>
+<th id="T_de206_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">mql_count</th>
+<th id="T_de206_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">closed_count</th>
+<th id="T_de206_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">conversion_rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_de206_row0_col0" class="data row0 col0">unknown</td>
+<td id="T_de206_row0_col1" class="data row0 col1">1,099</td>
+<td id="T_de206_row0_col2" class="data row0 col2">179</td>
+<td id="T_de206_row0_col3" class="data row0 col3">16.3%</td>
+</tr>
+<tr class="even">
+<td id="T_de206_row1_col0" class="data row1 col0">paid_search</td>
+<td id="T_de206_row1_col1" class="data row1 col1">1,586</td>
+<td id="T_de206_row1_col2" class="data row1 col2">195</td>
+<td id="T_de206_row1_col3" class="data row1 col3">12.3%</td>
+</tr>
+<tr class="odd">
+<td id="T_de206_row2_col0" class="data row2 col0">organic_search</td>
+<td id="T_de206_row2_col1" class="data row2 col1">2,296</td>
+<td id="T_de206_row2_col2" class="data row2 col2">271</td>
+<td id="T_de206_row2_col3" class="data row2 col3">11.8%</td>
+</tr>
+<tr class="even">
+<td id="T_de206_row3_col0" class="data row3 col0">direct_traffic</td>
+<td id="T_de206_row3_col1" class="data row3 col1">499</td>
+<td id="T_de206_row3_col2" class="data row3 col2">56</td>
+<td id="T_de206_row3_col3" class="data row3 col3">11.2%</td>
+</tr>
+<tr class="odd">
+<td id="T_de206_row4_col0" class="data row4 col0">referral</td>
+<td id="T_de206_row4_col1" class="data row4 col1">284</td>
+<td id="T_de206_row4_col2" class="data row4 col2">24</td>
+<td id="T_de206_row4_col3" class="data row4 col3">8.5%</td>
+</tr>
+<tr class="even">
+<td id="T_de206_row5_col0" class="data row5 col0">social</td>
+<td id="T_de206_row5_col1" class="data row5 col1">1,350</td>
+<td id="T_de206_row5_col2" class="data row5 col2">75</td>
+<td id="T_de206_row5_col3" class="data row5 col3">5.6%</td>
+</tr>
+<tr class="odd">
+<td id="T_de206_row6_col0" class="data row6 col0">display</td>
+<td id="T_de206_row6_col1" class="data row6 col1">118</td>
+<td id="T_de206_row6_col2" class="data row6 col2">6</td>
+<td id="T_de206_row6_col3" class="data row6 col3">5.1%</td>
+</tr>
+<tr class="even">
+<td id="T_de206_row7_col0" class="data row7 col0">other_publicities</td>
+<td id="T_de206_row7_col1" class="data row7 col1">65</td>
+<td id="T_de206_row7_col2" class="data row7 col2">3</td>
+<td id="T_de206_row7_col3" class="data row7 col3">4.6%</td>
+</tr>
+<tr class="odd">
+<td id="T_de206_row8_col0" class="data row8 col0">email</td>
+<td id="T_de206_row8_col1" class="data row8 col1">493</td>
+<td id="T_de206_row8_col2" class="data row8 col2">15</td>
+<td id="T_de206_row8_col3" class="data row8 col3">3.0%</td>
+</tr>
+<tr class="even">
+<td id="T_de206_row9_col0" class="data row9 col0">other</td>
+<td id="T_de206_row9_col1" class="data row9 col1">150</td>
+<td id="T_de206_row9_col2" class="data row9 col2">4</td>
+<td id="T_de206_row9_col3" class="data row9 col3">2.7%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="cell-fig-conversion" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb3-2"><a href="#cb3-2"></a></span>
+<span id="cb3-3"><a href="#cb3-3"></a>colors <span class="op">=</span> [<span class="st">"#458d8f"</span> <span class="cf">if</span> r <span class="op">&gt;=</span> funnel[<span class="st">"conversion_rate"</span>].median() <span class="cf">else</span> <span class="st">"#c5dfe0"</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>          <span class="cf">for</span> r <span class="kw">in</span> funnel[<span class="st">"conversion_rate"</span>]]</span>
+<span id="cb3-5"><a href="#cb3-5"></a>bars <span class="op">=</span> ax.barh(funnel[<span class="st">"origin"</span>], funnel[<span class="st">"conversion_rate"</span>], color<span class="op">=</span>colors)</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="cf">for</span> bar, n <span class="kw">in</span> <span class="bu">zip</span>(bars, funnel[<span class="st">"mql_count"</span>]):</span>
+<span id="cb3-8"><a href="#cb3-8"></a>    ax.text(bar.get_width() <span class="op">+</span> <span class="fl">0.002</span>, bar.get_y() <span class="op">+</span> bar.get_height() <span class="op">/</span> <span class="dv">2</span>,</span>
+<span id="cb3-9"><a href="#cb3-9"></a>            <span class="ss">f"n=</span><span class="sc">{</span>n<span class="sc">:,}</span><span class="ss">"</span>, va<span class="op">=</span><span class="st">"center"</span>, fontsize<span class="op">=</span><span class="dv">8</span>, color<span class="op">=</span><span class="st">"#555"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a>ax.xaxis.set_major_formatter(mticker.PercentFormatter(xmax<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb3-12"><a href="#cb3-12"></a>ax.set_xlabel(<span class="st">"Conversion rate (MQL → seller)"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13"></a>ax.spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb3-14"><a href="#cb3-14"></a>plt.tight_layout()</span>
+<span id="cb3-15"><a href="#cb3-15"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-conversion" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-conversion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-conversion-output-1.png" width="853" height="374" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-conversion-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: MQL-to-seller conversion rate by origin channel. Bar size shows MQL volume.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Channels with high conversion rates require less sales effort per seller acquired. In the absence of spend data, conversion rate is our best proxy for relative CAC: a channel where 1 in 3 leads converts costs roughly half as much per seller as one where 1 in 6 leads converts (assuming equal cost per lead).</p>
+</section>
+<section id="step-2-revenue-per-seller-by-channel" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-revenue-per-seller-by-channel">Step 2: Revenue per seller by channel</h2>
+<p>Converting a lead to a seller is only the first half. The second half is whether that seller generates meaningful transaction volume. We compute total item revenue per seller, then join back through the funnel to the origin channel.</p>
+<div id="cell-seller-revenue" class="cell" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Revenue per seller from delivered orders only</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>delivered_ids <span class="op">=</span> <span class="bu">set</span>(orders.loc[orders[<span class="st">"order_status"</span>] <span class="op">==</span> <span class="st">"delivered"</span>, <span class="st">"order_id"</span>])</span>
+<span id="cb4-3"><a href="#cb4-3"></a>seller_revenue <span class="op">=</span> (</span>
+<span id="cb4-4"><a href="#cb4-4"></a>    order_items[order_items[<span class="st">"order_id"</span>].isin(delivered_ids)]</span>
+<span id="cb4-5"><a href="#cb4-5"></a>    .groupby(<span class="st">"seller_id"</span>)[<span class="st">"price"</span>]</span>
+<span id="cb4-6"><a href="#cb4-6"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    .reset_index()</span>
+<span id="cb4-8"><a href="#cb4-8"></a>    .rename(columns<span class="op">=</span>{<span class="st">"price"</span>: <span class="st">"item_revenue"</span>})</span>
+<span id="cb4-9"><a href="#cb4-9"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co"># Join: closed deal → seller_id → revenue → origin</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>seller_with_origin <span class="op">=</span> (</span>
+<span id="cb4-13"><a href="#cb4-13"></a>    closed_deals[[<span class="st">"mql_id"</span>, <span class="st">"seller_id"</span>]]</span>
+<span id="cb4-14"><a href="#cb4-14"></a>    .merge(mql[[<span class="st">"mql_id"</span>, <span class="st">"origin"</span>]], on<span class="op">=</span><span class="st">"mql_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15"></a>    .merge(seller_revenue, on<span class="op">=</span><span class="st">"seller_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb4-16"><a href="#cb4-16"></a>)</span>
+<span id="cb4-17"><a href="#cb4-17"></a>seller_with_origin[<span class="st">"item_revenue"</span>] <span class="op">=</span> seller_with_origin[<span class="st">"item_revenue"</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb4-18"><a href="#cb4-18"></a></span>
+<span id="cb4-19"><a href="#cb4-19"></a>revenue_by_channel <span class="op">=</span> (</span>
+<span id="cb4-20"><a href="#cb4-20"></a>    seller_with_origin</span>
+<span id="cb4-21"><a href="#cb4-21"></a>    .groupby(<span class="st">"origin"</span>)</span>
+<span id="cb4-22"><a href="#cb4-22"></a>    .agg(</span>
+<span id="cb4-23"><a href="#cb4-23"></a>        n_sellers<span class="op">=</span>(<span class="st">"seller_id"</span>, <span class="st">"count"</span>),</span>
+<span id="cb4-24"><a href="#cb4-24"></a>        avg_seller_revenue<span class="op">=</span>(<span class="st">"item_revenue"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb4-25"><a href="#cb4-25"></a>        total_seller_revenue<span class="op">=</span>(<span class="st">"item_revenue"</span>, <span class="st">"sum"</span>),</span>
+<span id="cb4-26"><a href="#cb4-26"></a>    )</span>
+<span id="cb4-27"><a href="#cb4-27"></a>    .reset_index()</span>
+<span id="cb4-28"><a href="#cb4-28"></a>    .sort_values(<span class="st">"avg_seller_revenue"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-29"><a href="#cb4-29"></a>)</span>
+<span id="cb4-30"><a href="#cb4-30"></a></span>
+<span id="cb4-31"><a href="#cb4-31"></a>revenue_by_channel.style.<span class="bu">format</span>({</span>
+<span id="cb4-32"><a href="#cb4-32"></a>    <span class="st">"n_sellers"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>,</span>
+<span id="cb4-33"><a href="#cb4-33"></a>    <span class="st">"avg_seller_revenue"</span>: <span class="st">"R$ </span><span class="sc">{:,.0f}</span><span class="st">"</span>,</span>
+<span id="cb4-34"><a href="#cb4-34"></a>    <span class="st">"total_seller_revenue"</span>: <span class="st">"R$ </span><span class="sc">{:,.0f}</span><span class="st">"</span>,</span>
+<span id="cb4-35"><a href="#cb4-35"></a>}).hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="seller-revenue" class="cell-output cell-output-display" data-execution_count="4">
+<style type="text/css">
+</style>
+
+<table id="T_d4f28" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_d4f28_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">origin</th>
+<th id="T_d4f28_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">n_sellers</th>
+<th id="T_d4f28_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">avg_seller_revenue</th>
+<th id="T_d4f28_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">total_seller_revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_d4f28_row0_col0" class="data row0 col0">other</td>
+<td id="T_d4f28_row0_col1" class="data row0 col1">4</td>
+<td id="T_d4f28_row0_col2" class="data row0 col2">R$ 1,694</td>
+<td id="T_d4f28_row0_col3" class="data row0 col3">R$ 6,777</td>
+</tr>
+<tr class="even">
+<td id="T_d4f28_row1_col0" class="data row1 col0">unknown</td>
+<td id="T_d4f28_row1_col1" class="data row1 col1">179</td>
+<td id="T_d4f28_row1_col2" class="data row1 col2">R$ 1,171</td>
+<td id="T_d4f28_row1_col3" class="data row1 col3">R$ 209,651</td>
+</tr>
+<tr class="odd">
+<td id="T_d4f28_row2_col0" class="data row2 col0">paid_search</td>
+<td id="T_d4f28_row2_col1" class="data row2 col1">195</td>
+<td id="T_d4f28_row2_col2" class="data row2 col2">R$ 777</td>
+<td id="T_d4f28_row2_col3" class="data row2 col3">R$ 151,444</td>
+</tr>
+<tr class="even">
+<td id="T_d4f28_row3_col0" class="data row3 col0">organic_search</td>
+<td id="T_d4f28_row3_col1" class="data row3 col1">271</td>
+<td id="T_d4f28_row3_col2" class="data row3 col2">R$ 755</td>
+<td id="T_d4f28_row3_col3" class="data row3 col3">R$ 204,510</td>
+</tr>
+<tr class="odd">
+<td id="T_d4f28_row4_col0" class="data row4 col0">referral</td>
+<td id="T_d4f28_row4_col1" class="data row4 col1">24</td>
+<td id="T_d4f28_row4_col2" class="data row4 col2">R$ 691</td>
+<td id="T_d4f28_row4_col3" class="data row4 col3">R$ 16,578</td>
+</tr>
+<tr class="even">
+<td id="T_d4f28_row5_col0" class="data row5 col0">social</td>
+<td id="T_d4f28_row5_col1" class="data row5 col1">75</td>
+<td id="T_d4f28_row5_col2" class="data row5 col2">R$ 579</td>
+<td id="T_d4f28_row5_col3" class="data row5 col3">R$ 43,394</td>
+</tr>
+<tr class="odd">
+<td id="T_d4f28_row6_col0" class="data row6 col0">email</td>
+<td id="T_d4f28_row6_col1" class="data row6 col1">15</td>
+<td id="T_d4f28_row6_col2" class="data row6 col2">R$ 566</td>
+<td id="T_d4f28_row6_col3" class="data row6 col3">R$ 8,485</td>
+</tr>
+<tr class="even">
+<td id="T_d4f28_row7_col0" class="data row7 col0">direct_traffic</td>
+<td id="T_d4f28_row7_col1" class="data row7 col1">56</td>
+<td id="T_d4f28_row7_col2" class="data row7 col2">R$ 390</td>
+<td id="T_d4f28_row7_col3" class="data row7 col3">R$ 21,853</td>
+</tr>
+<tr class="odd">
+<td id="T_d4f28_row8_col0" class="data row8 col0">display</td>
+<td id="T_d4f28_row8_col1" class="data row8 col1">6</td>
+<td id="T_d4f28_row8_col2" class="data row8 col2">R$ 154</td>
+<td id="T_d4f28_row8_col3" class="data row8 col3">R$ 923</td>
+</tr>
+<tr class="even">
+<td id="T_d4f28_row9_col0" class="data row9 col0">other_publicities</td>
+<td id="T_d4f28_row9_col1" class="data row9 col1">3</td>
+<td id="T_d4f28_row9_col2" class="data row9 col2">R$ 0</td>
+<td id="T_d4f28_row9_col3" class="data row9 col3">R$ 0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Not all closed sellers generated revenue. Some may have signed up during the funnel window but not yet transacted, or their orders may fall outside the e-commerce dataset’s date range. <code>avg_seller_revenue</code> here is the average across all closed sellers in a channel, including zero-revenue ones.</p>
+</section>
+<section id="step-3-efficiency-by-channel" class="level2">
+<h2 class="anchored" data-anchor-id="step-3-efficiency-by-channel">Step 3: Efficiency by channel</h2>
+<p>Combining the two metrics gives us a channel efficiency score: revenue generated per MQL. This is not LTV:CAC — it is revenue per lead, which is proportional to <code>LTV × conversion_rate</code> and inversely related to relative CAC. A higher number means the channel delivers more revenue per unit of acquisition effort.</p>
+<div id="cell-channel-efficiency" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>efficiency <span class="op">=</span> (</span>
+<span id="cb5-2"><a href="#cb5-2"></a>    funnel</span>
+<span id="cb5-3"><a href="#cb5-3"></a>    .merge(revenue_by_channel[[<span class="st">"origin"</span>, <span class="st">"avg_seller_revenue"</span>]], on<span class="op">=</span><span class="st">"origin"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5"></a>efficiency[<span class="st">"revenue_per_mql"</span>] <span class="op">=</span> (</span>
+<span id="cb5-6"><a href="#cb5-6"></a>    efficiency[<span class="st">"avg_seller_revenue"</span>] <span class="op">*</span> efficiency[<span class="st">"conversion_rate"</span>]</span>
+<span id="cb5-7"><a href="#cb5-7"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8"></a>efficiency <span class="op">=</span> efficiency.sort_values(<span class="st">"revenue_per_mql"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a>efficiency[[<span class="st">"origin"</span>, <span class="st">"mql_count"</span>, <span class="st">"conversion_rate"</span>, <span class="st">"avg_seller_revenue"</span>, <span class="st">"revenue_per_mql"</span>]].style.<span class="bu">format</span>({</span>
+<span id="cb5-11"><a href="#cb5-11"></a>    <span class="st">"mql_count"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>    <span class="st">"conversion_rate"</span>: <span class="st">"</span><span class="sc">{:.1%}</span><span class="st">"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>    <span class="st">"avg_seller_revenue"</span>: <span class="st">"R$ </span><span class="sc">{:,.0f}</span><span class="st">"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14"></a>    <span class="st">"revenue_per_mql"</span>: <span class="st">"R$ </span><span class="sc">{:,.0f}</span><span class="st">"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15"></a>}).hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="channel-efficiency" class="cell-output cell-output-display" data-execution_count="5">
+<style type="text/css">
+</style>
+
+<table id="T_fcbc0" class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th id="T_fcbc0_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">origin</th>
+<th id="T_fcbc0_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">mql_count</th>
+<th id="T_fcbc0_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">conversion_rate</th>
+<th id="T_fcbc0_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">avg_seller_revenue</th>
+<th id="T_fcbc0_level0_col4" class="col_heading level0 col4" data-quarto-table-cell-role="th">revenue_per_mql</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td id="T_fcbc0_row0_col0" class="data row0 col0">unknown</td>
+<td id="T_fcbc0_row0_col1" class="data row0 col1">1,099</td>
+<td id="T_fcbc0_row0_col2" class="data row0 col2">16.3%</td>
+<td id="T_fcbc0_row0_col3" class="data row0 col3">R$ 1,171</td>
+<td id="T_fcbc0_row0_col4" class="data row0 col4">R$ 191</td>
+</tr>
+<tr class="even">
+<td id="T_fcbc0_row1_col0" class="data row1 col0">paid_search</td>
+<td id="T_fcbc0_row1_col1" class="data row1 col1">1,586</td>
+<td id="T_fcbc0_row1_col2" class="data row1 col2">12.3%</td>
+<td id="T_fcbc0_row1_col3" class="data row1 col3">R$ 777</td>
+<td id="T_fcbc0_row1_col4" class="data row1 col4">R$ 95</td>
+</tr>
+<tr class="odd">
+<td id="T_fcbc0_row2_col0" class="data row2 col0">organic_search</td>
+<td id="T_fcbc0_row2_col1" class="data row2 col1">2,296</td>
+<td id="T_fcbc0_row2_col2" class="data row2 col2">11.8%</td>
+<td id="T_fcbc0_row2_col3" class="data row2 col3">R$ 755</td>
+<td id="T_fcbc0_row2_col4" class="data row2 col4">R$ 89</td>
+</tr>
+<tr class="even">
+<td id="T_fcbc0_row3_col0" class="data row3 col0">referral</td>
+<td id="T_fcbc0_row3_col1" class="data row3 col1">284</td>
+<td id="T_fcbc0_row3_col2" class="data row3 col2">8.5%</td>
+<td id="T_fcbc0_row3_col3" class="data row3 col3">R$ 691</td>
+<td id="T_fcbc0_row3_col4" class="data row3 col4">R$ 58</td>
+</tr>
+<tr class="odd">
+<td id="T_fcbc0_row4_col0" class="data row4 col0">other</td>
+<td id="T_fcbc0_row4_col1" class="data row4 col1">150</td>
+<td id="T_fcbc0_row4_col2" class="data row4 col2">2.7%</td>
+<td id="T_fcbc0_row4_col3" class="data row4 col3">R$ 1,694</td>
+<td id="T_fcbc0_row4_col4" class="data row4 col4">R$ 45</td>
+</tr>
+<tr class="even">
+<td id="T_fcbc0_row5_col0" class="data row5 col0">direct_traffic</td>
+<td id="T_fcbc0_row5_col1" class="data row5 col1">499</td>
+<td id="T_fcbc0_row5_col2" class="data row5 col2">11.2%</td>
+<td id="T_fcbc0_row5_col3" class="data row5 col3">R$ 390</td>
+<td id="T_fcbc0_row5_col4" class="data row5 col4">R$ 44</td>
+</tr>
+<tr class="odd">
+<td id="T_fcbc0_row6_col0" class="data row6 col0">social</td>
+<td id="T_fcbc0_row6_col1" class="data row6 col1">1,350</td>
+<td id="T_fcbc0_row6_col2" class="data row6 col2">5.6%</td>
+<td id="T_fcbc0_row6_col3" class="data row6 col3">R$ 579</td>
+<td id="T_fcbc0_row6_col4" class="data row6 col4">R$ 32</td>
+</tr>
+<tr class="even">
+<td id="T_fcbc0_row7_col0" class="data row7 col0">email</td>
+<td id="T_fcbc0_row7_col1" class="data row7 col1">493</td>
+<td id="T_fcbc0_row7_col2" class="data row7 col2">3.0%</td>
+<td id="T_fcbc0_row7_col3" class="data row7 col3">R$ 566</td>
+<td id="T_fcbc0_row7_col4" class="data row7 col4">R$ 17</td>
+</tr>
+<tr class="odd">
+<td id="T_fcbc0_row8_col0" class="data row8 col0">display</td>
+<td id="T_fcbc0_row8_col1" class="data row8 col1">118</td>
+<td id="T_fcbc0_row8_col2" class="data row8 col2">5.1%</td>
+<td id="T_fcbc0_row8_col3" class="data row8 col3">R$ 154</td>
+<td id="T_fcbc0_row8_col4" class="data row8 col4">R$ 8</td>
+</tr>
+<tr class="even">
+<td id="T_fcbc0_row9_col0" class="data row9 col0">other_publicities</td>
+<td id="T_fcbc0_row9_col1" class="data row9 col1">65</td>
+<td id="T_fcbc0_row9_col2" class="data row9 col2">4.6%</td>
+<td id="T_fcbc0_row9_col3" class="data row9 col3">R$ 0</td>
+<td id="T_fcbc0_row9_col4" class="data row9 col4">R$ 0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="cell-fig-efficiency" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">13</span>, <span class="fl">4.5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>plot_data <span class="op">=</span> efficiency.sort_values(<span class="st">"revenue_per_mql"</span>, ascending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>origins <span class="op">=</span> plot_data[<span class="st">"origin"</span>]</span>
+<span id="cb6-5"><a href="#cb6-5"></a>teal <span class="op">=</span> <span class="st">"#458d8f"</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>yellow <span class="op">=</span> <span class="st">"#e8c84d"</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a>axes[<span class="dv">0</span>].barh(origins, plot_data[<span class="st">"conversion_rate"</span>], color<span class="op">=</span>teal)</span>
+<span id="cb6-9"><a href="#cb6-9"></a>axes[<span class="dv">0</span>].xaxis.set_major_formatter(mticker.PercentFormatter(xmax<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb6-10"><a href="#cb6-10"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Conversion rate"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-11"><a href="#cb6-11"></a>axes[<span class="dv">0</span>].spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-12"><a href="#cb6-12"></a></span>
+<span id="cb6-13"><a href="#cb6-13"></a>axes[<span class="dv">1</span>].barh(origins, plot_data[<span class="st">"avg_seller_revenue"</span>], color<span class="op">=</span>teal)</span>
+<span id="cb6-14"><a href="#cb6-14"></a>axes[<span class="dv">1</span>].xaxis.set_major_formatter(</span>
+<span id="cb6-15"><a href="#cb6-15"></a>    mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"R$</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>)</span>
+<span id="cb6-16"><a href="#cb6-16"></a>)</span>
+<span id="cb6-17"><a href="#cb6-17"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Avg seller revenue"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-18"><a href="#cb6-18"></a>axes[<span class="dv">1</span>].spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-19"><a href="#cb6-19"></a></span>
+<span id="cb6-20"><a href="#cb6-20"></a>axes[<span class="dv">2</span>].barh(origins, plot_data[<span class="st">"revenue_per_mql"</span>], color<span class="op">=</span>yellow, edgecolor<span class="op">=</span>teal, linewidth<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb6-21"><a href="#cb6-21"></a>axes[<span class="dv">2</span>].xaxis.set_major_formatter(</span>
+<span id="cb6-22"><a href="#cb6-22"></a>    mticker.FuncFormatter(<span class="kw">lambda</span> x, _: <span class="ss">f"R$</span><span class="sc">{</span>x<span class="op">/</span><span class="fl">1e3</span><span class="sc">:.0f}</span><span class="ss">k"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23"></a>)</span>
+<span id="cb6-24"><a href="#cb6-24"></a>axes[<span class="dv">2</span>].set_title(<span class="st">"Revenue per MQL</span><span class="ch">\n</span><span class="st">(efficiency)"</span>, fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-25"><a href="#cb6-25"></a>axes[<span class="dv">2</span>].spines[[<span class="st">"top"</span>, <span class="st">"right"</span>]].set_visible(<span class="va">False</span>)</span>
+<span id="cb6-26"><a href="#cb6-26"></a></span>
+<span id="cb6-27"><a href="#cb6-27"></a>plt.tight_layout()</span>
+<span id="cb6-28"><a href="#cb6-28"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div id="fig-efficiency" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-efficiency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-efficiency-output-1.png" width="1237" height="422" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-efficiency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Channel efficiency: revenue per MQL, decomposed into conversion rate and average seller revenue.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-ltvcac-ratio" class="level2">
+<h2 class="anchored" data-anchor-id="the-ltvcac-ratio">The LTV:CAC ratio</h2>
+<p>The ratio most cited in unit economics benchmarks is:</p>
+<p><span class="math display">\[\frac{\text{LTV}}{\text{CAC}} &gt; 3\]</span></p>
+<p>A ratio above 3 is generally considered healthy — the customer generates at least three times what it costs to acquire them. Below 1, the business loses money on every customer it acquires. Between 1 and 3 is marginal: acquisition costs are recoverable but there is little headroom.</p>
+<p>We cannot compute this ratio directly from Olist data because we have no spend figures. What we can compute is the <em>structure</em> of the problem:</p>
+<div id="ltv-cac-structure" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Customer LTV from the previous post (≈ ARPU for one-time buyers)</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># Placeholder: load from the olist e-commerce data</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>orders_enriched_ids <span class="op">=</span> <span class="bu">set</span>(orders.loc[orders[<span class="st">"order_status"</span>] <span class="op">==</span> <span class="st">"delivered"</span>, <span class="st">"order_id"</span>])</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="im">from</span> itertools <span class="im">import</span> chain</span>
+<span id="cb7-5"><a href="#cb7-5"></a></span>
+<span id="cb7-6"><a href="#cb7-6"></a>order_payments <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_order_payments_dataset.csv"</span>))</span>
+<span id="cb7-7"><a href="#cb7-7"></a>customers <span class="op">=</span> pd.read_csv(os.path.join(OLIST_DIR, <span class="st">"olist_customers_dataset.csv"</span>))</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>revenue_per_order <span class="op">=</span> (</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    order_payments[order_payments[<span class="st">"order_id"</span>].isin(orders_enriched_ids)]</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    .groupby(<span class="st">"order_id"</span>)[<span class="st">"payment_value"</span>]</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb7-13"><a href="#cb7-13"></a>)</span>
+<span id="cb7-14"><a href="#cb7-14"></a>customer_orders <span class="op">=</span> (</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    orders[orders[<span class="st">"order_status"</span>] <span class="op">==</span> <span class="st">"delivered"</span>]</span>
+<span id="cb7-16"><a href="#cb7-16"></a>    .merge(customers[[<span class="st">"customer_id"</span>, <span class="st">"customer_unique_id"</span>]], on<span class="op">=</span><span class="st">"customer_id"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18"></a>revenue_per_customer <span class="op">=</span> (</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    customer_orders</span>
+<span id="cb7-20"><a href="#cb7-20"></a>    .merge(revenue_per_order.rename(<span class="st">"revenue"</span>), left_on<span class="op">=</span><span class="st">"order_id"</span>, right_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-21"><a href="#cb7-21"></a>    .groupby(<span class="st">"customer_unique_id"</span>)[<span class="st">"revenue"</span>]</span>
+<span id="cb7-22"><a href="#cb7-22"></a>    .<span class="bu">sum</span>()</span>
+<span id="cb7-23"><a href="#cb7-23"></a>)</span>
+<span id="cb7-24"><a href="#cb7-24"></a>customer_ltv <span class="op">=</span> revenue_per_customer.mean()</span>
+<span id="cb7-25"><a href="#cb7-25"></a></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="bu">print</span>(<span class="ss">f"Customer LTV (≈ ARPU):           R$ </span><span class="sc">{</span>customer_ltv<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb7-27"><a href="#cb7-27"></a><span class="bu">print</span>()</span>
+<span id="cb7-28"><a href="#cb7-28"></a><span class="bu">print</span>(<span class="st">"For LTV:CAC ≥ 3, maximum viable CAC: R$"</span>, <span class="bu">round</span>(customer_ltv <span class="op">/</span> <span class="dv">3</span>, <span class="dv">2</span>))</span>
+<span id="cb7-29"><a href="#cb7-29"></a><span class="bu">print</span>(<span class="st">"For LTV:CAC ≥ 1, maximum viable CAC: R$"</span>, <span class="bu">round</span>(customer_ltv <span class="op">/</span> <span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Customer LTV (≈ ARPU):           R$ 165.20
+
+For LTV:CAC ≥ 3, maximum viable CAC: R$ 55.07
+For LTV:CAC ≥ 1, maximum viable CAC: R$ 165.2</code></pre>
+</div>
+</div>
+<p>This gives us the <em>maximum viable CAC</em> — the most Olist could afford to spend per customer acquisition while keeping the ratio healthy. Whether actual CAC falls within this range depends on the channel spend, which is not in the dataset.</p>
+</section>
+<section id="payback-period" class="level2">
+<h2 class="anchored" data-anchor-id="payback-period">Payback period</h2>
+<p>The payback period is how long it takes to recover the cost of acquiring a customer from their gross contribution.</p>
+<p><span class="math display">\[\text{Payback (months)} = \frac{\text{CAC}}{\text{Monthly gross margin per customer}}\]</span></p>
+<p>For a near-zero repeat purchase business, the payback period is essentially instantaneous if the margin on the first order covers CAC, or infinite if it does not. There is no slow drip of monthly contributions to spread the cost over.</p>
+<p>This is the sharpest expression of what makes one-time-purchase economics different from subscription economics. In a subscription business, a high CAC can be justified by a long stream of monthly payments. In a one-shot marketplace, the first transaction must carry the entire cost.</p>
+</section>
+<section id="what-we-learned" class="level2">
+<h2 class="anchored" data-anchor-id="what-we-learned">What we learned</h2>
+<p>Three things to carry forward from this series:</p>
+<ol type="1">
+<li><p><strong>Build the tree before computing the metrics.</strong> The metric tree showed us that Olist is effectively a customer acquisition business — frequency is 1, so Orders ≈ Customers. That means CAC is the most important variable in the unit economics, not retention.</p></li>
+<li><p><strong>Check the repeat rate before using the LTV formula.</strong> The steady-state LTV formula assumes recurring revenue. For near-zero repeat rate, LTV ≈ ARPU from a single transaction. The formula did not break — we broke it by applying it to the wrong kind of business.</p></li>
+<li><p><strong>Use the data you have, not the data you wish you had.</strong> Olist does not provide marketing spend. Rather than stopping there, we used conversion rates and seller revenue as structural proxies. The result is directional, not absolute, but it is enough to identify which channels are worth investigating further.</p></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/varmara\.github\.io\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

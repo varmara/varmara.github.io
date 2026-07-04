@@ -274,7 +274,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-17"><a href="#cb1-17"></a>)</span>
 <span id="cb1-18"><a href="#cb1-18"></a>spark.sparkContext.setLogLevel(<span class="st">"WARN"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>We load all eleven tables into one dict:</p>
+<p>We load all eleven tables:</p>
 <div id="load-tables" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1"></a>files <span class="op">=</span> {</span>
 <span id="cb2-2"><a href="#cb2-2"></a>    <span class="st">"orders"</span>: <span class="st">"olist_orders_dataset.csv"</span>,</span>
@@ -323,69 +323,69 @@ Table&nbsp;1: Row and column counts for all Olist tables.
 <style type="text/css">
 </style>
 
-<table id="T_65b84" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table id="T_2b767" class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_65b84_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">table</th>
-<th id="T_65b84_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">rows</th>
-<th id="T_65b84_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">columns</th>
+<th id="T_2b767_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">table</th>
+<th id="T_2b767_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">rows</th>
+<th id="T_2b767_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">columns</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_65b84_row0_col0" class="data row0 col0">orders</td>
-<td id="T_65b84_row0_col1" class="data row0 col1">99,441</td>
-<td id="T_65b84_row0_col2" class="data row0 col2">8</td>
+<td id="T_2b767_row0_col0" class="data row0 col0">orders</td>
+<td id="T_2b767_row0_col1" class="data row0 col1">99,441</td>
+<td id="T_2b767_row0_col2" class="data row0 col2">8</td>
 </tr>
 <tr class="even">
-<td id="T_65b84_row1_col0" class="data row1 col0">customers</td>
-<td id="T_65b84_row1_col1" class="data row1 col1">99,441</td>
-<td id="T_65b84_row1_col2" class="data row1 col2">5</td>
+<td id="T_2b767_row1_col0" class="data row1 col0">customers</td>
+<td id="T_2b767_row1_col1" class="data row1 col1">99,441</td>
+<td id="T_2b767_row1_col2" class="data row1 col2">5</td>
 </tr>
 <tr class="odd">
-<td id="T_65b84_row2_col0" class="data row2 col0">order_items</td>
-<td id="T_65b84_row2_col1" class="data row2 col1">112,650</td>
-<td id="T_65b84_row2_col2" class="data row2 col2">7</td>
+<td id="T_2b767_row2_col0" class="data row2 col0">order_items</td>
+<td id="T_2b767_row2_col1" class="data row2 col1">112,650</td>
+<td id="T_2b767_row2_col2" class="data row2 col2">7</td>
 </tr>
 <tr class="even">
-<td id="T_65b84_row3_col0" class="data row3 col0">order_payments</td>
-<td id="T_65b84_row3_col1" class="data row3 col1">103,886</td>
-<td id="T_65b84_row3_col2" class="data row3 col2">5</td>
+<td id="T_2b767_row3_col0" class="data row3 col0">order_payments</td>
+<td id="T_2b767_row3_col1" class="data row3 col1">103,886</td>
+<td id="T_2b767_row3_col2" class="data row3 col2">5</td>
 </tr>
 <tr class="odd">
-<td id="T_65b84_row4_col0" class="data row4 col0">order_reviews</td>
-<td id="T_65b84_row4_col1" class="data row4 col1">104,162</td>
-<td id="T_65b84_row4_col2" class="data row4 col2">7</td>
+<td id="T_2b767_row4_col0" class="data row4 col0">order_reviews</td>
+<td id="T_2b767_row4_col1" class="data row4 col1">104,162</td>
+<td id="T_2b767_row4_col2" class="data row4 col2">7</td>
 </tr>
 <tr class="even">
-<td id="T_65b84_row5_col0" class="data row5 col0">products</td>
-<td id="T_65b84_row5_col1" class="data row5 col1">32,951</td>
-<td id="T_65b84_row5_col2" class="data row5 col2">9</td>
+<td id="T_2b767_row5_col0" class="data row5 col0">products</td>
+<td id="T_2b767_row5_col1" class="data row5 col1">32,951</td>
+<td id="T_2b767_row5_col2" class="data row5 col2">9</td>
 </tr>
 <tr class="odd">
-<td id="T_65b84_row6_col0" class="data row6 col0">sellers</td>
-<td id="T_65b84_row6_col1" class="data row6 col1">3,095</td>
-<td id="T_65b84_row6_col2" class="data row6 col2">4</td>
+<td id="T_2b767_row6_col0" class="data row6 col0">sellers</td>
+<td id="T_2b767_row6_col1" class="data row6 col1">3,095</td>
+<td id="T_2b767_row6_col2" class="data row6 col2">4</td>
 </tr>
 <tr class="even">
-<td id="T_65b84_row7_col0" class="data row7 col0">geolocation</td>
-<td id="T_65b84_row7_col1" class="data row7 col1">1,000,163</td>
-<td id="T_65b84_row7_col2" class="data row7 col2">5</td>
+<td id="T_2b767_row7_col0" class="data row7 col0">geolocation</td>
+<td id="T_2b767_row7_col1" class="data row7 col1">1,000,163</td>
+<td id="T_2b767_row7_col2" class="data row7 col2">5</td>
 </tr>
 <tr class="odd">
-<td id="T_65b84_row8_col0" class="data row8 col0">category_translation</td>
-<td id="T_65b84_row8_col1" class="data row8 col1">71</td>
-<td id="T_65b84_row8_col2" class="data row8 col2">2</td>
+<td id="T_2b767_row8_col0" class="data row8 col0">category_translation</td>
+<td id="T_2b767_row8_col1" class="data row8 col1">71</td>
+<td id="T_2b767_row8_col2" class="data row8 col2">2</td>
 </tr>
 <tr class="even">
-<td id="T_65b84_row9_col0" class="data row9 col0">mql</td>
-<td id="T_65b84_row9_col1" class="data row9 col1">8,000</td>
-<td id="T_65b84_row9_col2" class="data row9 col2">4</td>
+<td id="T_2b767_row9_col0" class="data row9 col0">mql</td>
+<td id="T_2b767_row9_col1" class="data row9 col1">8,000</td>
+<td id="T_2b767_row9_col2" class="data row9 col2">4</td>
 </tr>
 <tr class="odd">
-<td id="T_65b84_row10_col0" class="data row10 col0">closed_deals</td>
-<td id="T_65b84_row10_col1" class="data row10 col1">842</td>
-<td id="T_65b84_row10_col2" class="data row10 col2">14</td>
+<td id="T_2b767_row10_col0" class="data row10 col0">closed_deals</td>
+<td id="T_2b767_row10_col1" class="data row10 col1">842</td>
+<td id="T_2b767_row10_col2" class="data row10 col2">14</td>
 </tr>
 </tbody>
 </table>
@@ -579,9 +579,6 @@ erDiagram
 <span id="cb6-21"><a href="#cb6-21"></a>    .style.<span class="bu">format</span>({<span class="st">"nulls"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>, <span class="st">"pct"</span>: <span class="st">"</span><span class="sc">{:.1f}</span><span class="st">%"</span>})</span>
 <span id="cb6-22"><a href="#cb6-22"></a>    .hide(axis<span class="op">=</span><span class="st">"index"</span>)</span>
 <span id="cb6-23"><a href="#cb6-23"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>[Stage 76:=======&gt;                                                  (1 + 7) / 8]                                                                                </code></pre>
-</div>
 <div id="tbl-nulls" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="5">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-nulls-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -592,177 +589,177 @@ Table&nbsp;2: Columns with at least one null value, across all eleven tables.
 <style type="text/css">
 </style>
 
-<table id="T_ea680" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table id="T_8a326" class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_ea680_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">table</th>
-<th id="T_ea680_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">column</th>
-<th id="T_ea680_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">nulls</th>
-<th id="T_ea680_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">pct</th>
+<th id="T_8a326_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">table</th>
+<th id="T_8a326_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">column</th>
+<th id="T_8a326_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">nulls</th>
+<th id="T_8a326_level0_col3" class="col_heading level0 col3" data-quarto-table-cell-role="th">pct</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_ea680_row0_col0" class="data row0 col0">closed_deals</td>
-<td id="T_ea680_row0_col1" class="data row0 col1">has_company</td>
-<td id="T_ea680_row0_col2" class="data row0 col2">779</td>
-<td id="T_ea680_row0_col3" class="data row0 col3">92.5%</td>
+<td id="T_8a326_row0_col0" class="data row0 col0">closed_deals</td>
+<td id="T_8a326_row0_col1" class="data row0 col1">has_company</td>
+<td id="T_8a326_row0_col2" class="data row0 col2">779</td>
+<td id="T_8a326_row0_col3" class="data row0 col3">92.5%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row1_col0" class="data row1 col0">closed_deals</td>
-<td id="T_ea680_row1_col1" class="data row1 col1">has_gtin</td>
-<td id="T_ea680_row1_col2" class="data row1 col2">778</td>
-<td id="T_ea680_row1_col3" class="data row1 col3">92.4%</td>
+<td id="T_8a326_row1_col0" class="data row1 col0">closed_deals</td>
+<td id="T_8a326_row1_col1" class="data row1 col1">has_gtin</td>
+<td id="T_8a326_row1_col2" class="data row1 col2">778</td>
+<td id="T_8a326_row1_col3" class="data row1 col3">92.4%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row2_col0" class="data row2 col0">closed_deals</td>
-<td id="T_ea680_row2_col1" class="data row2 col1">average_stock</td>
-<td id="T_ea680_row2_col2" class="data row2 col2">776</td>
-<td id="T_ea680_row2_col3" class="data row2 col3">92.2%</td>
+<td id="T_8a326_row2_col0" class="data row2 col0">closed_deals</td>
+<td id="T_8a326_row2_col1" class="data row2 col1">average_stock</td>
+<td id="T_8a326_row2_col2" class="data row2 col2">776</td>
+<td id="T_8a326_row2_col3" class="data row2 col3">92.2%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row3_col0" class="data row3 col0">closed_deals</td>
-<td id="T_ea680_row3_col1" class="data row3 col1">declared_product_catalog_size</td>
-<td id="T_ea680_row3_col2" class="data row3 col2">773</td>
-<td id="T_ea680_row3_col3" class="data row3 col3">91.8%</td>
+<td id="T_8a326_row3_col0" class="data row3 col0">closed_deals</td>
+<td id="T_8a326_row3_col1" class="data row3 col1">declared_product_catalog_size</td>
+<td id="T_8a326_row3_col2" class="data row3 col2">773</td>
+<td id="T_8a326_row3_col3" class="data row3 col3">91.8%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row4_col0" class="data row4 col0">closed_deals</td>
-<td id="T_ea680_row4_col1" class="data row4 col1">lead_behaviour_profile</td>
-<td id="T_ea680_row4_col2" class="data row4 col2">177</td>
-<td id="T_ea680_row4_col3" class="data row4 col3">21.0%</td>
+<td id="T_8a326_row4_col0" class="data row4 col0">closed_deals</td>
+<td id="T_8a326_row4_col1" class="data row4 col1">lead_behaviour_profile</td>
+<td id="T_8a326_row4_col2" class="data row4 col2">177</td>
+<td id="T_8a326_row4_col3" class="data row4 col3">21.0%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row5_col0" class="data row5 col0">closed_deals</td>
-<td id="T_ea680_row5_col1" class="data row5 col1">business_type</td>
-<td id="T_ea680_row5_col2" class="data row5 col2">10</td>
-<td id="T_ea680_row5_col3" class="data row5 col3">1.2%</td>
+<td id="T_8a326_row5_col0" class="data row5 col0">closed_deals</td>
+<td id="T_8a326_row5_col1" class="data row5 col1">business_type</td>
+<td id="T_8a326_row5_col2" class="data row5 col2">10</td>
+<td id="T_8a326_row5_col3" class="data row5 col3">1.2%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row6_col0" class="data row6 col0">closed_deals</td>
-<td id="T_ea680_row6_col1" class="data row6 col1">lead_type</td>
-<td id="T_ea680_row6_col2" class="data row6 col2">6</td>
-<td id="T_ea680_row6_col3" class="data row6 col3">0.7%</td>
+<td id="T_8a326_row6_col0" class="data row6 col0">closed_deals</td>
+<td id="T_8a326_row6_col1" class="data row6 col1">lead_type</td>
+<td id="T_8a326_row6_col2" class="data row6 col2">6</td>
+<td id="T_8a326_row6_col3" class="data row6 col3">0.7%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row7_col0" class="data row7 col0">closed_deals</td>
-<td id="T_ea680_row7_col1" class="data row7 col1">business_segment</td>
-<td id="T_ea680_row7_col2" class="data row7 col2">1</td>
-<td id="T_ea680_row7_col3" class="data row7 col3">0.1%</td>
+<td id="T_8a326_row7_col0" class="data row7 col0">closed_deals</td>
+<td id="T_8a326_row7_col1" class="data row7 col1">business_segment</td>
+<td id="T_8a326_row7_col2" class="data row7 col2">1</td>
+<td id="T_8a326_row7_col3" class="data row7 col3">0.1%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row8_col0" class="data row8 col0">mql</td>
-<td id="T_ea680_row8_col1" class="data row8 col1">origin</td>
-<td id="T_ea680_row8_col2" class="data row8 col2">60</td>
-<td id="T_ea680_row8_col3" class="data row8 col3">0.8%</td>
+<td id="T_8a326_row8_col0" class="data row8 col0">mql</td>
+<td id="T_8a326_row8_col1" class="data row8 col1">origin</td>
+<td id="T_8a326_row8_col2" class="data row8 col2">60</td>
+<td id="T_8a326_row8_col3" class="data row8 col3">0.8%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row9_col0" class="data row9 col0">order_reviews</td>
-<td id="T_ea680_row9_col1" class="data row9 col1">review_comment_title</td>
-<td id="T_ea680_row9_col2" class="data row9 col2">92,157</td>
-<td id="T_ea680_row9_col3" class="data row9 col3">88.5%</td>
+<td id="T_8a326_row9_col0" class="data row9 col0">order_reviews</td>
+<td id="T_8a326_row9_col1" class="data row9 col1">review_comment_title</td>
+<td id="T_8a326_row9_col2" class="data row9 col2">92,157</td>
+<td id="T_8a326_row9_col3" class="data row9 col3">88.5%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row10_col0" class="data row10 col0">order_reviews</td>
-<td id="T_ea680_row10_col1" class="data row10 col1">review_comment_message</td>
-<td id="T_ea680_row10_col2" class="data row10 col2">63,079</td>
-<td id="T_ea680_row10_col3" class="data row10 col3">60.6%</td>
+<td id="T_8a326_row10_col0" class="data row10 col0">order_reviews</td>
+<td id="T_8a326_row10_col1" class="data row10 col1">review_comment_message</td>
+<td id="T_8a326_row10_col2" class="data row10 col2">63,079</td>
+<td id="T_8a326_row10_col3" class="data row10 col3">60.6%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row11_col0" class="data row11 col0">order_reviews</td>
-<td id="T_ea680_row11_col1" class="data row11 col1">review_answer_timestamp</td>
-<td id="T_ea680_row11_col2" class="data row11 col2">8,785</td>
-<td id="T_ea680_row11_col3" class="data row11 col3">8.4%</td>
+<td id="T_8a326_row11_col0" class="data row11 col0">order_reviews</td>
+<td id="T_8a326_row11_col1" class="data row11 col1">review_answer_timestamp</td>
+<td id="T_8a326_row11_col2" class="data row11 col2">8,785</td>
+<td id="T_8a326_row11_col3" class="data row11 col3">8.4%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row12_col0" class="data row12 col0">order_reviews</td>
-<td id="T_ea680_row12_col1" class="data row12 col1">review_creation_date</td>
-<td id="T_ea680_row12_col2" class="data row12 col2">8,764</td>
-<td id="T_ea680_row12_col3" class="data row12 col3">8.4%</td>
+<td id="T_8a326_row12_col0" class="data row12 col0">order_reviews</td>
+<td id="T_8a326_row12_col1" class="data row12 col1">review_creation_date</td>
+<td id="T_8a326_row12_col2" class="data row12 col2">8,764</td>
+<td id="T_8a326_row12_col3" class="data row12 col3">8.4%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row13_col0" class="data row13 col0">order_reviews</td>
-<td id="T_ea680_row13_col1" class="data row13 col1">review_score</td>
-<td id="T_ea680_row13_col2" class="data row13 col2">2,380</td>
-<td id="T_ea680_row13_col3" class="data row13 col3">2.3%</td>
+<td id="T_8a326_row13_col0" class="data row13 col0">order_reviews</td>
+<td id="T_8a326_row13_col1" class="data row13 col1">review_score</td>
+<td id="T_8a326_row13_col2" class="data row13 col2">2,380</td>
+<td id="T_8a326_row13_col3" class="data row13 col3">2.3%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row14_col0" class="data row14 col0">order_reviews</td>
-<td id="T_ea680_row14_col1" class="data row14 col1">order_id</td>
-<td id="T_ea680_row14_col2" class="data row14 col2">2,236</td>
-<td id="T_ea680_row14_col3" class="data row14 col3">2.1%</td>
+<td id="T_8a326_row14_col0" class="data row14 col0">order_reviews</td>
+<td id="T_8a326_row14_col1" class="data row14 col1">order_id</td>
+<td id="T_8a326_row14_col2" class="data row14 col2">2,236</td>
+<td id="T_8a326_row14_col3" class="data row14 col3">2.1%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row15_col0" class="data row15 col0">order_reviews</td>
-<td id="T_ea680_row15_col1" class="data row15 col1">review_id</td>
-<td id="T_ea680_row15_col2" class="data row15 col2">1</td>
-<td id="T_ea680_row15_col3" class="data row15 col3">0.0%</td>
+<td id="T_8a326_row15_col0" class="data row15 col0">order_reviews</td>
+<td id="T_8a326_row15_col1" class="data row15 col1">review_id</td>
+<td id="T_8a326_row15_col2" class="data row15 col2">1</td>
+<td id="T_8a326_row15_col3" class="data row15 col3">0.0%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row16_col0" class="data row16 col0">orders</td>
-<td id="T_ea680_row16_col1" class="data row16 col1">order_delivered_customer_date</td>
-<td id="T_ea680_row16_col2" class="data row16 col2">2,965</td>
-<td id="T_ea680_row16_col3" class="data row16 col3">3.0%</td>
+<td id="T_8a326_row16_col0" class="data row16 col0">orders</td>
+<td id="T_8a326_row16_col1" class="data row16 col1">order_delivered_customer_date</td>
+<td id="T_8a326_row16_col2" class="data row16 col2">2,965</td>
+<td id="T_8a326_row16_col3" class="data row16 col3">3.0%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row17_col0" class="data row17 col0">orders</td>
-<td id="T_ea680_row17_col1" class="data row17 col1">order_delivered_carrier_date</td>
-<td id="T_ea680_row17_col2" class="data row17 col2">1,783</td>
-<td id="T_ea680_row17_col3" class="data row17 col3">1.8%</td>
+<td id="T_8a326_row17_col0" class="data row17 col0">orders</td>
+<td id="T_8a326_row17_col1" class="data row17 col1">order_delivered_carrier_date</td>
+<td id="T_8a326_row17_col2" class="data row17 col2">1,783</td>
+<td id="T_8a326_row17_col3" class="data row17 col3">1.8%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row18_col0" class="data row18 col0">orders</td>
-<td id="T_ea680_row18_col1" class="data row18 col1">order_approved_at</td>
-<td id="T_ea680_row18_col2" class="data row18 col2">160</td>
-<td id="T_ea680_row18_col3" class="data row18 col3">0.2%</td>
+<td id="T_8a326_row18_col0" class="data row18 col0">orders</td>
+<td id="T_8a326_row18_col1" class="data row18 col1">order_approved_at</td>
+<td id="T_8a326_row18_col2" class="data row18 col2">160</td>
+<td id="T_8a326_row18_col3" class="data row18 col3">0.2%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row19_col0" class="data row19 col0">products</td>
-<td id="T_ea680_row19_col1" class="data row19 col1">product_category_name</td>
-<td id="T_ea680_row19_col2" class="data row19 col2">610</td>
-<td id="T_ea680_row19_col3" class="data row19 col3">1.9%</td>
+<td id="T_8a326_row19_col0" class="data row19 col0">products</td>
+<td id="T_8a326_row19_col1" class="data row19 col1">product_category_name</td>
+<td id="T_8a326_row19_col2" class="data row19 col2">610</td>
+<td id="T_8a326_row19_col3" class="data row19 col3">1.9%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row20_col0" class="data row20 col0">products</td>
-<td id="T_ea680_row20_col1" class="data row20 col1">product_name_lenght</td>
-<td id="T_ea680_row20_col2" class="data row20 col2">610</td>
-<td id="T_ea680_row20_col3" class="data row20 col3">1.9%</td>
+<td id="T_8a326_row20_col0" class="data row20 col0">products</td>
+<td id="T_8a326_row20_col1" class="data row20 col1">product_name_lenght</td>
+<td id="T_8a326_row20_col2" class="data row20 col2">610</td>
+<td id="T_8a326_row20_col3" class="data row20 col3">1.9%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row21_col0" class="data row21 col0">products</td>
-<td id="T_ea680_row21_col1" class="data row21 col1">product_description_lenght</td>
-<td id="T_ea680_row21_col2" class="data row21 col2">610</td>
-<td id="T_ea680_row21_col3" class="data row21 col3">1.9%</td>
+<td id="T_8a326_row21_col0" class="data row21 col0">products</td>
+<td id="T_8a326_row21_col1" class="data row21 col1">product_description_lenght</td>
+<td id="T_8a326_row21_col2" class="data row21 col2">610</td>
+<td id="T_8a326_row21_col3" class="data row21 col3">1.9%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row22_col0" class="data row22 col0">products</td>
-<td id="T_ea680_row22_col1" class="data row22 col1">product_photos_qty</td>
-<td id="T_ea680_row22_col2" class="data row22 col2">610</td>
-<td id="T_ea680_row22_col3" class="data row22 col3">1.9%</td>
+<td id="T_8a326_row22_col0" class="data row22 col0">products</td>
+<td id="T_8a326_row22_col1" class="data row22 col1">product_photos_qty</td>
+<td id="T_8a326_row22_col2" class="data row22 col2">610</td>
+<td id="T_8a326_row22_col3" class="data row22 col3">1.9%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row23_col0" class="data row23 col0">products</td>
-<td id="T_ea680_row23_col1" class="data row23 col1">product_weight_g</td>
-<td id="T_ea680_row23_col2" class="data row23 col2">2</td>
-<td id="T_ea680_row23_col3" class="data row23 col3">0.0%</td>
+<td id="T_8a326_row23_col0" class="data row23 col0">products</td>
+<td id="T_8a326_row23_col1" class="data row23 col1">product_weight_g</td>
+<td id="T_8a326_row23_col2" class="data row23 col2">2</td>
+<td id="T_8a326_row23_col3" class="data row23 col3">0.0%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row24_col0" class="data row24 col0">products</td>
-<td id="T_ea680_row24_col1" class="data row24 col1">product_length_cm</td>
-<td id="T_ea680_row24_col2" class="data row24 col2">2</td>
-<td id="T_ea680_row24_col3" class="data row24 col3">0.0%</td>
+<td id="T_8a326_row24_col0" class="data row24 col0">products</td>
+<td id="T_8a326_row24_col1" class="data row24 col1">product_length_cm</td>
+<td id="T_8a326_row24_col2" class="data row24 col2">2</td>
+<td id="T_8a326_row24_col3" class="data row24 col3">0.0%</td>
 </tr>
 <tr class="even">
-<td id="T_ea680_row25_col0" class="data row25 col0">products</td>
-<td id="T_ea680_row25_col1" class="data row25 col1">product_height_cm</td>
-<td id="T_ea680_row25_col2" class="data row25 col2">2</td>
-<td id="T_ea680_row25_col3" class="data row25 col3">0.0%</td>
+<td id="T_8a326_row25_col0" class="data row25 col0">products</td>
+<td id="T_8a326_row25_col1" class="data row25 col1">product_height_cm</td>
+<td id="T_8a326_row25_col2" class="data row25 col2">2</td>
+<td id="T_8a326_row25_col3" class="data row25 col3">0.0%</td>
 </tr>
 <tr class="odd">
-<td id="T_ea680_row26_col0" class="data row26 col0">products</td>
-<td id="T_ea680_row26_col1" class="data row26 col1">product_width_cm</td>
-<td id="T_ea680_row26_col2" class="data row26 col2">2</td>
-<td id="T_ea680_row26_col3" class="data row26 col3">0.0%</td>
+<td id="T_8a326_row26_col0" class="data row26 col0">products</td>
+<td id="T_8a326_row26_col1" class="data row26 col1">product_width_cm</td>
+<td id="T_8a326_row26_col2" class="data row26 col2">2</td>
+<td id="T_8a326_row26_col3" class="data row26 col3">0.0%</td>
 </tr>
 </tbody>
 </table>
@@ -782,62 +779,62 @@ Table&nbsp;2: Columns with at least one null value, across all eleven tables.
 <section id="duplicate-keys" class="level3">
 <h3 class="anchored" data-anchor-id="duplicate-keys">Duplicate Keys</h3>
 <div id="cell-duplicate-keys" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">def</span> duplicate_count(df, key_col):</span>
-<span id="cb8-2"><a href="#cb8-2"></a>    <span class="cf">return</span> (</span>
-<span id="cb8-3"><a href="#cb8-3"></a>        df.groupBy(key_col)</span>
-<span id="cb8-4"><a href="#cb8-4"></a>        .count()</span>
-<span id="cb8-5"><a href="#cb8-5"></a>        .<span class="bu">filter</span>(F.col(<span class="st">"count"</span>) <span class="op">&gt;</span> <span class="dv">1</span>)</span>
-<span id="cb8-6"><a href="#cb8-6"></a>        .count()</span>
-<span id="cb8-7"><a href="#cb8-7"></a>    )</span>
-<span id="cb8-8"><a href="#cb8-8"></a></span>
-<span id="cb8-9"><a href="#cb8-9"></a>checks <span class="op">=</span> {</span>
-<span id="cb8-10"><a href="#cb8-10"></a>    <span class="st">"orders.order_id"</span>: duplicate_count(orders, <span class="st">"order_id"</span>),</span>
-<span id="cb8-11"><a href="#cb8-11"></a>    <span class="st">"customers.customer_id"</span>: duplicate_count(customers, <span class="st">"customer_id"</span>),</span>
-<span id="cb8-12"><a href="#cb8-12"></a>    <span class="st">"products.product_id"</span>: duplicate_count(products, <span class="st">"product_id"</span>),</span>
-<span id="cb8-13"><a href="#cb8-13"></a>    <span class="st">"sellers.seller_id"</span>: duplicate_count(sellers, <span class="st">"seller_id"</span>),</span>
-<span id="cb8-14"><a href="#cb8-14"></a>    <span class="st">"mql.mql_id"</span>: duplicate_count(mql, <span class="st">"mql_id"</span>),</span>
-<span id="cb8-15"><a href="#cb8-15"></a>    <span class="st">"closed_deals.mql_id"</span>: duplicate_count(closed_deals, <span class="st">"mql_id"</span>),</span>
-<span id="cb8-16"><a href="#cb8-16"></a>}</span>
-<span id="cb8-17"><a href="#cb8-17"></a></span>
-<span id="cb8-18"><a href="#cb8-18"></a>pd.DataFrame(</span>
-<span id="cb8-19"><a href="#cb8-19"></a>    [(k, v) <span class="cf">for</span> k, v <span class="kw">in</span> checks.items()],</span>
-<span id="cb8-20"><a href="#cb8-20"></a>    columns<span class="op">=</span>[<span class="st">"key"</span>, <span class="st">"duplicate_groups"</span>],</span>
-<span id="cb8-21"><a href="#cb8-21"></a>).style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">def</span> duplicate_count(df, key_col):</span>
+<span id="cb7-2"><a href="#cb7-2"></a>    <span class="cf">return</span> (</span>
+<span id="cb7-3"><a href="#cb7-3"></a>        df.groupBy(key_col)</span>
+<span id="cb7-4"><a href="#cb7-4"></a>        .count()</span>
+<span id="cb7-5"><a href="#cb7-5"></a>        .<span class="bu">filter</span>(F.col(<span class="st">"count"</span>) <span class="op">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb7-6"><a href="#cb7-6"></a>        .count()</span>
+<span id="cb7-7"><a href="#cb7-7"></a>    )</span>
+<span id="cb7-8"><a href="#cb7-8"></a></span>
+<span id="cb7-9"><a href="#cb7-9"></a>checks <span class="op">=</span> {</span>
+<span id="cb7-10"><a href="#cb7-10"></a>    <span class="st">"orders.order_id"</span>: duplicate_count(orders, <span class="st">"order_id"</span>),</span>
+<span id="cb7-11"><a href="#cb7-11"></a>    <span class="st">"customers.customer_id"</span>: duplicate_count(customers, <span class="st">"customer_id"</span>),</span>
+<span id="cb7-12"><a href="#cb7-12"></a>    <span class="st">"products.product_id"</span>: duplicate_count(products, <span class="st">"product_id"</span>),</span>
+<span id="cb7-13"><a href="#cb7-13"></a>    <span class="st">"sellers.seller_id"</span>: duplicate_count(sellers, <span class="st">"seller_id"</span>),</span>
+<span id="cb7-14"><a href="#cb7-14"></a>    <span class="st">"mql.mql_id"</span>: duplicate_count(mql, <span class="st">"mql_id"</span>),</span>
+<span id="cb7-15"><a href="#cb7-15"></a>    <span class="st">"closed_deals.mql_id"</span>: duplicate_count(closed_deals, <span class="st">"mql_id"</span>),</span>
+<span id="cb7-16"><a href="#cb7-16"></a>}</span>
+<span id="cb7-17"><a href="#cb7-17"></a></span>
+<span id="cb7-18"><a href="#cb7-18"></a>pd.DataFrame(</span>
+<span id="cb7-19"><a href="#cb7-19"></a>    [(k, v) <span class="cf">for</span> k, v <span class="kw">in</span> checks.items()],</span>
+<span id="cb7-20"><a href="#cb7-20"></a>    columns<span class="op">=</span>[<span class="st">"key"</span>, <span class="st">"duplicate_groups"</span>],</span>
+<span id="cb7-21"><a href="#cb7-21"></a>).style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="duplicate-keys" class="cell-output cell-output-display" data-execution_count="6">
 <style type="text/css">
 </style>
 
-<table id="T_1e546" class="caption-top table table-sm table-striped small">
+<table id="T_1e235" class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_1e546_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">key</th>
-<th id="T_1e546_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">duplicate_groups</th>
+<th id="T_1e235_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">key</th>
+<th id="T_1e235_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">duplicate_groups</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_1e546_row0_col0" class="data row0 col0">orders.order_id</td>
-<td id="T_1e546_row0_col1" class="data row0 col1">0</td>
+<td id="T_1e235_row0_col0" class="data row0 col0">orders.order_id</td>
+<td id="T_1e235_row0_col1" class="data row0 col1">0</td>
 </tr>
 <tr class="even">
-<td id="T_1e546_row1_col0" class="data row1 col0">customers.customer_id</td>
-<td id="T_1e546_row1_col1" class="data row1 col1">0</td>
+<td id="T_1e235_row1_col0" class="data row1 col0">customers.customer_id</td>
+<td id="T_1e235_row1_col1" class="data row1 col1">0</td>
 </tr>
 <tr class="odd">
-<td id="T_1e546_row2_col0" class="data row2 col0">products.product_id</td>
-<td id="T_1e546_row2_col1" class="data row2 col1">0</td>
+<td id="T_1e235_row2_col0" class="data row2 col0">products.product_id</td>
+<td id="T_1e235_row2_col1" class="data row2 col1">0</td>
 </tr>
 <tr class="even">
-<td id="T_1e546_row3_col0" class="data row3 col0">sellers.seller_id</td>
-<td id="T_1e546_row3_col1" class="data row3 col1">0</td>
+<td id="T_1e235_row3_col0" class="data row3 col0">sellers.seller_id</td>
+<td id="T_1e235_row3_col1" class="data row3 col1">0</td>
 </tr>
 <tr class="odd">
-<td id="T_1e546_row4_col0" class="data row4 col0">mql.mql_id</td>
-<td id="T_1e546_row4_col1" class="data row4 col1">0</td>
+<td id="T_1e235_row4_col0" class="data row4 col0">mql.mql_id</td>
+<td id="T_1e235_row4_col1" class="data row4 col1">0</td>
 </tr>
 <tr class="even">
-<td id="T_1e546_row5_col0" class="data row5 col0">closed_deals.mql_id</td>
-<td id="T_1e546_row5_col1" class="data row5 col1">0</td>
+<td id="T_1e235_row5_col0" class="data row5 col0">closed_deals.mql_id</td>
+<td id="T_1e235_row5_col1" class="data row5 col1">0</td>
 </tr>
 </tbody>
 </table>
@@ -848,20 +845,20 @@ Table&nbsp;2: Columns with at least one null value, across all eleven tables.
 <section id="date-ranges" class="level3">
 <h3 class="anchored" data-anchor-id="date-ranges">Date Ranges</h3>
 <div class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>orders_range <span class="op">=</span> orders.agg(</span>
-<span id="cb9-2"><a href="#cb9-2"></a>    F.<span class="bu">min</span>(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"min"</span>),</span>
-<span id="cb9-3"><a href="#cb9-3"></a>    F.<span class="bu">max</span>(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"max"</span>),</span>
-<span id="cb9-4"><a href="#cb9-4"></a>).collect()[<span class="dv">0</span>]</span>
-<span id="cb9-5"><a href="#cb9-5"></a></span>
-<span id="cb9-6"><a href="#cb9-6"></a>mql_range <span class="op">=</span> mql.agg(</span>
-<span id="cb9-7"><a href="#cb9-7"></a>    F.<span class="bu">min</span>(<span class="st">"first_contact_date"</span>).alias(<span class="st">"min"</span>),</span>
-<span id="cb9-8"><a href="#cb9-8"></a>    F.<span class="bu">max</span>(<span class="st">"first_contact_date"</span>).alias(<span class="st">"max"</span>),</span>
-<span id="cb9-9"><a href="#cb9-9"></a>).collect()[<span class="dv">0</span>]</span>
-<span id="cb9-10"><a href="#cb9-10"></a></span>
-<span id="cb9-11"><a href="#cb9-11"></a>pd.DataFrame([</span>
-<span id="cb9-12"><a href="#cb9-12"></a>    {<span class="st">"dataset"</span>: <span class="st">"orders (purchase)"</span>, <span class="st">"from"</span>: orders_range[<span class="st">"min"</span>], <span class="st">"to"</span>: orders_range[<span class="st">"max"</span>]},</span>
-<span id="cb9-13"><a href="#cb9-13"></a>    {<span class="st">"dataset"</span>: <span class="st">"mql (first contact)"</span>, <span class="st">"from"</span>: mql_range[<span class="st">"min"</span>], <span class="st">"to"</span>: mql_range[<span class="st">"max"</span>]},</span>
-<span id="cb9-14"><a href="#cb9-14"></a>]).style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>orders_range <span class="op">=</span> orders.agg(</span>
+<span id="cb8-2"><a href="#cb8-2"></a>    F.<span class="bu">min</span>(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"min"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3"></a>    F.<span class="bu">max</span>(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"max"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4"></a>).collect()[<span class="dv">0</span>]</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a>mql_range <span class="op">=</span> mql.agg(</span>
+<span id="cb8-7"><a href="#cb8-7"></a>    F.<span class="bu">min</span>(<span class="st">"first_contact_date"</span>).alias(<span class="st">"min"</span>),</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    F.<span class="bu">max</span>(<span class="st">"first_contact_date"</span>).alias(<span class="st">"max"</span>),</span>
+<span id="cb8-9"><a href="#cb8-9"></a>).collect()[<span class="dv">0</span>]</span>
+<span id="cb8-10"><a href="#cb8-10"></a></span>
+<span id="cb8-11"><a href="#cb8-11"></a>pd.DataFrame([</span>
+<span id="cb8-12"><a href="#cb8-12"></a>    {<span class="st">"dataset"</span>: <span class="st">"orders (purchase)"</span>, <span class="st">"from"</span>: orders_range[<span class="st">"min"</span>], <span class="st">"to"</span>: orders_range[<span class="st">"max"</span>]},</span>
+<span id="cb8-13"><a href="#cb8-13"></a>    {<span class="st">"dataset"</span>: <span class="st">"mql (first contact)"</span>, <span class="st">"from"</span>: mql_range[<span class="st">"min"</span>], <span class="st">"to"</span>: mql_range[<span class="st">"max"</span>]},</span>
+<span id="cb8-14"><a href="#cb8-14"></a>]).style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="tbl-date-ranges" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="7">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-date-ranges-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -872,24 +869,24 @@ Table&nbsp;3: Date ranges for order and funnel activity.
 <style type="text/css">
 </style>
 
-<table id="T_5ad95" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table id="T_3dab5" class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_5ad95_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">dataset</th>
-<th id="T_5ad95_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">from</th>
-<th id="T_5ad95_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">to</th>
+<th id="T_3dab5_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">dataset</th>
+<th id="T_3dab5_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">from</th>
+<th id="T_3dab5_level0_col2" class="col_heading level0 col2" data-quarto-table-cell-role="th">to</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_5ad95_row0_col0" class="data row0 col0">orders (purchase)</td>
-<td id="T_5ad95_row0_col1" class="data row0 col1">2016-09-04 22:15:19</td>
-<td id="T_5ad95_row0_col2" class="data row0 col2">2018-10-17 18:30:18</td>
+<td id="T_3dab5_row0_col0" class="data row0 col0">orders (purchase)</td>
+<td id="T_3dab5_row0_col1" class="data row0 col1">2016-09-04 22:15:19</td>
+<td id="T_3dab5_row0_col2" class="data row0 col2">2018-10-17 18:30:18</td>
 </tr>
 <tr class="even">
-<td id="T_5ad95_row1_col0" class="data row1 col0">mql (first contact)</td>
-<td id="T_5ad95_row1_col1" class="data row1 col1">2017-06-14</td>
-<td id="T_5ad95_row1_col2" class="data row1 col2">2018-05-31</td>
+<td id="T_3dab5_row1_col0" class="data row1 col0">mql (first contact)</td>
+<td id="T_3dab5_row1_col1" class="data row1 col1">2017-06-14</td>
+<td id="T_3dab5_row1_col2" class="data row1 col2">2018-05-31</td>
 </tr>
 </tbody>
 </table>
@@ -899,15 +896,15 @@ Table&nbsp;3: Date ranges for order and funnel activity.
 </div>
 </div>
 <div class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>(</span>
-<span id="cb10-2"><a href="#cb10-2"></a>    orders</span>
-<span id="cb10-3"><a href="#cb10-3"></a>    .groupBy(F.year(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"year"</span>))</span>
-<span id="cb10-4"><a href="#cb10-4"></a>    .agg(F.count(<span class="st">"order_id"</span>).alias(<span class="st">"orders"</span>))</span>
-<span id="cb10-5"><a href="#cb10-5"></a>    .orderBy(<span class="st">"year"</span>)</span>
-<span id="cb10-6"><a href="#cb10-6"></a>    .toPandas()</span>
-<span id="cb10-7"><a href="#cb10-7"></a>    .style.<span class="bu">format</span>({<span class="st">"orders"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>})</span>
-<span id="cb10-8"><a href="#cb10-8"></a>    .hide(axis<span class="op">=</span><span class="st">"index"</span>)</span>
-<span id="cb10-9"><a href="#cb10-9"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>(</span>
+<span id="cb9-2"><a href="#cb9-2"></a>    orders</span>
+<span id="cb9-3"><a href="#cb9-3"></a>    .groupBy(F.year(<span class="st">"order_purchase_timestamp"</span>).alias(<span class="st">"year"</span>))</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    .agg(F.count(<span class="st">"order_id"</span>).alias(<span class="st">"orders"</span>))</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    .orderBy(<span class="st">"year"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6"></a>    .toPandas()</span>
+<span id="cb9-7"><a href="#cb9-7"></a>    .style.<span class="bu">format</span>({<span class="st">"orders"</span>: <span class="st">"</span><span class="sc">{:,}</span><span class="st">"</span>})</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    .hide(axis<span class="op">=</span><span class="st">"index"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="tbl-orders-by-year" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-orders-by-year-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -918,25 +915,25 @@ Table&nbsp;4: Order volume by year.
 <style type="text/css">
 </style>
 
-<table id="T_bc5b4" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table id="T_8180e" class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_bc5b4_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">year</th>
-<th id="T_bc5b4_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">orders</th>
+<th id="T_8180e_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">year</th>
+<th id="T_8180e_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">orders</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_bc5b4_row0_col0" class="data row0 col0">2016</td>
-<td id="T_bc5b4_row0_col1" class="data row0 col1">329</td>
+<td id="T_8180e_row0_col0" class="data row0 col0">2016</td>
+<td id="T_8180e_row0_col1" class="data row0 col1">329</td>
 </tr>
 <tr class="even">
-<td id="T_bc5b4_row1_col0" class="data row1 col0">2017</td>
-<td id="T_bc5b4_row1_col1" class="data row1 col1">45,101</td>
+<td id="T_8180e_row1_col0" class="data row1 col0">2017</td>
+<td id="T_8180e_row1_col1" class="data row1 col1">45,101</td>
 </tr>
 <tr class="odd">
-<td id="T_bc5b4_row2_col0" class="data row2 col0">2018</td>
-<td id="T_bc5b4_row2_col1" class="data row2 col1">54,011</td>
+<td id="T_8180e_row2_col0" class="data row2 col0">2018</td>
+<td id="T_8180e_row2_col1" class="data row2 col1">54,011</td>
 </tr>
 </tbody>
 </table>
@@ -952,24 +949,24 @@ Table&nbsp;4: Order volume by year.
 <section id="summary" class="level2">
 <h2 class="anchored" data-anchor-id="summary">Summary</h2>
 <div class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1"></a>unique_customers <span class="op">=</span> customers.select(<span class="st">"customer_unique_id"</span>).distinct().count()</span>
-<span id="cb11-2"><a href="#cb11-2"></a>mql_count <span class="op">=</span> row_counts[<span class="st">"mql"</span>]</span>
-<span id="cb11-3"><a href="#cb11-3"></a>closed_count <span class="op">=</span> row_counts[<span class="st">"closed_deals"</span>]</span>
-<span id="cb11-4"><a href="#cb11-4"></a></span>
-<span id="cb11-5"><a href="#cb11-5"></a>summary <span class="op">=</span> pd.DataFrame([</span>
-<span id="cb11-6"><a href="#cb11-6"></a>    (<span class="st">"Total orders"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'orders'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-7"><a href="#cb11-7"></a>    (<span class="st">"Delivered orders"</span>, <span class="ss">f"</span><span class="sc">{</span>orders<span class="sc">.</span><span class="bu">filter</span>(F.col(<span class="st">'order_status'</span>) <span class="op">==</span> <span class="st">'delivered'</span>)<span class="sc">.</span>count()<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-8"><a href="#cb11-8"></a>    (<span class="st">"Unique customers"</span>, <span class="ss">f"</span><span class="sc">{</span>unique_customers<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-9"><a href="#cb11-9"></a>    (<span class="st">"Unique sellers"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'sellers'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-10"><a href="#cb11-10"></a>    (<span class="st">"Unique products"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'products'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-11"><a href="#cb11-11"></a>    (<span class="st">"Product categories (PT)"</span>, <span class="ss">f"</span><span class="sc">{</span>products<span class="sc">.</span>select(<span class="st">'product_category_name'</span>)<span class="sc">.</span>distinct()<span class="sc">.</span>count()<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-12"><a href="#cb11-12"></a>    (<span class="st">"E-commerce date range"</span>, <span class="st">"Sep 2016 – Aug 2018"</span>),</span>
-<span id="cb11-13"><a href="#cb11-13"></a>    (<span class="st">"MQLs"</span>, <span class="ss">f"</span><span class="sc">{</span>mql_count<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-14"><a href="#cb11-14"></a>    (<span class="st">"Closed deals"</span>, <span class="ss">f"</span><span class="sc">{</span>closed_count<span class="sc">:,}</span><span class="ss">"</span>),</span>
-<span id="cb11-15"><a href="#cb11-15"></a>    (<span class="st">"Funnel date range"</span>, <span class="st">"Jun 2017 – Jun 2018"</span>),</span>
-<span id="cb11-16"><a href="#cb11-16"></a>], columns<span class="op">=</span>[<span class="st">"metric"</span>, <span class="st">"value"</span>])</span>
-<span id="cb11-17"><a href="#cb11-17"></a></span>
-<span id="cb11-18"><a href="#cb11-18"></a>summary.style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a>unique_customers <span class="op">=</span> customers.select(<span class="st">"customer_unique_id"</span>).distinct().count()</span>
+<span id="cb10-2"><a href="#cb10-2"></a>mql_count <span class="op">=</span> row_counts[<span class="st">"mql"</span>]</span>
+<span id="cb10-3"><a href="#cb10-3"></a>closed_count <span class="op">=</span> row_counts[<span class="st">"closed_deals"</span>]</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a>summary <span class="op">=</span> pd.DataFrame([</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    (<span class="st">"Total orders"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'orders'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-7"><a href="#cb10-7"></a>    (<span class="st">"Delivered orders"</span>, <span class="ss">f"</span><span class="sc">{</span>orders<span class="sc">.</span><span class="bu">filter</span>(F.col(<span class="st">'order_status'</span>) <span class="op">==</span> <span class="st">'delivered'</span>)<span class="sc">.</span>count()<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-8"><a href="#cb10-8"></a>    (<span class="st">"Unique customers"</span>, <span class="ss">f"</span><span class="sc">{</span>unique_customers<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    (<span class="st">"Unique sellers"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'sellers'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-10"><a href="#cb10-10"></a>    (<span class="st">"Unique products"</span>, <span class="ss">f"</span><span class="sc">{</span>row_counts[<span class="st">'products'</span>]<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-11"><a href="#cb10-11"></a>    (<span class="st">"Product categories (PT)"</span>, <span class="ss">f"</span><span class="sc">{</span>products<span class="sc">.</span>select(<span class="st">'product_category_name'</span>)<span class="sc">.</span>distinct()<span class="sc">.</span>count()<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-12"><a href="#cb10-12"></a>    (<span class="st">"E-commerce date range"</span>, <span class="st">"Sep 2016 – Aug 2018"</span>),</span>
+<span id="cb10-13"><a href="#cb10-13"></a>    (<span class="st">"MQLs"</span>, <span class="ss">f"</span><span class="sc">{</span>mql_count<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-14"><a href="#cb10-14"></a>    (<span class="st">"Closed deals"</span>, <span class="ss">f"</span><span class="sc">{</span>closed_count<span class="sc">:,}</span><span class="ss">"</span>),</span>
+<span id="cb10-15"><a href="#cb10-15"></a>    (<span class="st">"Funnel date range"</span>, <span class="st">"Jun 2017 – Jun 2018"</span>),</span>
+<span id="cb10-16"><a href="#cb10-16"></a>], columns<span class="op">=</span>[<span class="st">"metric"</span>, <span class="st">"value"</span>])</span>
+<span id="cb10-17"><a href="#cb10-17"></a></span>
+<span id="cb10-18"><a href="#cb10-18"></a>summary.style.hide(axis<span class="op">=</span><span class="st">"index"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div id="tbl-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="9">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -980,53 +977,53 @@ Table&nbsp;5: Key numbers across both Olist datasets.
 <style type="text/css">
 </style>
 
-<table id="T_3de5a" class="do-not-create-environment cell caption-top table table-sm table-striped small">
+<table id="T_33f20" class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th id="T_3de5a_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">metric</th>
-<th id="T_3de5a_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">value</th>
+<th id="T_33f20_level0_col0" class="col_heading level0 col0" data-quarto-table-cell-role="th">metric</th>
+<th id="T_33f20_level0_col1" class="col_heading level0 col1" data-quarto-table-cell-role="th">value</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td id="T_3de5a_row0_col0" class="data row0 col0">Total orders</td>
-<td id="T_3de5a_row0_col1" class="data row0 col1">99,441</td>
+<td id="T_33f20_row0_col0" class="data row0 col0">Total orders</td>
+<td id="T_33f20_row0_col1" class="data row0 col1">99,441</td>
 </tr>
 <tr class="even">
-<td id="T_3de5a_row1_col0" class="data row1 col0">Delivered orders</td>
-<td id="T_3de5a_row1_col1" class="data row1 col1">96,478</td>
+<td id="T_33f20_row1_col0" class="data row1 col0">Delivered orders</td>
+<td id="T_33f20_row1_col1" class="data row1 col1">96,478</td>
 </tr>
 <tr class="odd">
-<td id="T_3de5a_row2_col0" class="data row2 col0">Unique customers</td>
-<td id="T_3de5a_row2_col1" class="data row2 col1">96,096</td>
+<td id="T_33f20_row2_col0" class="data row2 col0">Unique customers</td>
+<td id="T_33f20_row2_col1" class="data row2 col1">96,096</td>
 </tr>
 <tr class="even">
-<td id="T_3de5a_row3_col0" class="data row3 col0">Unique sellers</td>
-<td id="T_3de5a_row3_col1" class="data row3 col1">3,095</td>
+<td id="T_33f20_row3_col0" class="data row3 col0">Unique sellers</td>
+<td id="T_33f20_row3_col1" class="data row3 col1">3,095</td>
 </tr>
 <tr class="odd">
-<td id="T_3de5a_row4_col0" class="data row4 col0">Unique products</td>
-<td id="T_3de5a_row4_col1" class="data row4 col1">32,951</td>
+<td id="T_33f20_row4_col0" class="data row4 col0">Unique products</td>
+<td id="T_33f20_row4_col1" class="data row4 col1">32,951</td>
 </tr>
 <tr class="even">
-<td id="T_3de5a_row5_col0" class="data row5 col0">Product categories (PT)</td>
-<td id="T_3de5a_row5_col1" class="data row5 col1">74</td>
+<td id="T_33f20_row5_col0" class="data row5 col0">Product categories (PT)</td>
+<td id="T_33f20_row5_col1" class="data row5 col1">74</td>
 </tr>
 <tr class="odd">
-<td id="T_3de5a_row6_col0" class="data row6 col0">E-commerce date range</td>
-<td id="T_3de5a_row6_col1" class="data row6 col1">Sep 2016 – Aug 2018</td>
+<td id="T_33f20_row6_col0" class="data row6 col0">E-commerce date range</td>
+<td id="T_33f20_row6_col1" class="data row6 col1">Sep 2016 – Aug 2018</td>
 </tr>
 <tr class="even">
-<td id="T_3de5a_row7_col0" class="data row7 col0">MQLs</td>
-<td id="T_3de5a_row7_col1" class="data row7 col1">8,000</td>
+<td id="T_33f20_row7_col0" class="data row7 col0">MQLs</td>
+<td id="T_33f20_row7_col1" class="data row7 col1">8,000</td>
 </tr>
 <tr class="odd">
-<td id="T_3de5a_row8_col0" class="data row8 col0">Closed deals</td>
-<td id="T_3de5a_row8_col1" class="data row8 col1">842</td>
+<td id="T_33f20_row8_col0" class="data row8 col0">Closed deals</td>
+<td id="T_33f20_row8_col1" class="data row8 col1">842</td>
 </tr>
 <tr class="even">
-<td id="T_3de5a_row9_col0" class="data row9 col0">Funnel date range</td>
-<td id="T_3de5a_row9_col1" class="data row9 col1">Jun 2017 – Jun 2018</td>
+<td id="T_33f20_row9_col0" class="data row9 col0">Funnel date range</td>
+<td id="T_33f20_row9_col1" class="data row9 col1">Jun 2017 – Jun 2018</td>
 </tr>
 </tbody>
 </table>
